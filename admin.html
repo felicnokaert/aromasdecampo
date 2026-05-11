@@ -1,0 +1,2688 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Admin — Aromas de Campo</title>
+  <link rel="icon" href="logo/favicon-dark.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <style>
+    /* ============================================================
+       VARIABLES
+    ============================================================ */
+    :root {
+      --verde-salvia:    #7A8C72;
+      --beige-arena:     #C8B89A;
+      --fondo-crema:     #F5EFE4;
+      --fondo-oscuro:    #1C2B1E;
+      --blanco-calido:   #FAFAF7;
+      --texto-principal: #1E1E1E;
+      --texto-secundario:#6B6B6B;
+      --whatsapp-verde:  #25D366;
+      --footer-oscuro:   #111A12;
+      --rojo-ocupado:    #C0392B;
+      --amarillo-pend:   #E6A817;
+      --gris-bloq:       #95A5A6;
+      --sidebar-width:   240px;
+      --transition:      0.25s ease;
+    }
+
+    /* ============================================================
+       RESET & BASE
+    ============================================================ */
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html, body {
+      height: 100%;
+      font-family: 'Inter', sans-serif;
+      font-size: 14px;
+      color: var(--texto-principal);
+      background: var(--fondo-crema);
+      overflow-x: hidden;
+    }
+
+    h1, h2, h3, h4 {
+      font-family: 'Playfair Display', serif;
+    }
+
+    button {
+      cursor: pointer;
+      font-family: 'Inter', sans-serif;
+    }
+
+    input, select, textarea {
+      font-family: 'Inter', sans-serif;
+      font-size: 14px;
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    /* ============================================================
+       LOGIN SCREEN
+    ============================================================ */
+    #login-screen {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      background: var(--fondo-oscuro);
+      padding: 24px;
+    }
+
+    #login-screen.hidden {
+      display: none;
+    }
+
+    .login-card {
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 16px;
+      padding: 48px 40px;
+      width: 100%;
+      max-width: 400px;
+      backdrop-filter: blur(10px);
+    }
+
+    .login-logo {
+      display: block;
+      margin: 0 auto 32px;
+      width: 160px;
+      height: auto;
+    }
+
+    .login-title {
+      color: var(--blanco-calido);
+      font-size: 20px;
+      text-align: center;
+      margin-bottom: 8px;
+    }
+
+    .login-subtitle {
+      color: var(--gris-bloq);
+      font-size: 13px;
+      text-align: center;
+      margin-bottom: 32px;
+    }
+
+    .form-group {
+      margin-bottom: 20px;
+    }
+
+    .form-group label {
+      display: block;
+      color: var(--beige-arena);
+      font-size: 12px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      margin-bottom: 8px;
+    }
+
+    .form-group input,
+    .form-group select,
+    .form-group textarea {
+      width: 100%;
+      padding: 12px 16px;
+      border-radius: 8px;
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      background: rgba(255, 255, 255, 0.08);
+      color: var(--blanco-calido);
+      font-size: 14px;
+      outline: none;
+      transition: border-color var(--transition);
+    }
+
+    .form-group input::placeholder {
+      color: rgba(255, 255, 255, 0.35);
+    }
+
+    .form-group input:focus,
+    .form-group select:focus,
+    .form-group textarea:focus {
+      border-color: var(--verde-salvia);
+    }
+
+    .login-error {
+      background: rgba(192, 57, 43, 0.2);
+      border: 1px solid rgba(192, 57, 43, 0.4);
+      border-radius: 8px;
+      color: #e74c3c;
+      padding: 12px 16px;
+      font-size: 13px;
+      margin-bottom: 20px;
+      display: none;
+    }
+
+    .login-error.visible {
+      display: block;
+    }
+
+    .btn-login {
+      width: 100%;
+      padding: 14px;
+      background: var(--verde-salvia);
+      color: var(--blanco-calido);
+      border: none;
+      border-radius: 8px;
+      font-size: 15px;
+      font-weight: 600;
+      letter-spacing: 0.03em;
+      transition: background var(--transition), opacity var(--transition);
+    }
+
+    .btn-login:hover {
+      background: #8fa086;
+    }
+
+    .btn-login:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+
+    /* ============================================================
+       DASHBOARD LAYOUT
+    ============================================================ */
+    #dashboard {
+      display: none;
+      min-height: 100vh;
+    }
+
+    #dashboard.visible {
+      display: flex;
+    }
+
+    /* ---- Sidebar ---- */
+    .sidebar {
+      width: var(--sidebar-width);
+      min-height: 100vh;
+      background: var(--fondo-oscuro);
+      display: flex;
+      flex-direction: column;
+      position: fixed;
+      top: 0;
+      left: 0;
+      z-index: 100;
+      transition: transform var(--transition);
+    }
+
+    .sidebar-header {
+      padding: 24px 20px 20px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    }
+
+    .sidebar-logo {
+      width: 120px;
+      height: auto;
+      display: block;
+    }
+
+    .sidebar-nav {
+      flex: 1;
+      padding: 16px 0;
+      overflow-y: auto;
+    }
+
+    .nav-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 12px 20px;
+      color: rgba(255, 255, 255, 0.6);
+      font-size: 14px;
+      font-weight: 500;
+      cursor: pointer;
+      border-left: 3px solid transparent;
+      transition: all var(--transition);
+      user-select: none;
+    }
+
+    .nav-item:hover {
+      color: var(--blanco-calido);
+      background: rgba(255, 255, 255, 0.05);
+    }
+
+    .nav-item.active {
+      color: var(--blanco-calido);
+      background: rgba(122, 140, 114, 0.15);
+      border-left-color: var(--verde-salvia);
+    }
+
+    .nav-icon {
+      width: 18px;
+      height: 18px;
+      flex-shrink: 0;
+      opacity: 0.8;
+    }
+
+    .sidebar-footer {
+      padding: 16px 20px;
+      border-top: 1px solid rgba(255, 255, 255, 0.08);
+    }
+
+    .btn-logout {
+      width: 100%;
+      padding: 10px 16px;
+      background: transparent;
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      border-radius: 8px;
+      color: rgba(255, 255, 255, 0.6);
+      font-size: 13px;
+      font-weight: 500;
+      transition: all var(--transition);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+
+    .btn-logout:hover {
+      background: rgba(192, 57, 43, 0.15);
+      border-color: rgba(192, 57, 43, 0.4);
+      color: #e74c3c;
+    }
+
+    /* ---- Main Content ---- */
+    .main-content {
+      margin-left: var(--sidebar-width);
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+    }
+
+    /* ---- Top Bar ---- */
+    .topbar {
+      background: var(--blanco-calido);
+      border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+      padding: 0 32px;
+      height: 64px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: sticky;
+      top: 0;
+      z-index: 50;
+    }
+
+    .topbar-left {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .hamburger {
+      display: none;
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: 4px;
+      flex-direction: column;
+      gap: 5px;
+    }
+
+    .hamburger span {
+      display: block;
+      width: 22px;
+      height: 2px;
+      background: var(--texto-principal);
+      border-radius: 2px;
+      transition: all var(--transition);
+    }
+
+    .page-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 20px;
+      font-weight: 600;
+      color: var(--texto-principal);
+    }
+
+    .topbar-right {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .admin-badge {
+      font-size: 12px;
+      color: var(--texto-secundario);
+      background: var(--fondo-crema);
+      padding: 4px 12px;
+      border-radius: 20px;
+      border: 1px solid rgba(0, 0, 0, 0.08);
+    }
+
+    /* ---- Page Content ---- */
+    .page-content {
+      padding: 32px;
+      flex: 1;
+    }
+
+    /* ============================================================
+       VIEWS
+    ============================================================ */
+    .view {
+      display: none;
+    }
+
+    .view.active {
+      display: block;
+    }
+
+    /* ============================================================
+       CARDS / METRICS
+    ============================================================ */
+    .metrics-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 20px;
+      margin-bottom: 32px;
+    }
+
+    .metric-card {
+      background: var(--blanco-calido);
+      border-radius: 12px;
+      padding: 24px;
+      border: 1px solid rgba(0, 0, 0, 0.07);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .metric-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 3px;
+      background: var(--verde-salvia);
+    }
+
+    .metric-card.amarillo::before { background: var(--amarillo-pend); }
+    .metric-card.rojo::before     { background: var(--rojo-ocupado); }
+    .metric-card.gris::before     { background: var(--gris-bloq); }
+
+    .metric-label {
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--texto-secundario);
+      margin-bottom: 12px;
+    }
+
+    .metric-value {
+      font-family: 'Playfair Display', serif;
+      font-size: 32px;
+      font-weight: 700;
+      color: var(--texto-principal);
+      line-height: 1;
+      margin-bottom: 6px;
+    }
+
+    .metric-sub {
+      font-size: 12px;
+      color: var(--texto-secundario);
+    }
+
+    /* ============================================================
+       SECTION HEADER
+    ============================================================ */
+    .section-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 20px;
+    }
+
+    .section-title {
+      font-size: 18px;
+      font-weight: 600;
+      color: var(--texto-principal);
+    }
+
+    /* ============================================================
+       TABLE
+    ============================================================ */
+    .table-wrapper {
+      background: var(--blanco-calido);
+      border-radius: 12px;
+      border: 1px solid rgba(0, 0, 0, 0.07);
+      overflow: hidden;
+      overflow-x: auto;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    thead tr {
+      background: var(--fondo-crema);
+    }
+
+    thead th {
+      padding: 12px 16px;
+      text-align: left;
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--texto-secundario);
+      white-space: nowrap;
+      border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+    }
+
+    tbody tr {
+      border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+      transition: background var(--transition);
+    }
+
+    tbody tr:last-child {
+      border-bottom: none;
+    }
+
+    tbody tr:hover {
+      background: rgba(245, 239, 228, 0.5);
+    }
+
+    tbody td {
+      padding: 14px 16px;
+      font-size: 13px;
+      color: var(--texto-principal);
+      vertical-align: middle;
+    }
+
+    /* ============================================================
+       BADGES
+    ============================================================ */
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      padding: 4px 10px;
+      border-radius: 20px;
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .badge::before {
+      content: '';
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: currentColor;
+    }
+
+    .badge-pendiente {
+      background: rgba(230, 168, 23, 0.15);
+      color: #b8860b;
+    }
+
+    .badge-confirmada {
+      background: rgba(122, 140, 114, 0.18);
+      color: #4a6741;
+    }
+
+    .badge-cancelada {
+      background: rgba(192, 57, 43, 0.15);
+      color: var(--rojo-ocupado);
+    }
+
+    .badge-completada {
+      background: rgba(149, 165, 166, 0.2);
+      color: #5d6d7e;
+    }
+
+    /* ============================================================
+       BUTTONS
+    ============================================================ */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 8px 16px;
+      border-radius: 8px;
+      font-size: 13px;
+      font-weight: 600;
+      border: none;
+      transition: all var(--transition);
+      white-space: nowrap;
+    }
+
+    .btn-sm {
+      padding: 5px 10px;
+      font-size: 12px;
+      border-radius: 6px;
+    }
+
+    .btn-primary {
+      background: var(--verde-salvia);
+      color: var(--blanco-calido);
+    }
+
+    .btn-primary:hover {
+      background: #8fa086;
+    }
+
+    .btn-danger {
+      background: rgba(192, 57, 43, 0.12);
+      color: var(--rojo-ocupado);
+    }
+
+    .btn-danger:hover {
+      background: rgba(192, 57, 43, 0.22);
+    }
+
+    .btn-warning {
+      background: rgba(230, 168, 23, 0.15);
+      color: #8a6500;
+    }
+
+    .btn-warning:hover {
+      background: rgba(230, 168, 23, 0.28);
+    }
+
+    .btn-ghost {
+      background: transparent;
+      color: var(--texto-secundario);
+      border: 1px solid rgba(0, 0, 0, 0.12);
+    }
+
+    .btn-ghost:hover {
+      background: rgba(0, 0, 0, 0.05);
+    }
+
+    .btn-wa {
+      background: var(--whatsapp-verde);
+      color: #fff;
+    }
+
+    .btn-wa:hover {
+      background: #1ebe5d;
+    }
+
+    /* ============================================================
+       FILTERS BAR
+    ============================================================ */
+    .filters-bar {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-bottom: 20px;
+    }
+
+    .filter-select,
+    .filter-input {
+      padding: 9px 14px;
+      border-radius: 8px;
+      border: 1px solid rgba(0, 0, 0, 0.12);
+      background: var(--blanco-calido);
+      color: var(--texto-principal);
+      font-size: 13px;
+      outline: none;
+      transition: border-color var(--transition);
+    }
+
+    .filter-select:focus,
+    .filter-input:focus {
+      border-color: var(--verde-salvia);
+    }
+
+    .filter-input {
+      min-width: 220px;
+    }
+
+    /* ============================================================
+       MODAL
+    ============================================================ */
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.55);
+      z-index: 500;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity var(--transition);
+    }
+
+    .modal-overlay.visible {
+      opacity: 1;
+      pointer-events: all;
+    }
+
+    .modal {
+      background: var(--blanco-calido);
+      border-radius: 16px;
+      width: 100%;
+      max-width: 560px;
+      max-height: 90vh;
+      overflow-y: auto;
+      transform: translateY(16px);
+      transition: transform var(--transition);
+    }
+
+    .modal-overlay.visible .modal {
+      transform: translateY(0);
+    }
+
+    .modal-header {
+      padding: 24px 28px 16px;
+      border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .modal-title {
+      font-size: 18px;
+      font-weight: 600;
+    }
+
+    .modal-close {
+      background: none;
+      border: none;
+      font-size: 22px;
+      color: var(--texto-secundario);
+      line-height: 1;
+      padding: 4px;
+      border-radius: 4px;
+      transition: color var(--transition);
+    }
+
+    .modal-close:hover {
+      color: var(--rojo-ocupado);
+    }
+
+    .modal-body {
+      padding: 24px 28px;
+    }
+
+    .modal-footer {
+      padding: 16px 28px 24px;
+      display: flex;
+      gap: 12px;
+      justify-content: flex-end;
+      border-top: 1px solid rgba(0, 0, 0, 0.08);
+    }
+
+    /* ---- Detail grid in modal ---- */
+    .detail-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+      margin-bottom: 20px;
+    }
+
+    .detail-item label {
+      display: block;
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--texto-secundario);
+      margin-bottom: 4px;
+    }
+
+    .detail-item span {
+      font-size: 14px;
+      color: var(--texto-principal);
+      font-weight: 500;
+    }
+
+    /* ============================================================
+       ADMIN FORM (precios / bloqueos inline)
+    ============================================================ */
+    .admin-form {
+      background: var(--blanco-calido);
+      border-radius: 12px;
+      border: 1px solid rgba(0, 0, 0, 0.07);
+      padding: 24px;
+      margin-bottom: 24px;
+    }
+
+    .admin-form-title {
+      font-size: 16px;
+      font-weight: 600;
+      margin-bottom: 20px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid rgba(0, 0, 0, 0.07);
+    }
+
+    .form-row {
+      display: grid;
+      gap: 16px;
+      margin-bottom: 16px;
+    }
+
+    .form-row.cols-2 { grid-template-columns: 1fr 1fr; }
+    .form-row.cols-3 { grid-template-columns: 1fr 1fr 1fr; }
+    .form-row.cols-4 { grid-template-columns: 1fr 1fr 1fr 1fr; }
+
+    .field-group {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .field-group label {
+      font-size: 12px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--texto-secundario);
+    }
+
+    .field-group input,
+    .field-group select,
+    .field-group textarea {
+      padding: 10px 14px;
+      border-radius: 8px;
+      border: 1px solid rgba(0, 0, 0, 0.12);
+      background: var(--fondo-crema);
+      color: var(--texto-principal);
+      outline: none;
+      transition: border-color var(--transition);
+    }
+
+    .field-group input:focus,
+    .field-group select:focus,
+    .field-group textarea:focus {
+      border-color: var(--verde-salvia);
+    }
+
+    .field-group textarea {
+      resize: vertical;
+      min-height: 80px;
+    }
+
+    /* ============================================================
+       CALENDARIO
+    ============================================================ */
+    .calendario-header {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      margin-bottom: 24px;
+    }
+
+    .mes-display {
+      font-family: 'Playfair Display', serif;
+      font-size: 22px;
+      font-weight: 600;
+      color: var(--texto-principal);
+      min-width: 200px;
+      text-align: center;
+    }
+
+    .cal-wrapper {
+      background: var(--blanco-calido);
+      border-radius: 12px;
+      border: 1px solid rgba(0, 0, 0, 0.07);
+      overflow-x: auto;
+    }
+
+    .cal-table {
+      width: 100%;
+      border-collapse: collapse;
+      min-width: 700px;
+    }
+
+    .cal-table thead th {
+      background: var(--fondo-crema);
+      padding: 10px 6px;
+      text-align: center;
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--texto-secundario);
+      border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+    }
+
+    .cal-table thead th.dia-hoy {
+      color: var(--verde-salvia);
+    }
+
+    .cal-table tbody td {
+      padding: 0;
+      border: 1px solid rgba(0, 0, 0, 0.06);
+      width: 32px;
+      height: 38px;
+      text-align: center;
+      vertical-align: middle;
+    }
+
+    .cal-table tbody td.cabana-label {
+      padding: 0 12px;
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--texto-principal);
+      white-space: nowrap;
+      background: var(--fondo-crema);
+      min-width: 100px;
+      text-align: left;
+    }
+
+    .cal-cell {
+      width: 100%;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 11px;
+      font-weight: 500;
+      position: relative;
+      cursor: default;
+    }
+
+    .cal-cell.libre {
+      background: transparent;
+      color: var(--texto-secundario);
+    }
+
+    .cal-cell.libre:hover {
+      background: rgba(122, 140, 114, 0.08);
+      cursor: pointer;
+    }
+
+    .cal-cell.pendiente {
+      background: rgba(230, 168, 23, 0.25);
+      color: #7a5900;
+    }
+
+    .cal-cell.confirmada {
+      background: rgba(122, 140, 114, 0.3);
+      color: #2d4f29;
+    }
+
+    .cal-cell.bloqueado {
+      background: rgba(149, 165, 166, 0.3);
+      color: #4a5568;
+    }
+
+    .cal-cell.cancelada {
+      background: rgba(192, 57, 43, 0.1);
+      color: #999;
+      text-decoration: line-through;
+    }
+
+    /* Cal tooltip */
+    .cal-cell[data-tip] {
+      position: relative;
+    }
+
+    .cal-cell[data-tip]:hover::after {
+      content: attr(data-tip);
+      position: absolute;
+      bottom: calc(100% + 6px);
+      left: 50%;
+      transform: translateX(-50%);
+      background: var(--fondo-oscuro);
+      color: var(--blanco-calido);
+      padding: 6px 10px;
+      border-radius: 6px;
+      font-size: 11px;
+      white-space: nowrap;
+      z-index: 999;
+      pointer-events: none;
+      max-width: 200px;
+      white-space: normal;
+      text-align: center;
+      line-height: 1.4;
+    }
+
+    /* ============================================================
+       ESTADÍSTICAS
+    ============================================================ */
+    .stats-section {
+      margin-bottom: 32px;
+    }
+
+    .bar-chart {
+      display: flex;
+      align-items: flex-end;
+      gap: 12px;
+      height: 180px;
+      padding: 16px;
+      background: var(--blanco-calido);
+      border-radius: 12px;
+      border: 1px solid rgba(0, 0, 0, 0.07);
+    }
+
+    .bar-col {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-end;
+      gap: 8px;
+      height: 100%;
+    }
+
+    .bar-fill {
+      width: 100%;
+      max-width: 52px;
+      background: var(--verde-salvia);
+      border-radius: 6px 6px 0 0;
+      min-height: 4px;
+      transition: height 0.5s ease;
+      position: relative;
+    }
+
+    .bar-fill:hover {
+      background: #8fa086;
+    }
+
+    .bar-label {
+      font-size: 11px;
+      color: var(--texto-secundario);
+      font-weight: 500;
+      text-align: center;
+    }
+
+    .bar-value {
+      font-size: 11px;
+      color: var(--texto-secundario);
+      font-weight: 600;
+      text-align: center;
+    }
+
+    .ranking-list {
+      background: var(--blanco-calido);
+      border-radius: 12px;
+      border: 1px solid rgba(0, 0, 0, 0.07);
+      overflow: hidden;
+    }
+
+    .ranking-item {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      padding: 16px 20px;
+      border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+    }
+
+    .ranking-item:last-child {
+      border-bottom: none;
+    }
+
+    .ranking-num {
+      font-family: 'Playfair Display', serif;
+      font-size: 22px;
+      font-weight: 700;
+      color: var(--beige-arena);
+      min-width: 28px;
+    }
+
+    .ranking-info {
+      flex: 1;
+    }
+
+    .ranking-name {
+      font-weight: 600;
+      font-size: 14px;
+      margin-bottom: 3px;
+    }
+
+    .ranking-meta {
+      font-size: 12px;
+      color: var(--texto-secundario);
+    }
+
+    .ranking-total {
+      font-family: 'Playfair Display', serif;
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--verde-salvia);
+    }
+
+    /* ============================================================
+       TOAST NOTIFICATIONS
+    ============================================================ */
+    #toast-container {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      z-index: 9999;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .toast {
+      background: var(--fondo-oscuro);
+      color: var(--blanco-calido);
+      padding: 14px 20px;
+      border-radius: 10px;
+      font-size: 13px;
+      font-weight: 500;
+      max-width: 320px;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.25);
+      border-left: 4px solid var(--verde-salvia);
+      animation: slideIn 0.3s ease;
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+    }
+
+    .toast.toast-error {
+      border-left-color: var(--rojo-ocupado);
+    }
+
+    .toast.toast-warning {
+      border-left-color: var(--amarillo-pend);
+    }
+
+    @keyframes slideIn {
+      from { transform: translateX(110%); opacity: 0; }
+      to   { transform: translateX(0);   opacity: 1; }
+    }
+
+    @keyframes fadeOut {
+      from { opacity: 1; transform: translateX(0); }
+      to   { opacity: 0; transform: translateX(110%); }
+    }
+
+    .toast.removing {
+      animation: fadeOut 0.3s ease forwards;
+    }
+
+    /* ============================================================
+       LOADING / SKELETON
+    ============================================================ */
+    .skeleton {
+      background: linear-gradient(90deg, #e8e4dc 25%, #f0ece4 50%, #e8e4dc 75%);
+      background-size: 200% 100%;
+      animation: shimmer 1.5s infinite;
+      border-radius: 6px;
+    }
+
+    @keyframes shimmer {
+      0%   { background-position: 200% 0; }
+      100% { background-position: -200% 0; }
+    }
+
+    .spinner {
+      width: 20px;
+      height: 20px;
+      border: 2px solid rgba(255, 255, 255, 0.3);
+      border-top-color: var(--blanco-calido);
+      border-radius: 50%;
+      animation: spin 0.7s linear infinite;
+      display: inline-block;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    /* ---- Empty state ---- */
+    .empty-state {
+      text-align: center;
+      padding: 48px 24px;
+      color: var(--texto-secundario);
+    }
+
+    .empty-state svg {
+      margin-bottom: 16px;
+      opacity: 0.4;
+    }
+
+    .empty-state p {
+      font-size: 15px;
+    }
+
+    /* ============================================================
+       SIDEBAR OVERLAY (mobile)
+    ============================================================ */
+    .sidebar-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.5);
+      z-index: 99;
+    }
+
+    .sidebar-overlay.visible {
+      display: block;
+    }
+
+    /* ============================================================
+       RESPONSIVE
+    ============================================================ */
+    @media (max-width: 1100px) {
+      .metrics-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+
+    @media (max-width: 768px) {
+      .sidebar {
+        transform: translateX(-100%);
+      }
+
+      .sidebar.open {
+        transform: translateX(0);
+      }
+
+      .hamburger {
+        display: flex;
+      }
+
+      .main-content {
+        margin-left: 0;
+      }
+
+      .topbar {
+        padding: 0 20px;
+      }
+
+      .page-content {
+        padding: 20px 16px;
+      }
+
+      .metrics-grid {
+        grid-template-columns: 1fr 1fr;
+        gap: 12px;
+      }
+
+      .form-row.cols-2,
+      .form-row.cols-3,
+      .form-row.cols-4 {
+        grid-template-columns: 1fr;
+      }
+
+      .detail-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .metrics-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ============================================================
+     CONFIGURACIÓN SUPABASE
+============================================================ -->
+<script>
+  window.SUPABASE_URL      = 'https://XXXXXXXX.supabase.co';
+  window.SUPABASE_ANON_KEY = 'eyJ...';
+</script>
+
+<!-- ============================================================
+     TOAST CONTAINER
+============================================================ -->
+<div id="toast-container"></div>
+
+<!-- ============================================================
+     LOGIN SCREEN
+============================================================ -->
+<div id="login-screen">
+  <div class="login-card">
+    <img src="logo/aromas-blanco.png" alt="Aromas de Campo" class="login-logo" />
+    <h1 class="login-title">Panel de Administración</h1>
+    <p class="login-subtitle">Aromas de Campo · Colón, Entre Ríos</p>
+
+    <div id="login-error" class="login-error"></div>
+
+    <form id="login-form" onsubmit="handleLogin(event)">
+      <div class="form-group">
+        <label for="login-email">Email</label>
+        <input type="email" id="login-email" placeholder="admin@aromasdecampo.com" required autocomplete="email" />
+      </div>
+      <div class="form-group">
+        <label for="login-password">Contraseña</label>
+        <input type="password" id="login-password" placeholder="••••••••" required autocomplete="current-password" />
+      </div>
+      <button type="submit" class="btn-login" id="login-btn">Ingresar</button>
+    </form>
+  </div>
+</div>
+
+<!-- ============================================================
+     DASHBOARD
+============================================================ -->
+<div id="dashboard">
+
+  <!-- Sidebar overlay (mobile) -->
+  <div class="sidebar-overlay" id="sidebar-overlay" onclick="closeSidebar()"></div>
+
+  <!-- Sidebar -->
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-header">
+      <img src="logo/aromas-blanco.png" alt="Aromas de Campo" class="sidebar-logo" />
+    </div>
+
+    <nav class="sidebar-nav">
+      <div class="nav-item active" data-view="dashboard" onclick="navigateTo('dashboard')">
+        <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+        Dashboard
+      </div>
+      <div class="nav-item" data-view="reservas" onclick="navigateTo('reservas')">
+        <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+        Reservas
+      </div>
+      <div class="nav-item" data-view="calendario" onclick="navigateTo('calendario')">
+        <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+        Calendario
+      </div>
+      <div class="nav-item" data-view="precios" onclick="navigateTo('precios')">
+        <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+        Precios
+      </div>
+      <div class="nav-item" data-view="bloqueos" onclick="navigateTo('bloqueos')">
+        <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+        Bloqueos
+      </div>
+      <div class="nav-item" data-view="estadisticas" onclick="navigateTo('estadisticas')">
+        <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+        Estadísticas
+      </div>
+    </nav>
+
+    <div class="sidebar-footer">
+      <button class="btn-logout" onclick="handleLogout()">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+        Cerrar sesión
+      </button>
+    </div>
+  </aside>
+
+  <!-- Main -->
+  <div class="main-content">
+    <!-- Topbar -->
+    <header class="topbar">
+      <div class="topbar-left">
+        <button class="hamburger" id="hamburger" onclick="toggleSidebar()">
+          <span></span><span></span><span></span>
+        </button>
+        <h1 class="page-title" id="page-title">Dashboard</h1>
+      </div>
+      <div class="topbar-right">
+        <span class="admin-badge" id="admin-email-badge">Admin</span>
+      </div>
+    </header>
+
+    <!-- Page content -->
+    <main class="page-content">
+
+      <!-- ======================================================
+           VIEW: DASHBOARD
+      ====================================================== -->
+      <section class="view active" id="view-dashboard">
+        <div class="metrics-grid" id="metrics-grid">
+          <div class="metric-card">
+            <div class="metric-label">Reservas del mes</div>
+            <div class="metric-value skeleton" id="m-total" style="height:36px;width:60px;">&nbsp;</div>
+            <div class="metric-sub" id="m-total-sub"></div>
+          </div>
+          <div class="metric-card">
+            <div class="metric-label">Ingresos confirmados</div>
+            <div class="metric-value skeleton" id="m-ingresos" style="height:36px;width:120px;">&nbsp;</div>
+            <div class="metric-sub" id="m-ingresos-sub"></div>
+          </div>
+          <div class="metric-card amarillo">
+            <div class="metric-label">Ocupación %</div>
+            <div class="metric-value skeleton" id="m-ocupacion" style="height:36px;width:70px;">&nbsp;</div>
+            <div class="metric-sub" id="m-ocupacion-sub"></div>
+          </div>
+          <div class="metric-card rojo">
+            <div class="metric-label">Pendientes</div>
+            <div class="metric-value skeleton" id="m-pendientes" style="height:36px;width:50px;">&nbsp;</div>
+            <div class="metric-sub" id="m-pendientes-sub"></div>
+          </div>
+        </div>
+
+        <div class="section-header">
+          <h2 class="section-title">Últimas reservas</h2>
+          <button class="btn btn-ghost btn-sm" onclick="navigateTo('reservas')">Ver todas</button>
+        </div>
+        <div class="table-wrapper">
+          <table>
+            <thead>
+              <tr>
+                <th>Huésped</th>
+                <th>Cabaña</th>
+                <th>Check-in</th>
+                <th>Check-out</th>
+                <th>Total</th>
+                <th>Estado</th>
+                <th>Acción</th>
+              </tr>
+            </thead>
+            <tbody id="ultimas-reservas-tbody">
+              <tr><td colspan="7" style="text-align:center;padding:32px;color:var(--texto-secundario)">Cargando…</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- ======================================================
+           VIEW: RESERVAS
+      ====================================================== -->
+      <section class="view" id="view-reservas">
+        <div class="filters-bar">
+          <select class="filter-select" id="filtro-cabana" onchange="applyReservaFilters()">
+            <option value="">Todas las cabañas</option>
+          </select>
+          <select class="filter-select" id="filtro-estado" onchange="applyReservaFilters()">
+            <option value="">Todos los estados</option>
+            <option value="pendiente">Pendiente</option>
+            <option value="confirmada">Confirmada</option>
+            <option value="cancelada">Cancelada</option>
+            <option value="completada">Completada</option>
+          </select>
+          <input type="text" class="filter-input" id="filtro-busqueda" placeholder="Buscar por nombre o email…" oninput="applyReservaFilters()" />
+          <button class="btn btn-primary btn-sm" onclick="loadReservas()">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-.28-4.6"/></svg>
+            Actualizar
+          </button>
+        </div>
+
+        <div class="table-wrapper">
+          <table>
+            <thead>
+              <tr>
+                <th>Nombre</th>
+                <th>Cabaña</th>
+                <th>Check-in</th>
+                <th>Check-out</th>
+                <th>Noches</th>
+                <th>Personas</th>
+                <th>Total</th>
+                <th>Estado</th>
+                <th>Acciones</th>
+              </tr>
+            </thead>
+            <tbody id="reservas-tbody">
+              <tr><td colspan="9" style="text-align:center;padding:32px;color:var(--texto-secundario)">Cargando…</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- ======================================================
+           VIEW: CALENDARIO
+      ====================================================== -->
+      <section class="view" id="view-calendario">
+        <div class="calendario-header">
+          <button class="btn btn-ghost btn-sm" onclick="calPrev()">← Anterior</button>
+          <div class="mes-display" id="mes-display"></div>
+          <button class="btn btn-ghost btn-sm" onclick="calNext()">Siguiente →</button>
+        </div>
+        <div class="section-header" style="margin-bottom:12px;">
+          <div style="display:flex;gap:16px;flex-wrap:wrap;">
+            <span style="display:flex;align-items:center;gap:6px;font-size:12px;color:var(--texto-secundario)">
+              <span style="width:12px;height:12px;border-radius:2px;background:rgba(122,140,114,0.3);display:inline-block;"></span>Confirmada
+            </span>
+            <span style="display:flex;align-items:center;gap:6px;font-size:12px;color:var(--texto-secundario)">
+              <span style="width:12px;height:12px;border-radius:2px;background:rgba(230,168,23,0.25);display:inline-block;"></span>Pendiente
+            </span>
+            <span style="display:flex;align-items:center;gap:6px;font-size:12px;color:var(--texto-secundario)">
+              <span style="width:12px;height:12px;border-radius:2px;background:rgba(149,165,166,0.3);display:inline-block;"></span>Bloqueado
+            </span>
+            <span style="display:flex;align-items:center;gap:6px;font-size:12px;color:var(--texto-secundario)">
+              <span style="width:12px;height:12px;border-radius:2px;background:rgba(192,57,43,0.1);display:inline-block;"></span>Cancelado
+            </span>
+          </div>
+        </div>
+        <div class="cal-wrapper">
+          <table class="cal-table" id="cal-table">
+            <thead id="cal-thead"></thead>
+            <tbody id="cal-tbody"></tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- ======================================================
+           VIEW: PRECIOS
+      ====================================================== -->
+      <section class="view" id="view-precios">
+        <div class="admin-form" id="precio-form-container">
+          <div class="admin-form-title" id="precio-form-title">Nueva temporada</div>
+          <div class="form-row cols-2">
+            <div class="field-group">
+              <label>Nombre de temporada</label>
+              <input type="text" id="precio-nombre" placeholder="Ej: Temporada Alta 2026" />
+            </div>
+            <div class="field-group">
+              <label>Cabaña (dejar vacío = todas)</label>
+              <select id="precio-cabana">
+                <option value="">Todas las cabañas</option>
+              </select>
+            </div>
+          </div>
+          <div class="form-row cols-3">
+            <div class="field-group">
+              <label>Fecha desde</label>
+              <input type="date" id="precio-desde" />
+            </div>
+            <div class="field-group">
+              <label>Fecha hasta</label>
+              <input type="date" id="precio-hasta" />
+            </div>
+            <div class="field-group">
+              <label>Precio / noche ($)</label>
+              <input type="number" id="precio-noche" placeholder="35000" min="0" step="500" />
+            </div>
+          </div>
+          <div class="form-row cols-2">
+            <div class="field-group">
+              <label>Prioridad (mayor = prevalece)</label>
+              <input type="number" id="precio-prioridad" value="0" min="0" />
+            </div>
+          </div>
+          <div style="display:flex;gap:10px;margin-top:4px;">
+            <button class="btn btn-primary" onclick="guardarPrecio()">Guardar temporada</button>
+            <button class="btn btn-ghost" id="precio-cancelar-edit" onclick="cancelarEditPrecio()" style="display:none;">Cancelar edición</button>
+          </div>
+        </div>
+
+        <div class="section-header">
+          <h2 class="section-title">Temporadas activas</h2>
+        </div>
+        <div class="table-wrapper">
+          <table>
+            <thead>
+              <tr>
+                <th>Nombre</th>
+                <th>Desde</th>
+                <th>Hasta</th>
+                <th>Precio/noche</th>
+                <th>Cabaña</th>
+                <th>Prioridad</th>
+                <th>Acciones</th>
+              </tr>
+            </thead>
+            <tbody id="precios-tbody">
+              <tr><td colspan="7" style="text-align:center;padding:32px;color:var(--texto-secundario)">Cargando…</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- ======================================================
+           VIEW: BLOQUEOS
+      ====================================================== -->
+      <section class="view" id="view-bloqueos">
+        <div class="admin-form">
+          <div class="admin-form-title">Nuevo bloqueo</div>
+          <div class="form-row cols-2">
+            <div class="field-group">
+              <label>Cabaña</label>
+              <select id="bloqueo-cabana">
+                <option value="">Todas las cabañas</option>
+              </select>
+            </div>
+            <div class="field-group">
+              <label>Motivo</label>
+              <select id="bloqueo-motivo">
+                <option value="mantenimiento">Mantenimiento</option>
+                <option value="uso_personal">Uso personal</option>
+                <option value="otro">Otro</option>
+              </select>
+            </div>
+          </div>
+          <div class="form-row cols-2">
+            <div class="field-group">
+              <label>Fecha desde</label>
+              <input type="date" id="bloqueo-desde" />
+            </div>
+            <div class="field-group">
+              <label>Fecha hasta</label>
+              <input type="date" id="bloqueo-hasta" />
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="field-group">
+              <label>Descripción (opcional)</label>
+              <textarea id="bloqueo-desc" placeholder="Detalles del bloqueo…"></textarea>
+            </div>
+          </div>
+          <button class="btn btn-primary" onclick="crearBloqueo()">Crear bloqueo</button>
+        </div>
+
+        <div class="section-header">
+          <h2 class="section-title">Bloqueos activos</h2>
+        </div>
+        <div class="table-wrapper">
+          <table>
+            <thead>
+              <tr>
+                <th>Cabaña</th>
+                <th>Desde</th>
+                <th>Hasta</th>
+                <th>Motivo</th>
+                <th>Descripción</th>
+                <th>Acciones</th>
+              </tr>
+            </thead>
+            <tbody id="bloqueos-tbody">
+              <tr><td colspan="6" style="text-align:center;padding:32px;color:var(--texto-secundario)">Cargando…</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- ======================================================
+           VIEW: ESTADÍSTICAS
+      ====================================================== -->
+      <section class="view" id="view-estadisticas">
+        <div class="stats-section">
+          <div class="section-header">
+            <h2 class="section-title">Ingresos últimos 6 meses</h2>
+          </div>
+          <div class="bar-chart" id="bar-chart-ingresos">
+            <div style="color:var(--texto-secundario);margin:auto;">Cargando…</div>
+          </div>
+        </div>
+
+        <div class="stats-section">
+          <div class="section-header">
+            <h2 class="section-title">Ranking de cabañas</h2>
+          </div>
+          <div class="ranking-list" id="ranking-cabanas">
+            <div style="padding:32px;text-align:center;color:var(--texto-secundario)">Cargando…</div>
+          </div>
+        </div>
+
+        <div class="stats-section">
+          <div class="section-header">
+            <h2 class="section-title">Top 5 días con más reservas</h2>
+          </div>
+          <div class="table-wrapper">
+            <table>
+              <thead>
+                <tr><th>#</th><th>Fecha</th><th>Reservas</th></tr>
+              </thead>
+              <tbody id="top-dias-tbody">
+                <tr><td colspan="3" style="text-align:center;padding:32px;color:var(--texto-secundario)">Cargando…</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+    </main>
+  </div>
+</div>
+
+<!-- ============================================================
+     MODAL: DETALLE / NOTAS DE RESERVA
+============================================================ -->
+<div class="modal-overlay" id="modal-reserva">
+  <div class="modal">
+    <div class="modal-header">
+      <h2 class="modal-title">Detalle de reserva</h2>
+      <button class="modal-close" onclick="closeModal('modal-reserva')">×</button>
+    </div>
+    <div class="modal-body">
+      <div class="detail-grid" id="modal-reserva-detail"></div>
+      <div class="field-group" style="margin-top:8px;">
+        <label>Notas internas (admin)</label>
+        <textarea id="modal-notas-admin" rows="4" placeholder="Notas visibles solo para el administrador…"></textarea>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-ghost" onclick="closeModal('modal-reserva')">Cerrar</button>
+      <button class="btn btn-primary" onclick="guardarNotas()">Guardar notas</button>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================
+     MODAL: CONFIRMAR RESERVA + WHATSAPP
+============================================================ -->
+<div class="modal-overlay" id="modal-confirmar">
+  <div class="modal">
+    <div class="modal-header">
+      <h2 class="modal-title">Confirmar reserva</h2>
+      <button class="modal-close" onclick="closeModal('modal-confirmar')">×</button>
+    </div>
+    <div class="modal-body">
+      <p style="margin-bottom:16px;color:var(--texto-secundario);">
+        Vas a confirmar la reserva de <strong id="conf-nombre"></strong>.<br/>
+        Una vez confirmada, podés notificar al huésped por WhatsApp.
+      </p>
+      <div class="detail-grid" id="modal-confirmar-detail" style="grid-template-columns:1fr 1fr;"></div>
+    </div>
+    <div class="modal-footer" style="flex-wrap:wrap;">
+      <button class="btn btn-ghost" onclick="closeModal('modal-confirmar')">Cancelar</button>
+      <button class="btn btn-wa" id="btn-wa-confirmar" onclick="openWhatsApp()">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M11.975 0C5.372 0 0 5.373 0 11.976c0 2.096.549 4.14 1.587 5.941L0 24l6.285-1.571a11.94 11.94 0 0 0 5.69 1.447c6.603 0 11.975-5.372 11.975-11.975C23.95 5.373 18.578 0 11.975 0zm0 21.808a9.832 9.832 0 0 1-5.012-1.371l-.36-.214-3.729.931.979-3.632-.235-.373A9.832 9.832 0 0 1 2.143 11.976c0-5.424 4.409-9.833 9.832-9.833 5.424 0 9.832 4.409 9.832 9.833 0 5.423-4.408 9.832-9.832 9.832z"/></svg>
+        Avisar por WhatsApp
+      </button>
+      <button class="btn btn-primary" id="btn-confirmar-final" onclick="confirmarReservaFinal()">
+        Confirmar reserva
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================
+     SCRIPT
+============================================================ -->
+<script src="js/supabase-client.js"></script>
+<script>
+'use strict';
+
+/* ============================================================
+   GLOBALS
+============================================================ */
+let currentView       = 'dashboard';
+let reservasData      = [];
+let cabanasList       = [];
+let calYear           = new Date().getFullYear();
+let calMonth          = new Date().getMonth(); // 0-based
+let editingPrecioId   = null;
+let currentReservaId  = null;
+let currentReservaWA  = null;
+let realtimeChannel   = null;
+
+const WA_NUMBER = '5491169495055';
+
+const MESES = [
+  'Enero','Febrero','Marzo','Abril','Mayo','Junio',
+  'Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'
+];
+
+const MESES_CORTO = ['Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Sep','Oct','Nov','Dic'];
+
+/* ============================================================
+   UTILS
+============================================================ */
+function fmtFecha(str) {
+  if (!str) return '—';
+  const d = new Date(str + 'T00:00:00');
+  return `${String(d.getDate()).padStart(2,'0')}/${String(d.getMonth()+1).padStart(2,'0')}/${d.getFullYear()}`;
+}
+
+function fmtPrecio(num) {
+  if (num === null || num === undefined) return '—';
+  return '$' + Number(num).toLocaleString('es-AR', { minimumFractionDigits: 0, maximumFractionDigits: 0 });
+}
+
+function fmtEstado(estado) {
+  const map = {
+    pendiente:  '<span class="badge badge-pendiente">Pendiente</span>',
+    confirmada: '<span class="badge badge-confirmada">Confirmada</span>',
+    cancelada:  '<span class="badge badge-cancelada">Cancelada</span>',
+    completada: '<span class="badge badge-completada">Completada</span>',
+  };
+  return map[estado] || estado;
+}
+
+function toast(msg, type = 'success') {
+  const container = document.getElementById('toast-container');
+  const el = document.createElement('div');
+  el.className = 'toast' + (type === 'error' ? ' toast-error' : type === 'warning' ? ' toast-warning' : '');
+  el.textContent = msg;
+  container.appendChild(el);
+  setTimeout(() => {
+    el.classList.add('removing');
+    setTimeout(() => el.remove(), 300);
+  }, 4000);
+}
+
+function openModal(id) {
+  document.getElementById(id).classList.add('visible');
+}
+
+function closeModal(id) {
+  document.getElementById(id).classList.remove('visible');
+}
+
+function getDB() {
+  if (!window.db) {
+    toast('Supabase no configurado. Editá las keys en admin.html.', 'error');
+    return null;
+  }
+  return window.db;
+}
+
+/* ============================================================
+   AUTH
+============================================================ */
+async function initAuth() {
+  const db = getDB();
+  if (!db) {
+    showLoginScreen();
+    return;
+  }
+
+  const { data: { session } } = await db.auth.getSession();
+  if (session) {
+    showDashboard(session.user);
+  } else {
+    showLoginScreen();
+  }
+
+  db.auth.onAuthStateChange((_event, session) => {
+    if (session) {
+      showDashboard(session.user);
+    } else {
+      showLoginScreen();
+    }
+  });
+}
+
+function showLoginScreen() {
+  document.getElementById('login-screen').classList.remove('hidden');
+  document.getElementById('dashboard').classList.remove('visible');
+  if (realtimeChannel) {
+    const db = getDB();
+    if (db) db.removeChannel(realtimeChannel);
+  }
+}
+
+function showDashboard(user) {
+  document.getElementById('login-screen').classList.add('hidden');
+  document.getElementById('dashboard').classList.add('visible');
+  document.getElementById('admin-email-badge').textContent = user.email || 'Admin';
+  loadCabanas().then(() => {
+    navigateTo('dashboard');
+    initRealtime();
+  });
+}
+
+async function handleLogin(e) {
+  e.preventDefault();
+  const db = getDB();
+  if (!db) return;
+
+  const email    = document.getElementById('login-email').value.trim();
+  const password = document.getElementById('login-password').value;
+  const btn      = document.getElementById('login-btn');
+  const errEl    = document.getElementById('login-error');
+
+  btn.disabled = true;
+  btn.innerHTML = '<span class="spinner"></span>';
+  errEl.classList.remove('visible');
+
+  const { error } = await db.auth.signInWithPassword({ email, password });
+
+  btn.disabled = false;
+  btn.innerHTML = 'Ingresar';
+
+  if (error) {
+    errEl.textContent = 'Credenciales incorrectas. Verificá tu email y contraseña.';
+    errEl.classList.add('visible');
+  }
+}
+
+async function handleLogout() {
+  const db = getDB();
+  if (!db) return;
+  await db.auth.signOut();
+  toast('Sesión cerrada', 'success');
+}
+
+/* ============================================================
+   NAVIGATION
+============================================================ */
+const PAGE_TITLES = {
+  dashboard:    'Dashboard',
+  reservas:     'Reservas',
+  calendario:   'Calendario',
+  precios:      'Precios & Temporadas',
+  bloqueos:     'Bloqueos',
+  estadisticas: 'Estadísticas',
+};
+
+function navigateTo(vista) {
+  // Close sidebar on mobile
+  closeSidebar();
+
+  // Update nav items
+  document.querySelectorAll('.nav-item').forEach(el => {
+    el.classList.toggle('active', el.dataset.view === vista);
+  });
+
+  // Show/hide views
+  document.querySelectorAll('.view').forEach(el => {
+    el.classList.remove('active');
+  });
+  const viewEl = document.getElementById('view-' + vista);
+  if (viewEl) viewEl.classList.add('active');
+
+  document.getElementById('page-title').textContent = PAGE_TITLES[vista] || vista;
+  currentView = vista;
+
+  // Load data
+  switch (vista) {
+    case 'dashboard':    loadDashboard();    break;
+    case 'reservas':     loadReservas();     break;
+    case 'calendario':   loadCalendario();   break;
+    case 'precios':      loadPrecios();      break;
+    case 'bloqueos':     loadBloqueos();     break;
+    case 'estadisticas': loadEstadisticas(); break;
+  }
+}
+
+/* ============================================================
+   SIDEBAR
+============================================================ */
+function toggleSidebar() {
+  document.getElementById('sidebar').classList.toggle('open');
+  document.getElementById('sidebar-overlay').classList.toggle('visible');
+}
+
+function closeSidebar() {
+  document.getElementById('sidebar').classList.remove('open');
+  document.getElementById('sidebar-overlay').classList.remove('visible');
+}
+
+/* ============================================================
+   LOAD CABANAS (global, usado en dropdowns)
+============================================================ */
+async function loadCabanas() {
+  const db = getDB();
+  if (!db) return;
+  const { data, error } = await db.from('cabanas').select('id, nombre, slug').order('orden');
+  if (error || !data) return;
+  cabanasList = data;
+  populateCabanaDropdowns();
+}
+
+function populateCabanaDropdowns() {
+  const dropdowns = [
+    'filtro-cabana',
+    'precio-cabana',
+    'bloqueo-cabana',
+  ];
+  dropdowns.forEach(id => {
+    const el = document.getElementById(id);
+    if (!el) return;
+    const firstOption = el.options[0];
+    el.innerHTML = '';
+    el.appendChild(firstOption);
+    cabanasList.forEach(c => {
+      const opt = document.createElement('option');
+      opt.value = c.id;
+      opt.textContent = c.nombre;
+      el.appendChild(opt);
+    });
+  });
+}
+
+function cabanaName(id) {
+  const c = cabanasList.find(x => x.id === id);
+  return c ? c.nombre : '—';
+}
+
+/* ============================================================
+   VIEW: DASHBOARD
+============================================================ */
+async function loadDashboard() {
+  const db = getDB();
+  if (!db) return;
+
+  const now      = new Date();
+  const year     = now.getFullYear();
+  const month    = String(now.getMonth() + 1).padStart(2, '0');
+  const desde    = `${year}-${month}-01`;
+  const lastDay  = new Date(year, now.getMonth() + 1, 0).getDate();
+  const hasta    = `${year}-${month}-${String(lastDay).padStart(2,'0')}`;
+
+  try {
+    const [rTotal, rConfirmadas, rPendientes] = await Promise.all([
+      db.from('reservas').select('id, estado, precio_total, fecha_checkin, fecha_checkout', { count: 'exact' })
+        .gte('fecha_checkin', desde).lte('fecha_checkin', hasta),
+      db.from('reservas').select('precio_total')
+        .eq('estado', 'confirmada')
+        .gte('fecha_checkin', desde).lte('fecha_checkin', hasta),
+      db.from('reservas').select('id', { count: 'exact' })
+        .eq('estado', 'pendiente')
+        .gte('fecha_checkin', desde).lte('fecha_checkin', hasta),
+    ]);
+
+    // Métricas
+    const totalReservas = rTotal.count || 0;
+    const ingresos = (rConfirmadas.data || []).reduce((acc, r) => acc + Number(r.precio_total || 0), 0);
+    const pendientes = rPendientes.count || 0;
+
+    // Ocupación: noches ocupadas / (3 cabañas * días del mes)
+    const totalDiasMes = lastDay * 3;
+    let nochesOcupadas = 0;
+    (rTotal.data || []).filter(r => r.estado !== 'cancelada').forEach(r => {
+      const ci = new Date(r.fecha_checkin + 'T00:00:00');
+      const co = new Date(r.fecha_checkout + 'T00:00:00');
+      const desdeD = new Date(desde + 'T00:00:00');
+      const hastaD = new Date(hasta + 'T00:00:00');
+      const start = ci < desdeD ? desdeD : ci;
+      const end   = co > hastaD ? hastaD : co;
+      if (end > start) {
+        nochesOcupadas += Math.round((end - start) / 86400000);
+      }
+    });
+    const ocupacion = totalDiasMes > 0 ? Math.round((nochesOcupadas / totalDiasMes) * 100) : 0;
+
+    setMetric('m-total', totalReservas, `${MESES[now.getMonth()]} ${year}`);
+    setMetric('m-ingresos', fmtPrecio(ingresos), 'Reservas confirmadas');
+    setMetric('m-ocupacion', ocupacion + '%', `${nochesOcupadas} noches ocupadas`);
+    setMetric('m-pendientes', pendientes, 'Sin confirmar');
+
+  } catch(err) {
+    toast('Error cargando métricas', 'error');
+    console.error(err);
+  }
+
+  loadUltimasReservas();
+}
+
+function setMetric(id, value, sub) {
+  const el = document.getElementById(id);
+  el.classList.remove('skeleton');
+  el.style.height = '';
+  el.style.width  = '';
+  el.textContent = value;
+  const subEl = document.getElementById(id + '-sub');
+  if (subEl) subEl.textContent = sub || '';
+}
+
+async function loadUltimasReservas() {
+  const db = getDB();
+  if (!db) return;
+  const tbody = document.getElementById('ultimas-reservas-tbody');
+
+  const { data, error } = await db.from('reservas')
+    .select('id, nombre, cabana_id, fecha_checkin, fecha_checkout, precio_total, estado, telefono, personas, noches')
+    .order('created_at', { ascending: false })
+    .limit(5);
+
+  if (error) {
+    tbody.innerHTML = `<tr><td colspan="7" style="text-align:center;padding:24px;color:var(--rojo-ocupado)">Error al cargar reservas</td></tr>`;
+    return;
+  }
+
+  if (!data || data.length === 0) {
+    tbody.innerHTML = `<tr><td colspan="7"><div class="empty-state"><p>No hay reservas aún</p></div></td></tr>`;
+    return;
+  }
+
+  tbody.innerHTML = data.map(r => `
+    <tr>
+      <td><strong>${r.nombre}</strong></td>
+      <td>${cabanaName(r.cabana_id)}</td>
+      <td>${fmtFecha(r.fecha_checkin)}</td>
+      <td>${fmtFecha(r.fecha_checkout)}</td>
+      <td>${fmtPrecio(r.precio_total)}</td>
+      <td>${fmtEstado(r.estado)}</td>
+      <td>
+        ${r.estado === 'pendiente'
+          ? `<button class="btn btn-primary btn-sm" onclick="abrirModalConfirmar('${r.id}')">Confirmar</button>`
+          : `<button class="btn btn-ghost btn-sm" onclick="abrirModalNotas('${r.id}')">Notas</button>`
+        }
+      </td>
+    </tr>
+  `).join('');
+}
+
+/* ============================================================
+   VIEW: RESERVAS
+============================================================ */
+async function loadReservas() {
+  const db = getDB();
+  if (!db) return;
+  const tbody = document.getElementById('reservas-tbody');
+  tbody.innerHTML = `<tr><td colspan="9" style="text-align:center;padding:32px;"><div class="spinner" style="border-color:rgba(0,0,0,.15);border-top-color:var(--verde-salvia);margin:auto;"></div></td></tr>`;
+
+  const { data, error } = await db.from('reservas')
+    .select('id, nombre, email, telefono, cabana_id, fecha_checkin, fecha_checkout, noches, personas, precio_total, estado, notas_admin, notas_huesped')
+    .order('created_at', { ascending: false });
+
+  if (error) {
+    tbody.innerHTML = `<tr><td colspan="9" style="text-align:center;padding:24px;color:var(--rojo-ocupado)">Error al cargar reservas</td></tr>`;
+    return;
+  }
+
+  reservasData = data || [];
+  renderReservasTable(reservasData);
+}
+
+function applyReservaFilters() {
+  const cabana  = document.getElementById('filtro-cabana').value;
+  const estado  = document.getElementById('filtro-estado').value;
+  const busqueda = document.getElementById('filtro-busqueda').value.toLowerCase().trim();
+
+  let filtered = reservasData;
+  if (cabana)   filtered = filtered.filter(r => r.cabana_id === cabana);
+  if (estado)   filtered = filtered.filter(r => r.estado === estado);
+  if (busqueda) filtered = filtered.filter(r =>
+    r.nombre.toLowerCase().includes(busqueda) ||
+    (r.email || '').toLowerCase().includes(busqueda)
+  );
+
+  renderReservasTable(filtered);
+}
+
+function renderReservasTable(data) {
+  const tbody = document.getElementById('reservas-tbody');
+
+  if (!data || data.length === 0) {
+    tbody.innerHTML = `<tr><td colspan="9"><div class="empty-state"><p>No se encontraron reservas</p></div></td></tr>`;
+    return;
+  }
+
+  tbody.innerHTML = data.map(r => `
+    <tr>
+      <td>
+        <div style="font-weight:600;">${r.nombre}</div>
+        <div style="font-size:11px;color:var(--texto-secundario);">${r.email || ''}</div>
+      </td>
+      <td>${cabanaName(r.cabana_id)}</td>
+      <td>${fmtFecha(r.fecha_checkin)}</td>
+      <td>${fmtFecha(r.fecha_checkout)}</td>
+      <td style="text-align:center;">${r.noches ?? '—'}</td>
+      <td style="text-align:center;">${r.personas}</td>
+      <td style="font-weight:600;">${fmtPrecio(r.precio_total)}</td>
+      <td>${fmtEstado(r.estado)}</td>
+      <td>
+        <div style="display:flex;gap:6px;flex-wrap:wrap;">
+          ${r.estado === 'pendiente' ? `<button class="btn btn-primary btn-sm" onclick="abrirModalConfirmar('${r.id}')">Confirmar</button>` : ''}
+          ${r.estado === 'pendiente' || r.estado === 'confirmada'
+            ? `<button class="btn btn-danger btn-sm" onclick="cancelarReserva('${r.id}','${r.nombre.replace(/'/g,"\\'")}')">Cancelar</button>`
+            : ''
+          }
+          <button class="btn btn-ghost btn-sm" onclick="abrirModalNotas('${r.id}')">Notas</button>
+        </div>
+      </td>
+    </tr>
+  `).join('');
+}
+
+async function cancelarReserva(id, nombre) {
+  const confirmed = confirm(`¿Cancelar la reserva de ${nombre}? Esta acción no se puede deshacer.`);
+  if (!confirmed) return;
+  await updateEstado(id, 'cancelada');
+}
+
+async function updateEstado(reservaId, nuevoEstado) {
+  const db = getDB();
+  if (!db) return;
+
+  const extra = {};
+  if (nuevoEstado === 'confirmada') extra.confirmada_at = new Date().toISOString();
+  if (nuevoEstado === 'cancelada')  extra.cancelada_at  = new Date().toISOString();
+
+  const { error } = await db.from('reservas')
+    .update({ estado: nuevoEstado, ...extra })
+    .eq('id', reservaId);
+
+  if (error) {
+    toast('Error al actualizar el estado', 'error');
+    console.error(error);
+    return;
+  }
+
+  toast(`Reserva ${nuevoEstado} correctamente`);
+  closeModal('modal-confirmar');
+
+  if (currentView === 'reservas') loadReservas();
+  if (currentView === 'dashboard') loadDashboard();
+  if (currentView === 'calendario') loadCalendario();
+}
+
+/* ============================================================
+   MODAL: NOTAS
+============================================================ */
+async function abrirModalNotas(reservaId) {
+  const db = getDB();
+  if (!db) return;
+  currentReservaId = reservaId;
+
+  const { data: r, error } = await db.from('reservas')
+    .select('*')
+    .eq('id', reservaId)
+    .single();
+
+  if (error || !r) { toast('Error al cargar reserva', 'error'); return; }
+
+  document.getElementById('modal-reserva-detail').innerHTML = `
+    <div class="detail-item"><label>Huésped</label><span>${r.nombre}</span></div>
+    <div class="detail-item"><label>Email</label><span>${r.email}</span></div>
+    <div class="detail-item"><label>Teléfono</label><span>${r.telefono}</span></div>
+    <div class="detail-item"><label>Cabaña</label><span>${cabanaName(r.cabana_id)}</span></div>
+    <div class="detail-item"><label>Check-in</label><span>${fmtFecha(r.fecha_checkin)}</span></div>
+    <div class="detail-item"><label>Check-out</label><span>${fmtFecha(r.fecha_checkout)}</span></div>
+    <div class="detail-item"><label>Noches</label><span>${r.noches}</span></div>
+    <div class="detail-item"><label>Personas</label><span>${r.personas}</span></div>
+    <div class="detail-item"><label>Total</label><span>${fmtPrecio(r.precio_total)}</span></div>
+    <div class="detail-item"><label>Estado</label><span>${r.estado}</span></div>
+    ${r.notas_huesped ? `<div class="detail-item" style="grid-column:1/-1"><label>Notas del huésped</label><span>${r.notas_huesped}</span></div>` : ''}
+  `;
+
+  document.getElementById('modal-notas-admin').value = r.notas_admin || '';
+  openModal('modal-reserva');
+}
+
+async function guardarNotas() {
+  const db = getDB();
+  if (!db || !currentReservaId) return;
+  const notas = document.getElementById('modal-notas-admin').value;
+
+  const { error } = await db.from('reservas')
+    .update({ notas_admin: notas })
+    .eq('id', currentReservaId);
+
+  if (error) { toast('Error al guardar notas', 'error'); return; }
+  toast('Notas guardadas');
+  closeModal('modal-reserva');
+  if (currentView === 'reservas') loadReservas();
+}
+
+/* ============================================================
+   MODAL: CONFIRMAR + WHATSAPP
+============================================================ */
+async function abrirModalConfirmar(reservaId) {
+  const db = getDB();
+  if (!db) return;
+  currentReservaId = reservaId;
+
+  const { data: r, error } = await db.from('reservas')
+    .select('*').eq('id', reservaId).single();
+  if (error || !r) { toast('Error al cargar reserva', 'error'); return; }
+
+  currentReservaWA = r;
+
+  document.getElementById('conf-nombre').textContent = r.nombre;
+  document.getElementById('modal-confirmar-detail').innerHTML = `
+    <div class="detail-item"><label>Cabaña</label><span>${cabanaName(r.cabana_id)}</span></div>
+    <div class="detail-item"><label>Teléfono</label><span>${r.telefono}</span></div>
+    <div class="detail-item"><label>Check-in</label><span>${fmtFecha(r.fecha_checkin)}</span></div>
+    <div class="detail-item"><label>Check-out</label><span>${fmtFecha(r.fecha_checkout)}</span></div>
+    <div class="detail-item"><label>Noches</label><span>${r.noches}</span></div>
+    <div class="detail-item"><label>Total</label><span>${fmtPrecio(r.precio_total)}</span></div>
+  `;
+
+  openModal('modal-confirmar');
+}
+
+function openWhatsApp() {
+  if (!currentReservaWA) return;
+  const r = currentReservaWA;
+  const msg = encodeURIComponent(
+    `¡Hola ${r.nombre}! 🌿 Te confirmo tu reserva en *Aromas de Campo*.\n\n` +
+    `🏡 Cabaña: ${cabanaName(r.cabana_id)}\n` +
+    `📅 Check-in: ${fmtFecha(r.fecha_checkin)}\n` +
+    `📅 Check-out: ${fmtFecha(r.fecha_checkout)}\n` +
+    `🌙 Noches: ${r.noches}\n` +
+    `💰 Total: ${fmtPrecio(r.precio_total)}\n\n` +
+    `Cualquier consulta, estamos a tu disposición. ¡Hasta pronto!`
+  );
+  window.open(`https://wa.me/${WA_NUMBER}?text=${msg}`, '_blank');
+}
+
+async function confirmarReservaFinal() {
+  await updateEstado(currentReservaId, 'confirmada');
+}
+
+/* ============================================================
+   VIEW: CALENDARIO
+============================================================ */
+function calPrev() {
+  calMonth--;
+  if (calMonth < 0) { calMonth = 11; calYear--; }
+  loadCalendario();
+}
+
+function calNext() {
+  calMonth++;
+  if (calMonth > 11) { calMonth = 0; calYear++; }
+  loadCalendario();
+}
+
+async function loadCalendario() {
+  const db = getDB();
+  if (!db) return;
+
+  document.getElementById('mes-display').textContent = `${MESES[calMonth]} ${calYear}`;
+
+  const diasMes = new Date(calYear, calMonth + 1, 0).getDate();
+  const desde = `${calYear}-${String(calMonth + 1).padStart(2,'0')}-01`;
+  const hasta = `${calYear}-${String(calMonth + 1).padStart(2,'0')}-${String(diasMes).padStart(2,'0')}`;
+
+  // Head
+  const thead = document.getElementById('cal-thead');
+  const today = new Date();
+  thead.innerHTML = '<tr><th style="min-width:100px;text-align:left;padding-left:12px;">Cabaña</th>' +
+    Array.from({ length: diasMes }, (_, i) => {
+      const d = i + 1;
+      const isToday = (today.getFullYear() === calYear && today.getMonth() === calMonth && today.getDate() === d);
+      return `<th class="${isToday ? 'dia-hoy' : ''}">${d}</th>`;
+    }).join('') + '</tr>';
+
+  // Fetch
+  const [rReservas, rBloqueos] = await Promise.all([
+    db.from('reservas').select('id, cabana_id, nombre, fecha_checkin, fecha_checkout, estado')
+      .neq('estado', 'cancelada')
+      .lte('fecha_checkin', hasta)
+      .gte('fecha_checkout', desde),
+    db.from('bloqueos').select('id, cabana_id, fecha_desde, fecha_hasta, motivo')
+      .lte('fecha_desde', hasta)
+      .gte('fecha_hasta', desde),
+  ]);
+
+  const reservas = rReservas.data || [];
+  const bloqueos = rBloqueos.data || [];
+
+  // Build tbody
+  const tbody = document.getElementById('cal-tbody');
+  tbody.innerHTML = '';
+
+  cabanasList.forEach(cabana => {
+    const tr = document.createElement('tr');
+
+    const tdLabel = document.createElement('td');
+    tdLabel.className = 'cabana-label';
+    tdLabel.textContent = cabana.nombre;
+    tr.appendChild(tdLabel);
+
+    for (let d = 1; d <= diasMes; d++) {
+      const fechaStr = `${calYear}-${String(calMonth + 1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
+      const fecha = new Date(fechaStr + 'T00:00:00');
+
+      // Check bloqueos
+      const bloqueo = bloqueos.find(b =>
+        (b.cabana_id === cabana.id || b.cabana_id === null) &&
+        new Date(b.fecha_desde + 'T00:00:00') <= fecha &&
+        new Date(b.fecha_hasta + 'T00:00:00') >= fecha
+      );
+
+      // Check reservas
+      const reserva = reservas.find(r =>
+        r.cabana_id === cabana.id &&
+        new Date(r.fecha_checkin + 'T00:00:00') <= fecha &&
+        new Date(r.fecha_checkout + 'T00:00:00') > fecha
+      );
+
+      const td = document.createElement('td');
+      const div = document.createElement('div');
+      div.className = 'cal-cell';
+
+      if (bloqueo) {
+        div.classList.add('bloqueado');
+        div.setAttribute('data-tip', `Bloqueado: ${bloqueo.motivo}`);
+        div.textContent = '🔒';
+      } else if (reserva) {
+        div.classList.add(reserva.estado);
+        div.setAttribute('data-tip', `${reserva.nombre}\n${fmtFecha(reserva.fecha_checkin)} → ${fmtFecha(reserva.fecha_checkout)}\n${reserva.estado}`);
+        div.textContent = reserva.estado === 'pendiente' ? '⏳' : '✓';
+      } else {
+        div.classList.add('libre');
+        div.setAttribute('data-tip', 'Libre — clic para bloquear');
+        div.addEventListener('click', () => crearBloqueoRapido(cabana.id, fechaStr));
+      }
+
+      td.appendChild(div);
+      tr.appendChild(td);
+    }
+
+    tbody.appendChild(tr);
+  });
+}
+
+async function crearBloqueoRapido(cabanaId, fecha) {
+  const db = getDB();
+  if (!db) return;
+  const ok = confirm(`¿Bloquear ${cabanaName(cabanaId)} el ${fmtFecha(fecha)}?`);
+  if (!ok) return;
+
+  const { error } = await db.from('bloqueos').insert({
+    cabana_id:   cabanaId,
+    fecha_desde: fecha,
+    fecha_hasta: fecha,
+    motivo:      'mantenimiento',
+  });
+
+  if (error) { toast('Error al crear bloqueo', 'error'); return; }
+  toast('Día bloqueado');
+  loadCalendario();
+}
+
+/* ============================================================
+   VIEW: PRECIOS
+============================================================ */
+async function loadPrecios() {
+  const db = getDB();
+  if (!db) return;
+  const tbody = document.getElementById('precios-tbody');
+
+  const { data, error } = await db.from('precios_temporada')
+    .select('*')
+    .eq('activo', true)
+    .order('fecha_desde');
+
+  if (error) {
+    tbody.innerHTML = `<tr><td colspan="7" style="text-align:center;color:var(--rojo-ocupado);padding:24px;">Error al cargar</td></tr>`;
+    return;
+  }
+
+  if (!data || data.length === 0) {
+    tbody.innerHTML = `<tr><td colspan="7"><div class="empty-state"><p>No hay temporadas configuradas</p></div></td></tr>`;
+    return;
+  }
+
+  tbody.innerHTML = data.map(p => `
+    <tr>
+      <td><strong>${p.nombre}</strong></td>
+      <td>${fmtFecha(p.fecha_desde)}</td>
+      <td>${fmtFecha(p.fecha_hasta)}</td>
+      <td>${fmtPrecio(p.precio_noche)}</td>
+      <td>${p.cabana_id ? cabanaName(p.cabana_id) : '<em style="color:var(--texto-secundario)">Todas</em>'}</td>
+      <td style="text-align:center;">${p.prioridad}</td>
+      <td>
+        <div style="display:flex;gap:6px;">
+          <button class="btn btn-ghost btn-sm" onclick="editarPrecio(${JSON.stringify(p).replace(/"/g,'&quot;')})">Editar</button>
+          <button class="btn btn-danger btn-sm" onclick="eliminarPrecio('${p.id}','${p.nombre.replace(/'/g,"\\'")}')">Eliminar</button>
+        </div>
+      </td>
+    </tr>
+  `).join('');
+}
+
+function editarPrecio(p) {
+  editingPrecioId = p.id;
+  document.getElementById('precio-nombre').value     = p.nombre;
+  document.getElementById('precio-cabana').value     = p.cabana_id || '';
+  document.getElementById('precio-desde').value      = p.fecha_desde;
+  document.getElementById('precio-hasta').value      = p.fecha_hasta;
+  document.getElementById('precio-noche').value      = p.precio_noche;
+  document.getElementById('precio-prioridad').value  = p.prioridad;
+  document.getElementById('precio-form-title').textContent = 'Editar temporada';
+  document.getElementById('precio-cancelar-edit').style.display = '';
+  document.getElementById('precio-form-container').scrollIntoView({ behavior: 'smooth' });
+}
+
+function cancelarEditPrecio() {
+  editingPrecioId = null;
+  document.getElementById('precio-nombre').value    = '';
+  document.getElementById('precio-cabana').value    = '';
+  document.getElementById('precio-desde').value     = '';
+  document.getElementById('precio-hasta').value     = '';
+  document.getElementById('precio-noche').value     = '';
+  document.getElementById('precio-prioridad').value = '0';
+  document.getElementById('precio-form-title').textContent = 'Nueva temporada';
+  document.getElementById('precio-cancelar-edit').style.display = 'none';
+}
+
+async function guardarPrecio() {
+  const db = getDB();
+  if (!db) return;
+
+  const nombre      = document.getElementById('precio-nombre').value.trim();
+  const cabana_id   = document.getElementById('precio-cabana').value || null;
+  const fecha_desde = document.getElementById('precio-desde').value;
+  const fecha_hasta = document.getElementById('precio-hasta').value;
+  const precio_noche = parseFloat(document.getElementById('precio-noche').value);
+  const prioridad   = parseInt(document.getElementById('precio-prioridad').value) || 0;
+
+  if (!nombre || !fecha_desde || !fecha_hasta || isNaN(precio_noche)) {
+    toast('Completá todos los campos requeridos', 'warning');
+    return;
+  }
+
+  if (fecha_hasta < fecha_desde) {
+    toast('La fecha hasta debe ser posterior a la fecha desde', 'warning');
+    return;
+  }
+
+  const payload = { nombre, cabana_id, fecha_desde, fecha_hasta, precio_noche, prioridad, activo: true };
+  let error;
+
+  if (editingPrecioId) {
+    ({ error } = await db.from('precios_temporada').update(payload).eq('id', editingPrecioId));
+  } else {
+    ({ error } = await db.from('precios_temporada').insert(payload));
+  }
+
+  if (error) { toast('Error al guardar temporada', 'error'); console.error(error); return; }
+
+  toast(editingPrecioId ? 'Temporada actualizada' : 'Temporada creada');
+  cancelarEditPrecio();
+  loadPrecios();
+}
+
+async function eliminarPrecio(id, nombre) {
+  const ok = confirm(`¿Eliminar la temporada "${nombre}"?`);
+  if (!ok) return;
+  const db = getDB();
+  if (!db) return;
+
+  const { error } = await db.from('precios_temporada').update({ activo: false }).eq('id', id);
+  if (error) { toast('Error al eliminar', 'error'); return; }
+  toast('Temporada eliminada');
+  loadPrecios();
+}
+
+/* ============================================================
+   VIEW: BLOQUEOS
+============================================================ */
+async function loadBloqueos() {
+  const db = getDB();
+  if (!db) return;
+  const tbody = document.getElementById('bloqueos-tbody');
+
+  const { data, error } = await db.from('bloqueos')
+    .select('*')
+    .order('fecha_desde', { ascending: false });
+
+  if (error) {
+    tbody.innerHTML = `<tr><td colspan="6" style="text-align:center;color:var(--rojo-ocupado);padding:24px;">Error al cargar</td></tr>`;
+    return;
+  }
+
+  if (!data || data.length === 0) {
+    tbody.innerHTML = `<tr><td colspan="6"><div class="empty-state"><p>No hay bloqueos activos</p></div></td></tr>`;
+    return;
+  }
+
+  const motivoLabel = { mantenimiento: 'Mantenimiento', uso_personal: 'Uso personal', otro: 'Otro' };
+
+  tbody.innerHTML = data.map(b => `
+    <tr>
+      <td>${b.cabana_id ? cabanaName(b.cabana_id) : '<em style="color:var(--texto-secundario)">Todas</em>'}</td>
+      <td>${fmtFecha(b.fecha_desde)}</td>
+      <td>${fmtFecha(b.fecha_hasta)}</td>
+      <td><span class="badge badge-completada">${motivoLabel[b.motivo] || b.motivo}</span></td>
+      <td style="color:var(--texto-secundario);font-size:12px;">${b.descripcion || '—'}</td>
+      <td>
+        <button class="btn btn-danger btn-sm" onclick="eliminarBloqueo('${b.id}')">Eliminar</button>
+      </td>
+    </tr>
+  `).join('');
+}
+
+async function crearBloqueo() {
+  const db = getDB();
+  if (!db) return;
+
+  const cabana_id   = document.getElementById('bloqueo-cabana').value || null;
+  const fecha_desde = document.getElementById('bloqueo-desde').value;
+  const fecha_hasta = document.getElementById('bloqueo-hasta').value;
+  const motivo      = document.getElementById('bloqueo-motivo').value;
+  const descripcion = document.getElementById('bloqueo-desc').value.trim() || null;
+
+  if (!fecha_desde || !fecha_hasta) {
+    toast('Seleccioná las fechas del bloqueo', 'warning');
+    return;
+  }
+
+  if (fecha_hasta < fecha_desde) {
+    toast('La fecha hasta debe ser igual o posterior a la fecha desde', 'warning');
+    return;
+  }
+
+  const { error } = await db.from('bloqueos').insert({ cabana_id, fecha_desde, fecha_hasta, motivo, descripcion });
+  if (error) { toast('Error al crear bloqueo', 'error'); console.error(error); return; }
+
+  toast('Bloqueo creado');
+  document.getElementById('bloqueo-desde').value = '';
+  document.getElementById('bloqueo-hasta').value = '';
+  document.getElementById('bloqueo-desc').value  = '';
+  loadBloqueos();
+}
+
+async function eliminarBloqueo(id) {
+  const ok = confirm('¿Eliminar este bloqueo?');
+  if (!ok) return;
+  const db = getDB();
+  if (!db) return;
+
+  const { error } = await db.from('bloqueos').delete().eq('id', id);
+  if (error) { toast('Error al eliminar', 'error'); return; }
+  toast('Bloqueo eliminado');
+  loadBloqueos();
+  if (currentView === 'calendario') loadCalendario();
+}
+
+/* ============================================================
+   VIEW: ESTADÍSTICAS
+============================================================ */
+async function loadEstadisticas() {
+  const db = getDB();
+  if (!db) return;
+
+  const now = new Date();
+
+  // Últimos 6 meses
+  const meses6 = [];
+  for (let i = 5; i >= 0; i--) {
+    const d = new Date(now.getFullYear(), now.getMonth() - i, 1);
+    meses6.push({ year: d.getFullYear(), month: d.getMonth() });
+  }
+
+  // Fetch todas las reservas confirmadas del año en curso y anterior
+  const yearStart = `${now.getFullYear() - 1}-01-01`;
+  const { data: reservasAll, error } = await db.from('reservas')
+    .select('cabana_id, fecha_checkin, precio_total, noches')
+    .in('estado', ['confirmada', 'completada'])
+    .gte('fecha_checkin', yearStart);
+
+  if (error) { toast('Error cargando estadísticas', 'error'); return; }
+  const data = reservasAll || [];
+
+  // --- Bar chart ingresos por mes ---
+  const ingresosPorMes = meses6.map(({ year, month }) => {
+    const total = data
+      .filter(r => {
+        const d = new Date(r.fecha_checkin + 'T00:00:00');
+        return d.getFullYear() === year && d.getMonth() === month;
+      })
+      .reduce((acc, r) => acc + Number(r.precio_total || 0), 0);
+    return { label: MESES_CORTO[month] + ' ' + year, total };
+  });
+
+  const maxIngreso = Math.max(...ingresosPorMes.map(m => m.total), 1);
+  const chartEl = document.getElementById('bar-chart-ingresos');
+  chartEl.innerHTML = ingresosPorMes.map(m => {
+    const pct = Math.round((m.total / maxIngreso) * 100);
+    return `
+      <div class="bar-col">
+        <div class="bar-value">${m.total > 0 ? fmtPrecio(m.total) : ''}</div>
+        <div class="bar-fill" style="height:${Math.max(pct, 2)}%;"></div>
+        <div class="bar-label">${m.label}</div>
+      </div>
+    `;
+  }).join('');
+
+  // --- Ranking cabañas ---
+  const rankingMap = {};
+  cabanasList.forEach(c => { rankingMap[c.id] = { nombre: c.nombre, noches: 0, total: 0 }; });
+  data.forEach(r => {
+    if (rankingMap[r.cabana_id]) {
+      rankingMap[r.cabana_id].noches += Number(r.noches || 0);
+      rankingMap[r.cabana_id].total  += Number(r.precio_total || 0);
+    }
+  });
+
+  const ranking = Object.values(rankingMap).sort((a, b) => b.total - a.total);
+  document.getElementById('ranking-cabanas').innerHTML = ranking.map((c, i) => `
+    <div class="ranking-item">
+      <div class="ranking-num">${i + 1}</div>
+      <div class="ranking-info">
+        <div class="ranking-name">${c.nombre}</div>
+        <div class="ranking-meta">${c.noches} noches vendidas</div>
+      </div>
+      <div class="ranking-total">${fmtPrecio(c.total)}</div>
+    </div>
+  `).join('');
+
+  // --- Top 5 días con más reservas ---
+  const diasMap = {};
+  data.forEach(r => {
+    const key = r.fecha_checkin;
+    diasMap[key] = (diasMap[key] || 0) + 1;
+  });
+
+  const topDias = Object.entries(diasMap)
+    .sort((a, b) => b[1] - a[1])
+    .slice(0, 5);
+
+  document.getElementById('top-dias-tbody').innerHTML = topDias.length
+    ? topDias.map(([fecha, count], i) => `
+        <tr>
+          <td>${i + 1}</td>
+          <td>${fmtFecha(fecha)}</td>
+          <td><strong>${count}</strong> reserva${count > 1 ? 's' : ''}</td>
+        </tr>
+      `).join('')
+    : `<tr><td colspan="3" style="text-align:center;padding:24px;color:var(--texto-secundario)">Sin datos suficientes</td></tr>`;
+}
+
+/* ============================================================
+   REALTIME
+============================================================ */
+function initRealtime() {
+  const db = getDB();
+  if (!db) return;
+
+  realtimeChannel = db.channel('admin-reservas')
+    .on('postgres_changes', {
+      event:  'INSERT',
+      schema: 'public',
+      table:  'reservas'
+    }, (payload) => {
+      const r = payload.new;
+      toast(`Nueva reserva de ${r.nombre} (${cabanaName(r.cabana_id)}) — ${fmtFecha(r.fecha_checkin)}`);
+      if (currentView === 'dashboard') loadDashboard();
+      if (currentView === 'reservas')  loadReservas();
+    })
+    .on('postgres_changes', {
+      event:  'UPDATE',
+      schema: 'public',
+      table:  'reservas'
+    }, () => {
+      if (currentView === 'dashboard') loadDashboard();
+      if (currentView === 'reservas')  loadReservas();
+    })
+    .subscribe();
+}
+
+/* ============================================================
+   INIT
+============================================================ */
+document.addEventListener('DOMContentLoaded', initAuth);
+</script>
+</body>
+</html>

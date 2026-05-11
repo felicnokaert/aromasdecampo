@@ -1,0 +1,1186 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Reservar — Aromas de Campo</title>
+  <meta name="description" content="Consultá disponibilidad y reservá tu cabaña en Aromas de Campo, Colón, Entre Ríos.">
+  <link rel="icon" type="image/png" href="logo/favicon-dark.png" media="(prefers-color-scheme: light)">
+  <link rel="icon" type="image/png" href="logo/favicon.png" media="(prefers-color-scheme: dark)">
+  <link rel="icon" type="image/png" href="logo/favicon-dark.png">
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+
+  <!-- Supabase -->
+  <script>
+    window.SUPABASE_URL      = 'https://XXXXXXXX.supabase.co';
+    window.SUPABASE_ANON_KEY = 'eyJ...';
+    // ⚠️ Reemplazá estos valores con los de tu proyecto Supabase:
+    // Dashboard → Settings → API → Project URL y anon public key
+  </script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="js/supabase-client.js"></script>
+
+  <style>
+    :root {
+      --verde-salvia:    #7A8C72;
+      --beige-arena:     #C8B89A;
+      --fondo-crema:     #F5EFE4;
+      --fondo-oscuro:    #1C2B1E;
+      --blanco-calido:   #FAFAF7;
+      --texto-principal: #1E1E1E;
+      --texto-secundario:#6B6B6B;
+      --whatsapp-verde:  #25D366;
+      --footer-oscuro:   #111A12;
+      --beige-claro:     #F0EBE1;
+      --rojo-ocupado:    #C0392B;
+      --amarillo-pend:   #E6A817;
+      --gris-bloq:       #95A5A6;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--fondo-crema);
+      color: var(--texto-principal);
+      line-height: 1.6;
+    }
+
+    /* ---- NAVBAR (igual al index) ---- */
+    #navbar {
+      position: sticky; top: 0; z-index: 900;
+      padding: 0.75rem 2rem;
+      display: flex; align-items: center; justify-content: space-between;
+      background-color: rgba(180,152,112,0.95);
+      backdrop-filter: blur(8px);
+      box-shadow: 0 2px 20px rgba(0,0,0,0.1);
+    }
+    .nav-logo { display: flex; align-items: center; gap: 0.75rem; text-decoration: none; }
+    .nav-logo img { height: 56px; width: auto; }
+    .nav-volver {
+      font-size: 0.875rem; font-weight: 500;
+      color: rgba(250,250,247,0.9); text-decoration: none;
+      display: flex; align-items: center; gap: 0.4rem;
+      transition: color 0.2s;
+    }
+    .nav-volver:hover { color: #fff; }
+
+    /* ---- HERO RESERVAS ---- */
+    #hero-reservas {
+      background: var(--fondo-oscuro);
+      padding: 3.5rem 2rem 3rem;
+      text-align: center;
+    }
+    .hero-res-titulo {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(1.75rem, 4vw, 2.75rem);
+      color: var(--blanco-calido);
+      margin-bottom: 0.75rem;
+    }
+    .hero-res-sub {
+      color: rgba(250,250,247,0.7);
+      font-size: 1rem;
+      max-width: 480px;
+      margin: 0 auto;
+    }
+
+    /* ---- BOOKING WIDGET ---- */
+    #booking-widget {
+      max-width: 860px;
+      margin: -2rem auto 4rem;
+      padding: 0 1.5rem;
+    }
+
+    /* Steps indicator */
+    .steps-bar {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0;
+      margin-bottom: 2rem;
+      background: #fff;
+      border-radius: 12px 12px 0 0;
+      overflow: hidden;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.07);
+    }
+    .step-tab {
+      flex: 1;
+      padding: 1rem;
+      text-align: center;
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: var(--texto-secundario);
+      background: #fff;
+      border-bottom: 3px solid transparent;
+      transition: all 0.25s;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+    }
+    .step-tab.activo {
+      color: var(--verde-salvia);
+      border-bottom-color: var(--verde-salvia);
+    }
+    .step-tab.completado {
+      color: var(--verde-salvia);
+    }
+
+    /* Panel de cada step */
+    .step-panel {
+      display: none;
+      background: #fff;
+      border-radius: 0 0 12px 12px;
+      box-shadow: 0 4px 24px rgba(0,0,0,0.08);
+      padding: 2rem;
+    }
+    .step-panel.activo { display: block; }
+
+    /* ---- STEP 1: CABAÑA + FECHAS ---- */
+    .cabanas-selector {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 1rem;
+      margin-bottom: 2rem;
+    }
+    .cabana-card-sel {
+      border: 2px solid #e8e8e8;
+      border-radius: 10px;
+      overflow: hidden;
+      cursor: pointer;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+    .cabana-card-sel:hover { border-color: var(--verde-salvia); }
+    .cabana-card-sel.seleccionada {
+      border-color: var(--verde-salvia);
+      box-shadow: 0 0 0 3px rgba(122,140,114,0.2);
+    }
+    .cabana-card-sel img {
+      width: 100%; height: 130px; object-fit: cover;
+      background: linear-gradient(135deg, var(--verde-salvia), var(--fondo-oscuro));
+    }
+    .cabana-card-info { padding: 0.875rem; }
+    .cabana-card-nombre {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.1rem; font-weight: 700;
+      margin-bottom: 0.2rem;
+    }
+    .cabana-card-precio {
+      font-size: 0.8rem; color: var(--texto-secundario);
+    }
+    .cabana-card-precio strong {
+      font-size: 1rem; color: var(--verde-salvia);
+    }
+    .cabana-check-icon {
+      display: none;
+      position: absolute; top: 8px; right: 8px;
+      background: var(--verde-salvia);
+      color: #fff; width: 24px; height: 24px;
+      border-radius: 50%; font-size: 13px;
+      align-items: center; justify-content: center;
+    }
+    .cabana-card-sel { position: relative; }
+    .cabana-card-sel.seleccionada .cabana-check-icon { display: flex; }
+
+    .fechas-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+      margin-bottom: 1.5rem;
+    }
+    @media (max-width: 480px) { .fechas-row { grid-template-columns: 1fr; } }
+
+    .campo-grupo { display: flex; flex-direction: column; gap: 0.4rem; }
+    .campo-grupo label {
+      font-size: 0.8rem; font-weight: 600;
+      text-transform: uppercase; letter-spacing: 0.06em;
+      color: var(--texto-secundario);
+    }
+    .campo-grupo input, .campo-grupo select, .campo-grupo textarea {
+      padding: 0.75rem 1rem;
+      border: 2px solid #e8e8e8;
+      border-radius: 8px;
+      font-family: 'Inter', sans-serif;
+      font-size: 0.9rem;
+      color: var(--texto-principal);
+      transition: border-color 0.2s;
+      background: #fff;
+      width: 100%;
+    }
+    .campo-grupo input:focus, .campo-grupo select:focus, .campo-grupo textarea:focus {
+      outline: none;
+      border-color: var(--verde-salvia);
+    }
+    .campo-grupo textarea { resize: vertical; min-height: 100px; }
+
+    /* ---- STEP 2: CALENDARIO ---- */
+    .calendario-wrapper {
+      margin-bottom: 1.5rem;
+    }
+    .cal-nav {
+      display: flex; align-items: center; justify-content: space-between;
+      margin-bottom: 1rem;
+    }
+    .cal-mes-titulo {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.2rem; font-weight: 700;
+      text-transform: capitalize;
+    }
+    .cal-btn-nav {
+      width: 36px; height: 36px;
+      border: 2px solid #e8e8e8;
+      border-radius: 50%; background: #fff;
+      cursor: pointer; font-size: 1rem;
+      display: flex; align-items: center; justify-content: center;
+      transition: border-color 0.2s, background 0.2s;
+    }
+    .cal-btn-nav:hover { border-color: var(--verde-salvia); background: var(--fondo-crema); }
+
+    .cal-grid {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      gap: 3px;
+    }
+    .cal-dia-nombre {
+      text-align: center;
+      font-size: 0.7rem; font-weight: 600;
+      color: var(--texto-secundario);
+      padding: 0.4rem 0;
+      text-transform: uppercase; letter-spacing: 0.05em;
+    }
+    .cal-dia {
+      aspect-ratio: 1;
+      display: flex; align-items: center; justify-content: center;
+      border-radius: 6px;
+      font-size: 0.8rem; font-weight: 500;
+      cursor: pointer;
+      transition: background 0.15s, color 0.15s;
+      border: 2px solid transparent;
+      position: relative;
+    }
+    .cal-dia.vacio { cursor: default; }
+    .cal-dia.pasado {
+      color: #ccc;
+      cursor: not-allowed;
+    }
+    .cal-dia.libre:hover {
+      background: rgba(122,140,114,0.15);
+      border-color: var(--verde-salvia);
+    }
+    .cal-dia.ocupado {
+      background: rgba(192,57,43,0.08);
+      color: var(--rojo-ocupado);
+      cursor: not-allowed;
+      text-decoration: line-through;
+    }
+    .cal-dia.bloqueado {
+      background: rgba(149,165,166,0.15);
+      color: var(--gris-bloq);
+      cursor: not-allowed;
+    }
+    .cal-dia.checkin-sel {
+      background: var(--verde-salvia) !important;
+      color: #fff !important;
+      border-color: var(--verde-salvia) !important;
+    }
+    .cal-dia.checkout-sel {
+      background: var(--fondo-oscuro) !important;
+      color: #fff !important;
+      border-color: var(--fondo-oscuro) !important;
+    }
+    .cal-dia.en-rango {
+      background: rgba(122,140,114,0.12);
+      border-color: rgba(122,140,114,0.2);
+    }
+
+    /* Leyenda */
+    .cal-leyenda {
+      display: flex; flex-wrap: wrap; gap: 1rem;
+      margin-top: 1rem; font-size: 0.78rem; color: var(--texto-secundario);
+    }
+    .leyenda-item { display: flex; align-items: center; gap: 0.4rem; }
+    .leyenda-dot {
+      width: 12px; height: 12px; border-radius: 3px;
+    }
+    .dot-libre    { background: rgba(122,140,114,0.3); border: 2px solid var(--verde-salvia); }
+    .dot-ocupado  { background: rgba(192,57,43,0.15); }
+    .dot-bloq     { background: rgba(149,165,166,0.3); }
+    .dot-sel      { background: var(--verde-salvia); }
+
+    /* Badge alta demanda */
+    .badge-demanda {
+      display: none;
+      align-items: center; gap: 0.5rem;
+      background: rgba(230,168,23,0.12);
+      border: 1px solid rgba(230,168,23,0.4);
+      color: #a07009;
+      padding: 0.5rem 1rem;
+      border-radius: 8px;
+      font-size: 0.85rem; font-weight: 500;
+      margin-bottom: 1rem;
+    }
+    .badge-demanda.visible { display: flex; }
+
+    /* Resumen de precio */
+    .resumen-precio {
+      background: var(--fondo-crema);
+      border-radius: 10px;
+      padding: 1.25rem;
+      margin-top: 1.5rem;
+      display: none;
+    }
+    .resumen-precio.visible { display: block; }
+    .resumen-row {
+      display: flex; justify-content: space-between;
+      font-size: 0.9rem;
+      padding: 0.3rem 0;
+      border-bottom: 1px solid rgba(0,0,0,0.06);
+    }
+    .resumen-row:last-child { border: none; }
+    .resumen-total {
+      font-weight: 700; font-size: 1.1rem;
+      color: var(--verde-salvia);
+    }
+
+    /* ---- STEP 3: FORMULARIO CONTACTO ---- */
+    .campos-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+      margin-bottom: 1.25rem;
+    }
+    @media (max-width: 560px) { .campos-grid { grid-template-columns: 1fr; } }
+
+    .campo-full { grid-column: 1 / -1; }
+
+    /* Resumen final antes de enviar */
+    .resumen-final {
+      background: var(--fondo-oscuro);
+      color: var(--blanco-calido);
+      border-radius: 10px;
+      padding: 1.25rem;
+      margin: 1.5rem 0;
+    }
+    .resumen-final h3 {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.1rem;
+      margin-bottom: 0.75rem;
+    }
+    .resumen-final .resumen-row {
+      color: rgba(250,250,247,0.8);
+      border-bottom-color: rgba(255,255,255,0.1);
+    }
+    .resumen-final .resumen-total { color: var(--beige-arena); }
+
+    /* ---- CONFIRMACIÓN ---- */
+    #confirmacion {
+      display: none;
+      text-align: center;
+      padding: 3rem 2rem;
+      background: #fff;
+      border-radius: 12px;
+      box-shadow: 0 4px 24px rgba(0,0,0,0.08);
+    }
+    #confirmacion .conf-icono {
+      font-size: 3rem; margin-bottom: 1rem;
+    }
+    #confirmacion h2 {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.75rem;
+      margin-bottom: 0.75rem;
+    }
+    #confirmacion p {
+      color: var(--texto-secundario);
+      max-width: 460px; margin: 0 auto 1.5rem;
+    }
+
+    /* ---- BOTONES ---- */
+    .btn {
+      display: inline-flex; align-items: center; gap: 0.5rem;
+      padding: 0.875rem 1.75rem;
+      border-radius: 8px;
+      font-family: 'Inter', sans-serif;
+      font-size: 0.9375rem; font-weight: 600;
+      cursor: pointer;
+      transition: all 0.25s;
+      border: 2px solid transparent;
+      text-decoration: none;
+    }
+    .btn-primario {
+      background: var(--verde-salvia); color: #fff;
+    }
+    .btn-primario:hover { background: #67795f; }
+    .btn-secundario {
+      background: transparent;
+      border-color: #e8e8e8;
+      color: var(--texto-principal);
+    }
+    .btn-secundario:hover { border-color: var(--verde-salvia); }
+    .btn-wa {
+      background: var(--whatsapp-verde); color: #fff;
+    }
+    .btn-wa:hover { background: #1ebe5a; }
+    .btn:disabled {
+      opacity: 0.5; cursor: not-allowed;
+    }
+    .btn-full { width: 100%; justify-content: center; }
+
+    /* Separador "o" */
+    .separador-o {
+      display: flex; align-items: center; gap: 1rem;
+      color: var(--texto-secundario); font-size: 0.85rem;
+      margin: 1.25rem 0;
+    }
+    .separador-o::before, .separador-o::after {
+      content: ''; flex: 1; height: 1px; background: #e8e8e8;
+    }
+
+    /* Navegación entre steps */
+    .step-nav {
+      display: flex; gap: 1rem; margin-top: 1.5rem;
+      justify-content: space-between;
+    }
+
+    /* Error inline */
+    .error-msg {
+      background: rgba(192,57,43,0.08);
+      border: 1px solid rgba(192,57,43,0.3);
+      color: var(--rojo-ocupado);
+      padding: 0.75rem 1rem;
+      border-radius: 8px;
+      font-size: 0.875rem;
+      margin-bottom: 1rem;
+      display: none;
+    }
+    .error-msg.visible { display: block; }
+
+    /* Loading spinner */
+    .spinner {
+      display: inline-block;
+      width: 18px; height: 18px;
+      border: 2px solid rgba(255,255,255,0.4);
+      border-top-color: #fff;
+      border-radius: 50%;
+      animation: spin 0.7s linear infinite;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* ---- FOOTER ---- */
+    #footer {
+      background: var(--footer-oscuro);
+      color: rgba(250,250,247,0.5);
+      padding: 2rem;
+      text-align: center;
+      font-size: 0.82rem;
+      margin-top: 4rem;
+    }
+    #footer a { color: var(--beige-arena); }
+
+    /* WA flotante */
+    .wa-flotante {
+      position: fixed; bottom: 24px; right: 24px; z-index: 1000;
+      width: 54px; height: 54px; border-radius: 50%;
+      background: var(--whatsapp-verde);
+      display: flex; align-items: center; justify-content: center;
+      box-shadow: 0 4px 20px rgba(37,211,102,0.4);
+      animation: pulse-wa 2s ease-in-out infinite;
+    }
+    .wa-flotante:hover { animation: none; transform: scale(1.08); }
+    @keyframes pulse-wa { 0%,100%{transform:scale(1)} 50%{transform:scale(1.05)} }
+  </style>
+</head>
+<body>
+
+<!-- NAVBAR -->
+<nav id="navbar">
+  <a href="index.html" class="nav-logo">
+    <img src="logo/aromas-color.png" alt="Aromas de Campo"
+         onerror="this.style.display='none'">
+  </a>
+  <a href="index.html" class="nav-volver">
+    ← Volver al sitio
+  </a>
+</nav>
+
+<!-- HERO -->
+<section id="hero-reservas">
+  <h1 class="hero-res-titulo">Consultá disponibilidad</h1>
+  <p class="hero-res-sub">Elegí tu cabaña, las fechas, y te confirmamos en minutos por WhatsApp.</p>
+</section>
+
+<!-- BOOKING WIDGET -->
+<div id="booking-widget">
+
+  <!-- Steps indicator -->
+  <div class="steps-bar">
+    <div class="step-tab activo" id="tab-1">1. Cabaña y fechas</div>
+    <div class="step-tab" id="tab-2">2. Disponibilidad</div>
+    <div class="step-tab" id="tab-3">3. Tus datos</div>
+  </div>
+
+  <!-- Error global -->
+  <div class="error-msg" id="error-global"></div>
+
+  <!-- PASO 1: Cabaña + fechas básicas -->
+  <div class="step-panel activo" id="step-1">
+    <h2 style="font-family:'Playfair Display',serif;font-size:1.3rem;margin-bottom:1.25rem;">
+      ¿Cuál cabaña te interesa?
+    </h2>
+    <div class="cabanas-selector" id="cabanas-selector">
+      <!-- Se carga dinámicamente desde Supabase -->
+      <div style="color:var(--texto-secundario);font-size:0.9rem;padding:1rem 0">
+        Cargando cabañas…
+      </div>
+    </div>
+
+    <h2 style="font-family:'Playfair Display',serif;font-size:1.3rem;margin-bottom:1.25rem;">
+      ¿Cuándo llegás?
+    </h2>
+    <div class="fechas-row">
+      <div class="campo-grupo">
+        <label>Check-in</label>
+        <input type="date" id="inp-checkin" required>
+      </div>
+      <div class="campo-grupo">
+        <label>Check-out</label>
+        <input type="date" id="inp-checkout" required>
+      </div>
+    </div>
+
+    <div class="step-nav">
+      <span></span>
+      <button class="btn btn-primario" onclick="irStep2()">
+        Ver disponibilidad →
+      </button>
+    </div>
+  </div>
+
+  <!-- PASO 2: Calendario + precio -->
+  <div class="step-panel" id="step-2">
+    <div class="badge-demanda" id="badge-demanda">
+      🔥 ¡Alta demanda! Pocos días disponibles este mes.
+    </div>
+
+    <div class="calendario-wrapper">
+      <div class="cal-nav">
+        <button class="cal-btn-nav" id="cal-prev" onclick="cambiarMes(-1)">‹</button>
+        <span class="cal-mes-titulo" id="cal-titulo"></span>
+        <button class="cal-btn-nav" id="cal-next" onclick="cambiarMes(1)">›</button>
+      </div>
+      <div class="cal-grid" id="cal-grid"></div>
+      <div class="cal-leyenda">
+        <div class="leyenda-item">
+          <div class="leyenda-dot dot-libre"></div> Libre
+        </div>
+        <div class="leyenda-item">
+          <div class="leyenda-dot dot-ocupado"></div> Ocupado
+        </div>
+        <div class="leyenda-item">
+          <div class="leyenda-dot dot-bloq"></div> Bloqueado
+        </div>
+        <div class="leyenda-item">
+          <div class="leyenda-dot dot-sel"></div> Tu selección
+        </div>
+      </div>
+    </div>
+
+    <div class="resumen-precio" id="resumen-precio">
+      <div class="resumen-row">
+        <span>Cabaña</span>
+        <strong id="res-cabana">—</strong>
+      </div>
+      <div class="resumen-row">
+        <span>Fechas</span>
+        <strong id="res-fechas">—</strong>
+      </div>
+      <div class="resumen-row">
+        <span id="res-noches-label">Noches</span>
+        <strong id="res-noches">—</strong>
+      </div>
+      <div class="resumen-row">
+        <span class="resumen-total">Total estimado</span>
+        <span class="resumen-total" id="res-total">—</span>
+      </div>
+    </div>
+
+    <div class="step-nav">
+      <button class="btn btn-secundario" onclick="irStep(1)">← Atrás</button>
+      <button class="btn btn-primario" id="btn-a-paso3" onclick="irStep3()" disabled>
+        Continuar →
+      </button>
+    </div>
+  </div>
+
+  <!-- PASO 3: Datos de contacto -->
+  <div class="step-panel" id="step-3">
+    <h2 style="font-family:'Playfair Display',serif;font-size:1.3rem;margin-bottom:1.5rem;">
+      Tus datos de contacto
+    </h2>
+
+    <div class="campos-grid">
+      <div class="campo-grupo">
+        <label>Nombre completo *</label>
+        <input type="text" id="inp-nombre" placeholder="Tu nombre" required>
+      </div>
+      <div class="campo-grupo">
+        <label>Teléfono / WhatsApp *</label>
+        <input type="tel" id="inp-tel" placeholder="+54 9 11 ..." required>
+      </div>
+      <div class="campo-grupo">
+        <label>Email *</label>
+        <input type="email" id="inp-email" placeholder="tu@email.com" required>
+      </div>
+      <div class="campo-grupo">
+        <label>Cantidad de personas *</label>
+        <select id="inp-personas" required>
+          <option value="">Seleccioná</option>
+          <option value="1">1 persona</option>
+          <option value="2">2 personas</option>
+          <option value="3">3 personas</option>
+          <option value="4">4 personas</option>
+        </select>
+      </div>
+      <div class="campo-grupo campo-full">
+        <label>Comentarios (opcional)</label>
+        <textarea id="inp-notas" placeholder="¿Algún pedido especial? ¿Festejás algo?"></textarea>
+      </div>
+    </div>
+
+    <!-- Resumen antes de enviar -->
+    <div class="resumen-final" id="resumen-final">
+      <h3>Resumen de tu consulta</h3>
+      <div class="resumen-row">
+        <span>Cabaña</span>
+        <strong id="rf-cabana">—</strong>
+      </div>
+      <div class="resumen-row">
+        <span>Check-in</span>
+        <strong id="rf-checkin">—</strong>
+      </div>
+      <div class="resumen-row">
+        <span>Check-out</span>
+        <strong id="rf-checkout">—</strong>
+      </div>
+      <div class="resumen-row">
+        <span class="resumen-total">Total estimado</span>
+        <span class="resumen-total" id="rf-total">—</span>
+      </div>
+    </div>
+
+    <div class="error-msg" id="error-step3"></div>
+
+    <button class="btn btn-primario btn-full" id="btn-enviar" onclick="enviarReserva()">
+      Enviar consulta
+    </button>
+
+    <div class="separador-o">o</div>
+
+    <a id="btn-wa-directo" href="#" target="_blank" rel="noopener noreferrer"
+       class="btn btn-wa btn-full">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+        <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51a12.8 12.8 0 00-.57-.01c-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
+      </svg>
+      Consultar directo por WhatsApp
+    </a>
+
+    <div class="step-nav" style="margin-top:1.25rem">
+      <button class="btn btn-secundario" onclick="irStep(2)">← Atrás</button>
+    </div>
+  </div>
+
+  <!-- CONFIRMACIÓN -->
+  <div id="confirmacion">
+    <div class="conf-icono">🌿</div>
+    <h2>¡Consulta enviada!</h2>
+    <p>Recibimos tu solicitud para <strong id="conf-cabana"></strong>. Te confirmamos disponibilidad por WhatsApp a la brevedad.</p>
+    <a id="conf-wa-btn" href="#" target="_blank" rel="noopener noreferrer"
+       class="btn btn-wa" style="margin: 0 auto 1rem; display: inline-flex;">
+      Escribinos por WhatsApp
+    </a>
+    <br>
+    <a href="index.html" class="btn btn-secundario">Volver al inicio</a>
+  </div>
+
+</div><!-- /booking-widget -->
+
+<!-- FOOTER -->
+<footer id="footer">
+  <p>© 2025 <a href="index.html">Aromas de Campo</a> — Colón, Entre Ríos. Todos los derechos reservados.</p>
+</footer>
+
+<!-- WA flotante -->
+<a href="https://wa.me/5491169495055?text=Hola!%20Quiero%20consultar%20disponibilidad."
+   target="_blank" rel="noopener noreferrer" class="wa-flotante" aria-label="WhatsApp">
+  <svg width="26" height="26" viewBox="0 0 24 24" fill="#fff">
+    <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51a12.8 12.8 0 00-.57-.01c-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
+  </svg>
+</a>
+
+<script>
+// ================================================================
+// CONFIGURACIÓN
+// ================================================================
+const WA_NUMBER = '5491169495055';
+const MESES_ES  = ['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];
+const DIAS_ES   = ['Dom','Lun','Mar','Mié','Jue','Vie','Sáb'];
+
+// Estado de la app
+const estado = {
+  cabanas:      [],
+  cabanaId:     null,
+  cabanaSlug:   null,
+  cabanaNombre: null,
+  checkin:      null,
+  checkout:     null,
+  precioTotal:  0,
+  precioPorNoche: 0,
+  calAnio:      new Date().getFullYear(),
+  calMes:       new Date().getMonth(),
+  disponibilidad: {},   // { 'YYYY-MM-DD': 'libre'|'ocupado'|'bloqueado' }
+  selStep:      'checkin', // 'checkin' | 'checkout'
+};
+
+// ================================================================
+// INIT
+// ================================================================
+document.addEventListener('DOMContentLoaded', async () => {
+  const hoy = new Date().toISOString().split('T')[0];
+  document.getElementById('inp-checkin').min  = hoy;
+  document.getElementById('inp-checkout').min = hoy;
+
+  document.getElementById('inp-checkin').addEventListener('change', function() {
+    const ci = this.value;
+    if (!ci) return;
+    const minCo = new Date(ci);
+    minCo.setDate(minCo.getDate() + 1);
+    document.getElementById('inp-checkout').min = minCo.toISOString().split('T')[0];
+    if (document.getElementById('inp-checkout').value <= ci) {
+      document.getElementById('inp-checkout').value = '';
+    }
+  });
+
+  await cargarCabanas();
+  actualizarBtnWaDirecto();
+});
+
+// ================================================================
+// CARGAR CABAÑAS
+// ================================================================
+async function cargarCabanas() {
+  const contenedor = document.getElementById('cabanas-selector');
+
+  if (!window.db) {
+    // Sin Supabase: mostrar datos hardcodeados de fallback
+    estado.cabanas = [
+      { id: '1', slug: 'el-tronco', nombre: 'El Tronco', precio_base: 35000, fotos: ['fotos/cabana-1.jpg'], capacidad_max: 4 },
+      { id: '2', slug: 'el-sauce',  nombre: 'El Sauce',  precio_base: 33000, fotos: ['fotos/cabana-2.jpg'], capacidad_max: 4 },
+      { id: '3', slug: 'el-ceibo',  nombre: 'El Ceibo',  precio_base: 33000, fotos: ['fotos/cabana-3.jpg'], capacidad_max: 4 },
+    ];
+  } else {
+    const { data, error } = await window.db
+      .from('cabanas')
+      .select('id, slug, nombre, precio_base, fotos, capacidad_max')
+      .eq('activa', true)
+      .order('orden');
+    if (error || !data?.length) {
+      contenedor.innerHTML = '<p style="color:var(--rojo-ocupado)">Error cargando cabañas.</p>';
+      return;
+    }
+    estado.cabanas = data;
+  }
+
+  contenedor.innerHTML = estado.cabanas.map(c => `
+    <div class="cabana-card-sel" data-id="${c.id}" data-slug="${c.slug}" data-nombre="${c.nombre}" onclick="seleccionarCabana(this)">
+      <div class="cabana-check-icon">✓</div>
+      <img src="${(c.fotos && c.fotos[0]) || 'fotos/cabana-1.jpg'}" alt="${c.nombre}"
+           onerror="this.style.background='linear-gradient(135deg,#7A8C72,#1C2B1E)'">
+      <div class="cabana-card-info">
+        <div class="cabana-card-nombre">${c.nombre}</div>
+        <div class="cabana-card-precio">
+          desde <strong>$${formatPrecio(c.precio_base)}</strong>/noche · hasta ${c.capacidad_max} personas
+        </div>
+      </div>
+    </div>
+  `).join('');
+}
+
+function seleccionarCabana(el) {
+  document.querySelectorAll('.cabana-card-sel').forEach(c => c.classList.remove('seleccionada'));
+  el.classList.add('seleccionada');
+  estado.cabanaId    = el.dataset.id;
+  estado.cabanaSlug  = el.dataset.slug;
+  estado.cabanaNombre= el.dataset.nombre;
+  actualizarBtnWaDirecto();
+}
+
+// ================================================================
+// NAVEGACIÓN ENTRE STEPS
+// ================================================================
+function irStep(n) {
+  document.querySelectorAll('.step-panel').forEach((p, i) => {
+    p.classList.toggle('activo', i + 1 === n);
+  });
+  document.querySelectorAll('.step-tab').forEach((t, i) => {
+    t.classList.remove('activo', 'completado');
+    if (i + 1 === n) t.classList.add('activo');
+    if (i + 1 < n)  t.classList.add('completado');
+  });
+  ocultarError('error-global');
+}
+
+async function irStep2() {
+  ocultarError('error-global');
+
+  if (!estado.cabanaId) {
+    mostrarError('error-global', 'Por favor seleccioná una cabaña.');
+    return;
+  }
+  const ci = document.getElementById('inp-checkin').value;
+  const co = document.getElementById('inp-checkout').value;
+  if (!ci || !co) {
+    mostrarError('error-global', 'Ingresá las fechas de check-in y check-out.');
+    return;
+  }
+  if (co <= ci) {
+    mostrarError('error-global', 'El check-out debe ser posterior al check-in.');
+    return;
+  }
+
+  estado.checkin  = ci;
+  estado.checkout = co;
+
+  // Ir al mes del checkin
+  const fechaCi = new Date(ci + 'T00:00:00');
+  estado.calAnio = fechaCi.getFullYear();
+  estado.calMes  = fechaCi.getMonth();
+
+  irStep(2);
+
+  await cargarDisponibilidadMes(estado.calAnio, estado.calMes);
+  renderCalendario();
+  verificarAltaDemanda();
+}
+
+async function irStep3() {
+  if (!estado.checkin || !estado.checkout) {
+    mostrarError('error-global', 'Seleccioná las fechas en el calendario.');
+    return;
+  }
+
+  // Calcular precio
+  await calcularPrecio();
+
+  // Actualizar resumen final
+  document.getElementById('rf-cabana').textContent  = estado.cabanaNombre;
+  document.getElementById('rf-checkin').textContent = formatFecha(estado.checkin);
+  document.getElementById('rf-checkout').textContent= formatFecha(estado.checkout);
+  document.getElementById('rf-total').textContent   = '$' + formatPrecio(estado.precioTotal);
+
+  actualizarBtnWaDirecto();
+  irStep(3);
+}
+
+// ================================================================
+// CALENDARIO
+// ================================================================
+async function cargarDisponibilidadMes(anio, mes) {
+  const clave = `${anio}-${mes}-${estado.cabanaId}`;
+  if (estado.disponibilidad[clave]) return; // cache hit
+
+  if (!window.db) {
+    estado.disponibilidad[clave] = {};
+    return;
+  }
+
+  const desde = new Date(anio, mes, 1).toISOString().split('T')[0];
+  const hasta  = new Date(anio, mes + 1, 0).toISOString().split('T')[0];
+
+  const { data } = await window.db
+    .from('dias_ocupados_por_cabana')
+    .select('fecha, estado')
+    .eq('cabana_id', estado.cabanaId)
+    .gte('fecha', desde)
+    .lte('fecha', hasta);
+
+  const mapa = {};
+  (data || []).forEach(d => { mapa[d.fecha] = d.estado; });
+  estado.disponibilidad[clave] = mapa;
+}
+
+function getDisponibilidadDia(fecha) {
+  const clave = `${estado.calAnio}-${estado.calMes}-${estado.cabanaId}`;
+  const mapa  = estado.disponibilidad[clave] || {};
+  return mapa[fecha] || 'libre';
+}
+
+async function cambiarMes(delta) {
+  estado.calMes += delta;
+  if (estado.calMes < 0)  { estado.calMes = 11; estado.calAnio--; }
+  if (estado.calMes > 11) { estado.calMes = 0;  estado.calAnio++; }
+
+  await cargarDisponibilidadMes(estado.calAnio, estado.calMes);
+  renderCalendario();
+  verificarAltaDemanda();
+}
+
+function renderCalendario() {
+  const titulo = document.getElementById('cal-titulo');
+  const grid   = document.getElementById('cal-grid');
+  const hoy    = new Date(); hoy.setHours(0,0,0,0);
+
+  titulo.textContent = `${MESES_ES[estado.calMes]} ${estado.calAnio}`;
+
+  // Días de la semana
+  let html = DIAS_ES.map(d => `<div class="cal-dia-nombre">${d}</div>`).join('');
+
+  // Primer día del mes (ajustar para que empiece en domingo)
+  const primerDia = new Date(estado.calAnio, estado.calMes, 1).getDay();
+  for (let i = 0; i < primerDia; i++) {
+    html += '<div class="cal-dia vacio"></div>';
+  }
+
+  const diasEnMes = new Date(estado.calAnio, estado.calMes + 1, 0).getDate();
+
+  for (let d = 1; d <= diasEnMes; d++) {
+    const fecha = `${estado.calAnio}-${String(estado.calMes + 1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
+    const fechaObj = new Date(fecha + 'T00:00:00');
+    const esPasado = fechaObj < hoy;
+    const dispEst  = esPasado ? 'pasado' : getDisponibilidadDia(fecha);
+
+    let clases = `cal-dia ${dispEst}`;
+    if (fecha === estado.checkin)  clases += ' checkin-sel';
+    if (fecha === estado.checkout) clases += ' checkout-sel';
+
+    // Pintar rango
+    if (estado.checkin && estado.checkout && fecha > estado.checkin && fecha < estado.checkout) {
+      clases += ' en-rango';
+    }
+
+    const clickable = !esPasado && dispEst === 'libre';
+    html += `<div class="${clases}" data-fecha="${fecha}" ${clickable ? `onclick="clickDia('${fecha}')"` : ''}>${d}</div>`;
+  }
+
+  grid.innerHTML = html;
+}
+
+function clickDia(fecha) {
+  const disp = getDisponibilidadDia(fecha);
+  if (disp !== 'libre') return;
+
+  if (!estado.checkin || (estado.checkin && estado.checkout)) {
+    // Empieza selección nueva
+    estado.checkin  = fecha;
+    estado.checkout = null;
+    document.getElementById('btn-a-paso3').disabled = true;
+    document.getElementById('resumen-precio').classList.remove('visible');
+  } else {
+    // Ya hay checkin, ahora seleccionar checkout
+    if (fecha <= estado.checkin) {
+      estado.checkin  = fecha;
+      estado.checkout = null;
+    } else {
+      // Verificar que no haya días ocupados en el rango
+      if (hayDiasOcupadosEnRango(estado.checkin, fecha)) {
+        mostrarError('error-global', 'Hay días no disponibles en el rango seleccionado. Elegí otras fechas.');
+        return;
+      }
+      estado.checkout = fecha;
+      document.getElementById('inp-checkin').value  = estado.checkin;
+      document.getElementById('inp-checkout').value = estado.checkout;
+      document.getElementById('btn-a-paso3').disabled = false;
+      calcularPrecioYMostrar();
+    }
+  }
+  ocultarError('error-global');
+  renderCalendario();
+}
+
+function hayDiasOcupadosEnRango(desde, hasta) {
+  const clave = `${estado.calAnio}-${estado.calMes}-${estado.cabanaId}`;
+  const mapa  = estado.disponibilidad[clave] || {};
+  let fecha = new Date(desde + 'T00:00:00');
+  const fin = new Date(hasta + 'T00:00:00');
+  fecha.setDate(fecha.getDate() + 1);
+  while (fecha < fin) {
+    const fStr = fecha.toISOString().split('T')[0];
+    if (mapa[fStr] && mapa[fStr] !== 'libre') return true;
+    fecha.setDate(fecha.getDate() + 1);
+  }
+  return false;
+}
+
+async function calcularPrecioYMostrar() {
+  await calcularPrecio();
+  const noches = diasEntre(estado.checkin, estado.checkout);
+  document.getElementById('res-cabana').textContent      = estado.cabanaNombre;
+  document.getElementById('res-fechas').textContent      = `${formatFecha(estado.checkin)} → ${formatFecha(estado.checkout)}`;
+  document.getElementById('res-noches-label').textContent= `${noches} noche${noches > 1 ? 's' : ''}`;
+  document.getElementById('res-noches').textContent      = noches;
+  document.getElementById('res-total').textContent       = '$' + formatPrecio(estado.precioTotal);
+  document.getElementById('resumen-precio').classList.add('visible');
+}
+
+async function calcularPrecio() {
+  if (!window.db) {
+    const noches = diasEntre(estado.checkin, estado.checkout);
+    const base   = estado.cabanas.find(c => c.id === estado.cabanaId)?.precio_base || 33000;
+    estado.precioTotal   = base * noches;
+    estado.precioPorNoche= base;
+    return;
+  }
+  const { data } = await window.db.rpc('calcular_precio_reserva', {
+    p_cabana_id: estado.cabanaId,
+    p_checkin:   estado.checkin,
+    p_checkout:  estado.checkout,
+  });
+  if (data && data[0]) {
+    estado.precioTotal    = data[0].precio_total;
+    estado.precioPorNoche = data[0].precio_por_noche;
+  }
+}
+
+function verificarAltaDemanda() {
+  const clave = `${estado.calAnio}-${estado.calMes}-${estado.cabanaId}`;
+  const mapa  = estado.disponibilidad[clave] || {};
+  const valores = Object.values(mapa);
+  if (!valores.length) return;
+  const ocupados = valores.filter(v => v !== 'libre').length;
+  const pct = ocupados / valores.length;
+  document.getElementById('badge-demanda').classList.toggle('visible', pct >= 0.5);
+}
+
+// ================================================================
+// ENVÍO DE RESERVA
+// ================================================================
+async function enviarReserva() {
+  ocultarError('error-step3');
+
+  const nombre  = document.getElementById('inp-nombre').value.trim();
+  const email   = document.getElementById('inp-email').value.trim();
+  const tel     = document.getElementById('inp-tel').value.trim();
+  const personas= parseInt(document.getElementById('inp-personas').value);
+  const notas   = document.getElementById('inp-notas').value.trim();
+
+  if (!nombre || !email || !tel || !personas) {
+    mostrarError('error-step3', 'Completá todos los campos requeridos.');
+    return;
+  }
+
+  const btn = document.getElementById('btn-enviar');
+  btn.disabled = true;
+  btn.innerHTML = '<span class="spinner"></span> Enviando…';
+
+  try {
+    // Verificar disponibilidad en tiempo real
+    if (window.db) {
+      const { data: disponible } = await window.db.rpc('check_disponibilidad', {
+        p_cabana_id: estado.cabanaId,
+        p_checkin:   estado.checkin,
+        p_checkout:  estado.checkout,
+      });
+      if (!disponible) {
+        mostrarError('error-step3', 'Las fechas ya no están disponibles. Por favor elegí otras.');
+        btn.disabled = false;
+        btn.textContent = 'Enviar consulta';
+        return;
+      }
+
+      const { error } = await window.db.from('reservas').insert({
+        cabana_id:       estado.cabanaId,
+        nombre,
+        email,
+        telefono:        tel,
+        personas,
+        fecha_checkin:   estado.checkin,
+        fecha_checkout:  estado.checkout,
+        precio_total:    estado.precioTotal,
+        precio_por_noche:estado.precioPorNoche,
+        notas_huesped:   notas,
+        estado:          'pendiente',
+      });
+
+      if (error) {
+        mostrarError('error-step3', 'Hubo un error al enviar. Intentá por WhatsApp directamente.');
+        btn.disabled = false;
+        btn.textContent = 'Enviar consulta';
+        return;
+      }
+    }
+
+    // Mostrar confirmación
+    const waUrl = generarUrlWA({ nombre, tel, notas });
+    document.getElementById('conf-cabana').textContent = estado.cabanaNombre;
+    document.getElementById('conf-wa-btn').href = waUrl;
+
+    document.getElementById('booking-widget').innerHTML = '';
+    document.getElementById('confirmacion').style.display = 'block';
+    document.getElementById('booking-widget').appendChild(document.getElementById('confirmacion'));
+
+  } catch (e) {
+    mostrarError('error-step3', 'Error de conexión. Escribinos por WhatsApp.');
+    btn.disabled = false;
+    btn.textContent = 'Enviar consulta';
+  }
+}
+
+// ================================================================
+// WHATSAPP
+// ================================================================
+function generarUrlWA({ nombre = '', tel = '', notas = '' } = {}) {
+  const noches = diasEntre(estado.checkin, estado.checkout);
+  const txt = [
+    `Hola! Quiero consultar disponibilidad en Aromas de Campo.`,
+    `📋 *Cabaña:* ${estado.cabanaNombre}`,
+    `📅 *Check-in:* ${formatFecha(estado.checkin)}`,
+    `📅 *Check-out:* ${formatFecha(estado.checkout)}`,
+    `🌙 *Noches:* ${noches}`,
+    `💰 *Total estimado:* $${formatPrecio(estado.precioTotal)}`,
+    nombre ? `👤 *Nombre:* ${nombre}` : '',
+    tel    ? `📱 *Teléfono:* ${tel}` : '',
+    notas  ? `💬 *Nota:* ${notas}` : '',
+  ].filter(Boolean).join('\n');
+  return `https://wa.me/${WA_NUMBER}?text=${encodeURIComponent(txt)}`;
+}
+
+function actualizarBtnWaDirecto() {
+  const btn = document.getElementById('btn-wa-directo');
+  if (!btn) return;
+  if (estado.cabanaId && estado.checkin && estado.checkout) {
+    btn.href = generarUrlWA();
+  } else if (estado.cabanaId) {
+    const txt = `Hola! Me interesa la cabaña ${estado.cabanaNombre} en Aromas de Campo. ¿Me podés informar disponibilidad?`;
+    btn.href = `https://wa.me/${WA_NUMBER}?text=${encodeURIComponent(txt)}`;
+  } else {
+    btn.href = `https://wa.me/${WA_NUMBER}?text=${encodeURIComponent('Hola! Quiero consultar disponibilidad en Aromas de Campo.')}`;
+  }
+}
+
+// ================================================================
+// UTILIDADES
+// ================================================================
+function diasEntre(desde, hasta) {
+  return Math.round((new Date(hasta) - new Date(desde)) / 86400000);
+}
+
+function formatFecha(fecha) {
+  if (!fecha) return '—';
+  const [a, m, d] = fecha.split('-');
+  return `${d}/${m}/${a}`;
+}
+
+function formatPrecio(n) {
+  return Number(n || 0).toLocaleString('es-AR');
+}
+
+function mostrarError(id, msg) {
+  const el = document.getElementById(id);
+  if (!el) return;
+  el.textContent = msg;
+  el.classList.add('visible');
+}
+
+function ocultarError(id) {
+  const el = document.getElementById(id);
+  if (el) el.classList.remove('visible');
+}
+</script>
+</body>
+</html>
