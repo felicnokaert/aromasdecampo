@@ -1,0 +1,42 @@
+# Solo se suben los archivos limpios/renombrados
+# Excluir todos los videos originales con nombres largos
+
+videos/07-03.mp4
+videos/AQOJ*
+videos/AQOy*
+videos/AQPn*
+videos/COLON*
+videos/Finde*
+videos/Grau*
+videos/Vamos*
+videos/Video Cabañas.mp4
+videos/WhatsApp*
+videos/ssstik*
+
+# Excluir fotos originales
+fotos/WhatsApp*
+fotos/Foto cabañas*
+fotos/Atardecer*
+fotos/Vista*
+fotos/Foto.jpg
+fotos/Foto 2.jpg
+fotos/Playa.jpg
+fotos/Diseño*
+fotos/descarga*
+fotos/471*
+fotos/472*
+fotos/Colon.mp4
+fotos/Copia*
+fotos/VIDEO*
+fotos/1.png
+fotos/2.png
+fotos/3.png
+fotos/1.jpg
+fotos/2.jpg
+
+# Logos originales
+logo/1.jpg
+logo/2.jpg
+
+# Herramientas locales
+.claude/
