@@ -1,0 +1,2439 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Aromas de Campo — Cabañas de Troncos en Colón, Entre Ríos</title>
+  <meta name="description" content="Aromas de Campo: 3 cabañas de tronco en Colón, Entre Ríos. Pileta, parrilla, naturaleza y el río a minutos. Reservá por WhatsApp.">
+
+  <!-- Open Graph -->
+  <meta property="og:title" content="Aromas de Campo — Cabañas de Troncos en Colón, Entre Ríos">
+  <meta property="og:description" content="3 cabañas de tronco rodeadas de naturaleza en Colón, Entre Ríos. Pileta, parrilla y el río Uruguay a minutos.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://aromasdecampo.vercel.app">
+  <meta property="og:image" content="fotos/hero-poster.jpg">
+
+  <!-- Favicon -->
+  <link rel="icon" type="image/png" href="logo/favicon.png">
+
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Inter:wght@400;500&display=swap" rel="stylesheet">
+
+  <style>
+    /* ===========================
+       VARIABLES Y RESET
+    =========================== */
+    :root {
+      --verde-salvia:    #7A8C72;
+      --beige-arena:     #C8B89A;
+      --fondo-crema:     #F5EFE4;
+      --fondo-oscuro:    #1C2B1E;
+      --blanco-calido:   #FAFAF7;
+      --texto-principal: #1E1E1E;
+      --texto-secundario:#6B6B6B;
+      --whatsapp-verde:  #25D366;
+      --footer-oscuro:   #111A12;
+      --beige-claro:     #F0EBE1;
+    }
+
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      font-weight: 400;
+      color: var(--texto-principal);
+      background-color: var(--fondo-crema);
+      line-height: 1.6;
+      overflow-x: hidden;
+    }
+
+    img {
+      max-width: 100%;
+      display: block;
+    }
+
+    a {
+      text-decoration: none;
+      color: inherit;
+    }
+
+    /* ===========================
+       TIPOGRAFÍA
+    =========================== */
+    .titulo-seccion {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(2rem, 4vw, 3rem);
+      font-weight: 700;
+      line-height: 1.2;
+      color: var(--texto-principal);
+    }
+
+    .titulo-seccion.claro {
+      color: var(--blanco-calido);
+    }
+
+    .subtitulo-seccion {
+      font-family: 'Inter', sans-serif;
+      font-size: clamp(1rem, 2vw, 1.125rem);
+      color: var(--texto-secundario);
+      margin-top: 1rem;
+      max-width: 600px;
+    }
+
+    .subtitulo-seccion.claro {
+      color: rgba(250,250,247,0.75);
+    }
+
+    /* ===========================
+       BOTONES
+    =========================== */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.875rem 1.75rem;
+      border-radius: 6px;
+      font-family: 'Inter', sans-serif;
+      font-size: 0.9375rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.25s ease;
+      border: 2px solid transparent;
+      text-decoration: none;
+    }
+
+    .btn-primario {
+      background-color: var(--verde-salvia);
+      color: var(--blanco-calido);
+      border-color: var(--verde-salvia);
+    }
+
+    .btn-primario:hover {
+      background-color: #67795f;
+      border-color: #67795f;
+      transform: translateY(-2px);
+    }
+
+    .btn-outline {
+      background-color: transparent;
+      color: var(--blanco-calido);
+      border-color: rgba(250,250,247,0.6);
+    }
+
+    .btn-outline:hover {
+      background-color: rgba(250,250,247,0.1);
+      border-color: var(--blanco-calido);
+      transform: translateY(-2px);
+    }
+
+    .btn-whatsapp {
+      background-color: var(--whatsapp-verde);
+      color: #fff;
+      border-color: var(--whatsapp-verde);
+      font-size: 1.0625rem;
+      padding: 1rem 2.25rem;
+    }
+
+    .btn-whatsapp:hover {
+      background-color: #1ebe5a;
+      border-color: #1ebe5a;
+      transform: translateY(-2px);
+    }
+
+    /* ===========================
+       ANIMACIONES SCROLL REVEAL
+    =========================== */
+    .fade-in {
+      opacity: 0;
+      transform: translateY(30px);
+      transition: opacity 0.7s ease, transform 0.7s ease;
+    }
+
+    .fade-in.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .slide-up {
+      opacity: 0;
+      transform: translateY(50px);
+      transition: opacity 0.8s ease, transform 0.8s ease;
+    }
+
+    .slide-up.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .delay-1 { transition-delay: 0.1s; }
+    .delay-2 { transition-delay: 0.2s; }
+    .delay-3 { transition-delay: 0.3s; }
+    .delay-4 { transition-delay: 0.4s; }
+    .delay-5 { transition-delay: 0.5s; }
+
+    /* ===========================
+       SECCIÓN: NAVBAR
+    =========================== */
+    #navbar {
+      position: sticky;
+      top: 0;
+      z-index: 900;
+      padding: 1rem 2rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background-color: rgba(245,239,228,0.85);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      transition: box-shadow 0.3s ease, background-color 0.3s ease;
+    }
+
+    #navbar.scrolled {
+      box-shadow: 0 2px 20px rgba(0,0,0,0.08);
+      background-color: rgba(245,239,228,0.96);
+    }
+
+    .nav-logo img {
+      height: 48px;
+      width: auto;
+    }
+
+    .nav-logo-texto {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: var(--verde-salvia);
+      letter-spacing: 0.03em;
+      line-height: 1.1;
+    }
+
+    .nav-logo-texto span {
+      display: block;
+      font-size: 0.65rem;
+      font-family: 'Inter', sans-serif;
+      font-weight: 500;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--beige-arena);
+    }
+
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 2rem;
+      list-style: none;
+    }
+
+    .nav-links a {
+      font-family: 'Inter', sans-serif;
+      font-size: 0.9rem;
+      font-weight: 500;
+      color: var(--texto-principal);
+      position: relative;
+      transition: color 0.2s;
+    }
+
+    .nav-links a::after {
+      content: '';
+      position: absolute;
+      left: 0;
+      bottom: -3px;
+      width: 0;
+      height: 2px;
+      background-color: var(--verde-salvia);
+      transition: width 0.25s ease;
+    }
+
+    .nav-links a:hover {
+      color: var(--verde-salvia);
+    }
+
+    .nav-links a:hover::after {
+      width: 100%;
+    }
+
+    .nav-cta {
+      display: none;
+    }
+
+    @media (min-width: 768px) {
+      .nav-cta {
+        display: inline-flex;
+      }
+    }
+
+    /* Hamburger */
+    .hamburger {
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+      cursor: pointer;
+      background: none;
+      border: none;
+      padding: 4px;
+      z-index: 1001;
+    }
+
+    .hamburger span {
+      display: block;
+      width: 26px;
+      height: 2px;
+      background-color: var(--texto-principal);
+      border-radius: 2px;
+      transition: all 0.3s ease;
+    }
+
+    .hamburger.open span:nth-child(1) {
+      transform: translateY(7px) rotate(45deg);
+    }
+
+    .hamburger.open span:nth-child(2) {
+      opacity: 0;
+      transform: scaleX(0);
+    }
+
+    .hamburger.open span:nth-child(3) {
+      transform: translateY(-7px) rotate(-45deg);
+    }
+
+    /* Mobile menu */
+    .nav-mobile {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-color: var(--fondo-crema);
+      z-index: 999;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 2.5rem;
+    }
+
+    .nav-mobile.open {
+      display: flex;
+    }
+
+    .nav-mobile a {
+      font-family: 'Playfair Display', serif;
+      font-size: 2rem;
+      color: var(--texto-principal);
+      transition: color 0.2s;
+    }
+
+    .nav-mobile a:hover {
+      color: var(--verde-salvia);
+    }
+
+    @media (min-width: 768px) {
+      .hamburger { display: none; }
+      .nav-mobile { display: none !important; }
+    }
+
+    /* ===========================
+       SECCIÓN: HERO
+    =========================== */
+    #hero {
+      position: relative;
+      min-height: 100svh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      overflow: hidden;
+      background-color: var(--fondo-oscuro);
+    }
+
+    .hero-video {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      opacity: 0.45;
+    }
+
+    /* Fallback si no hay video */
+    .hero-bg-fallback {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(160deg, #1C2B1E 0%, #2d4a30 50%, #7A8C72 100%);
+    }
+
+    /* Patrón SVG sutil */
+    .hero-bg-fallback::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.03'%3E%3Cpath d='M30 0 Q35 15 30 30 Q25 15 30 0z M0 30 Q15 25 30 30 Q15 35 0 30z M60 30 Q45 25 30 30 Q45 35 60 30z M30 60 Q35 45 30 30 Q25 45 30 60z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+    }
+
+    .hero-overlay {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(to bottom, rgba(28,43,30,0.4) 0%, rgba(28,43,30,0.55) 60%, rgba(28,43,30,0.7) 100%);
+    }
+
+    .hero-content {
+      position: relative;
+      z-index: 2;
+      max-width: 820px;
+      padding: 2rem 1.5rem;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 1.5rem;
+    }
+
+    .hero-logo {
+      height: 100px;
+      width: auto;
+      margin-bottom: 0.5rem;
+    }
+
+    .hero-logo-texto {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.75rem;
+      font-weight: 700;
+      color: var(--blanco-calido);
+      letter-spacing: 0.05em;
+      line-height: 1;
+      margin-bottom: 0.5rem;
+    }
+
+    .hero-logo-texto span {
+      display: block;
+      font-size: 0.7rem;
+      font-family: 'Inter', sans-serif;
+      font-weight: 500;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--beige-arena);
+      margin-top: 0.4rem;
+    }
+
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      background-color: rgba(200,184,154,0.25);
+      border: 1px solid rgba(200,184,154,0.4);
+      color: var(--beige-arena);
+      font-size: 0.8rem;
+      font-weight: 500;
+      padding: 0.35rem 0.9rem;
+      border-radius: 999px;
+      letter-spacing: 0.05em;
+    }
+
+    .hero-headline {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(2.25rem, 6vw, 4rem);
+      font-weight: 700;
+      color: var(--blanco-calido);
+      line-height: 1.15;
+    }
+
+    .hero-subtitulo {
+      font-family: 'Inter', sans-serif;
+      font-size: clamp(1rem, 2vw, 1.2rem);
+      color: rgba(250,250,247,0.8);
+      max-width: 560px;
+      line-height: 1.65;
+    }
+
+    .hero-botones {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1rem;
+      justify-content: center;
+      margin-top: 0.5rem;
+    }
+
+    /* Scroll indicator */
+    .scroll-indicator {
+      position: absolute;
+      bottom: 2rem;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 2;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.4rem;
+      animation: bounce 2s infinite;
+    }
+
+    .scroll-indicator span {
+      width: 1px;
+      height: 48px;
+      background: linear-gradient(to bottom, transparent, rgba(250,250,247,0.5));
+    }
+
+    .scroll-indicator::after {
+      content: '';
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background-color: rgba(250,250,247,0.6);
+    }
+
+    @keyframes bounce {
+      0%, 100% { transform: translateX(-50%) translateY(0); }
+      50% { transform: translateX(-50%) translateY(8px); }
+    }
+
+    /* ===========================
+       SECCIÓN: STATS
+    =========================== */
+    #stats {
+      background-color: var(--fondo-crema);
+      padding: 4rem 2rem;
+      border-bottom: 1px solid rgba(200,184,154,0.3);
+    }
+
+    .stats-grid {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 3rem 5rem;
+      max-width: 900px;
+      margin: 0 auto;
+      text-align: center;
+    }
+
+    .stat-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.25rem;
+    }
+
+    .stat-numero {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(3rem, 7vw, 5rem);
+      font-weight: 700;
+      color: var(--verde-salvia);
+      line-height: 1;
+    }
+
+    .stat-label {
+      font-family: 'Inter', sans-serif;
+      font-size: 0.9rem;
+      font-weight: 500;
+      color: var(--texto-secundario);
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+    }
+
+    /* ===========================
+       SECCIÓN: CABAÑAS
+    =========================== */
+    #cabanas {
+      padding: 5rem 2rem;
+      background-color: var(--blanco-calido);
+    }
+
+    .seccion-header {
+      text-align: center;
+      margin-bottom: 3.5rem;
+    }
+
+    .seccion-header .subtitulo-seccion {
+      margin: 1rem auto 0;
+    }
+
+    .cabanas-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 2rem;
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+
+    @media (min-width: 768px) {
+      .cabanas-grid {
+        grid-template-columns: repeat(3, 1fr);
+      }
+    }
+
+    .card-cabana {
+      background-color: #fff;
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .card-cabana:hover {
+      transform: translateY(-6px);
+      box-shadow: 0 12px 40px rgba(122,140,114,0.25);
+    }
+
+    .card-imagen {
+      position: relative;
+      width: 100%;
+      padding-top: 68%;
+      overflow: hidden;
+      background: linear-gradient(135deg, var(--verde-salvia) 0%, var(--fondo-oscuro) 100%);
+    }
+
+    .card-imagen img {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 0.4s ease;
+    }
+
+    .card-cabana:hover .card-imagen img {
+      transform: scale(1.04);
+    }
+
+    /* Placeholder SVG cabaña */
+    .card-imagen-placeholder {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .card-cuerpo {
+      padding: 1.5rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+
+    .card-nombre {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.4rem;
+      font-weight: 700;
+      color: var(--texto-principal);
+    }
+
+    .card-capacidad {
+      font-size: 0.875rem;
+      color: var(--texto-secundario);
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+
+    .card-amenities {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+    }
+
+    .amenity-tag {
+      background-color: var(--fondo-crema);
+      color: var(--texto-secundario);
+      font-size: 0.78rem;
+      padding: 0.3rem 0.7rem;
+      border-radius: 999px;
+      display: flex;
+      align-items: center;
+      gap: 0.3rem;
+    }
+
+    .card-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      padding: 0.75rem 1.25rem;
+      background-color: var(--verde-salvia);
+      color: var(--blanco-calido);
+      border-radius: 6px;
+      font-size: 0.875rem;
+      font-weight: 500;
+      transition: all 0.25s ease;
+      margin-top: 0.25rem;
+    }
+
+    .card-btn:hover {
+      background-color: #67795f;
+      transform: translateY(-1px);
+    }
+
+    /* ===========================
+       SECCIÓN: AMENITIES
+    =========================== */
+    #amenities {
+      padding: 5rem 2rem;
+      background-color: var(--beige-claro);
+    }
+
+    .amenities-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 2rem;
+      max-width: 1000px;
+      margin: 3rem auto 0;
+    }
+
+    @media (min-width: 640px) {
+      .amenities-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+
+    @media (min-width: 1024px) {
+      .amenities-grid {
+        grid-template-columns: repeat(3, 1fr);
+      }
+    }
+
+    .amenity-card {
+      background-color: #fff;
+      border-radius: 12px;
+      padding: 2rem 1.5rem;
+      text-align: center;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.04);
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .amenity-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 8px 30px rgba(122,140,114,0.15);
+    }
+
+    .amenity-icono {
+      font-size: 2.5rem;
+      margin-bottom: 1rem;
+      display: block;
+    }
+
+    .amenity-titulo {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.15rem;
+      font-weight: 700;
+      color: var(--texto-principal);
+      margin-bottom: 0.5rem;
+    }
+
+    .amenity-desc {
+      font-size: 0.9rem;
+      color: var(--texto-secundario);
+      line-height: 1.6;
+    }
+
+    /* ===========================
+       SECCIÓN: GALERÍA
+    =========================== */
+    #galeria {
+      padding: 5rem 2rem;
+      background-color: var(--blanco-calido);
+    }
+
+    .galeria-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 0.75rem;
+      max-width: 1100px;
+      margin: 3rem auto 0;
+    }
+
+    @media (min-width: 768px) {
+      .galeria-grid {
+        grid-template-columns: repeat(3, 1fr);
+      }
+    }
+
+    .galeria-item {
+      position: relative;
+      padding-top: 100%;
+      overflow: hidden;
+      border-radius: 8px;
+      cursor: pointer;
+      background: linear-gradient(135deg, var(--verde-salvia) 0%, var(--beige-arena) 100%);
+    }
+
+    .galeria-item img {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 0.4s ease;
+    }
+
+    .galeria-item:hover img {
+      transform: scale(1.05);
+    }
+
+    .galeria-placeholder {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      color: rgba(255,255,255,0.7);
+      font-size: 0.8rem;
+      letter-spacing: 0.05em;
+    }
+
+    .galeria-overlay {
+      position: absolute;
+      inset: 0;
+      background-color: rgba(28,43,30,0);
+      transition: background-color 0.3s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .galeria-item:hover .galeria-overlay {
+      background-color: rgba(28,43,30,0.25);
+    }
+
+    .galeria-leyenda {
+      text-align: center;
+      margin-top: 2rem;
+      font-family: 'Playfair Display', serif;
+      font-style: italic;
+      color: var(--texto-secundario);
+      font-size: 1rem;
+    }
+
+    /* Lightbox */
+    .lightbox {
+      display: none;
+      position: fixed;
+      inset: 0;
+      z-index: 9999;
+      background-color: rgba(0,0,0,0.92);
+      align-items: center;
+      justify-content: center;
+    }
+
+    .lightbox.open {
+      display: flex;
+    }
+
+    .lightbox-img {
+      max-width: 90vw;
+      max-height: 88vh;
+      object-fit: contain;
+      border-radius: 4px;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+    }
+
+    .lightbox-cerrar {
+      position: absolute;
+      top: 1.5rem;
+      right: 1.5rem;
+      width: 44px;
+      height: 44px;
+      border: 2px solid rgba(255,255,255,0.4);
+      border-radius: 50%;
+      background: none;
+      color: #fff;
+      font-size: 1.25rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: border-color 0.2s;
+    }
+
+    .lightbox-cerrar:hover {
+      border-color: #fff;
+    }
+
+    .lightbox-nav {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 48px;
+      height: 48px;
+      background: rgba(255,255,255,0.1);
+      border: 1px solid rgba(255,255,255,0.25);
+      border-radius: 50%;
+      color: #fff;
+      font-size: 1.25rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background 0.2s;
+    }
+
+    .lightbox-nav:hover {
+      background: rgba(255,255,255,0.2);
+    }
+
+    .lightbox-prev { left: 1.5rem; }
+    .lightbox-next { right: 1.5rem; }
+
+    /* ===========================
+       SECCIÓN: UBICACIÓN
+    =========================== */
+    #ubicacion {
+      padding: 5rem 2rem;
+      background-color: var(--fondo-oscuro);
+      color: var(--blanco-calido);
+    }
+
+    .ubicacion-inner {
+      max-width: 1000px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 3rem;
+    }
+
+    @media (min-width: 768px) {
+      .ubicacion-inner {
+        grid-template-columns: 1fr 1fr;
+        align-items: center;
+      }
+    }
+
+    .ubicacion-texto .subtitulo-seccion {
+      margin-top: 1rem;
+    }
+
+    .ubicacion-datos {
+      margin-top: 2rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+    }
+
+    .ubicacion-dato {
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      font-size: 0.9rem;
+      color: rgba(250,250,247,0.8);
+    }
+
+    .ubicacion-dato strong {
+      color: var(--blanco-calido);
+    }
+
+    .mapa-container {
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+    }
+
+    .mapa-container iframe {
+      width: 100%;
+      height: 340px;
+      border: none;
+      display: block;
+    }
+
+    /* ===========================
+       SECCIÓN: POR QUÉ AROMAS
+    =========================== */
+    #por-que {
+      padding: 5rem 2rem;
+      background-color: var(--fondo-crema);
+    }
+
+    .porque-lista {
+      max-width: 780px;
+      margin: 3rem auto 0;
+      display: flex;
+      flex-direction: column;
+      gap: 2rem;
+    }
+
+    .porque-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 1.5rem;
+      padding: 1.5rem 2rem;
+      background-color: var(--blanco-calido);
+      border-radius: 12px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.04);
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .porque-item:hover {
+      transform: translateX(4px);
+      box-shadow: 0 6px 24px rgba(122,140,114,0.15);
+    }
+
+    .porque-icono {
+      font-size: 2rem;
+      flex-shrink: 0;
+      margin-top: 0.1rem;
+    }
+
+    .porque-texto h3 {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.15rem;
+      font-weight: 700;
+      color: var(--texto-principal);
+      margin-bottom: 0.35rem;
+    }
+
+    .porque-texto p {
+      font-size: 0.9rem;
+      color: var(--texto-secundario);
+      line-height: 1.65;
+    }
+
+    /* ===========================
+       SECCIÓN: CTA FINAL
+    =========================== */
+    #cta-final {
+      padding: 6rem 2rem;
+      background-color: var(--fondo-oscuro);
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+
+    #cta-final::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg width='80' height='80' viewBox='0 0 80 80' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%237A8C72' fill-opacity='0.06'%3E%3Ccircle cx='40' cy='40' r='30'/%3E%3C/g%3E%3C/svg%3E");
+    }
+
+    .cta-final-inner {
+      position: relative;
+      z-index: 1;
+      max-width: 600px;
+      margin: 0 auto;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 1.5rem;
+    }
+
+    .cta-redes {
+      display: flex;
+      align-items: center;
+      gap: 1.5rem;
+      margin-top: 1rem;
+    }
+
+    .cta-red-link {
+      color: rgba(250,250,247,0.6);
+      transition: color 0.2s;
+      display: flex;
+      align-items: center;
+    }
+
+    .cta-red-link:hover {
+      color: var(--beige-arena);
+    }
+
+    /* ===========================
+       SECCIÓN: FOOTER
+    =========================== */
+    #footer {
+      background-color: var(--footer-oscuro);
+      color: rgba(250,250,247,0.65);
+      padding: 3.5rem 2rem 2rem;
+    }
+
+    .footer-inner {
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+
+    .footer-top {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 2.5rem;
+      padding-bottom: 2.5rem;
+      border-bottom: 1px solid rgba(255,255,255,0.08);
+    }
+
+    @media (min-width: 768px) {
+      .footer-top {
+        grid-template-columns: 1.5fr 1fr 1fr;
+      }
+    }
+
+    .footer-logo img {
+      height: 56px;
+      width: auto;
+      margin-bottom: 0.75rem;
+    }
+
+    .footer-logo-texto {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.15rem;
+      color: var(--blanco-calido);
+      font-weight: 700;
+      margin-bottom: 0.25rem;
+    }
+
+    .footer-tagline {
+      font-size: 0.82rem;
+      color: rgba(250,250,247,0.5);
+      line-height: 1.5;
+    }
+
+    .footer-col h4 {
+      font-family: 'Inter', sans-serif;
+      font-size: 0.75rem;
+      font-weight: 500;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      color: rgba(250,250,247,0.4);
+      margin-bottom: 1rem;
+    }
+
+    .footer-links {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 0.6rem;
+    }
+
+    .footer-links a {
+      font-size: 0.9rem;
+      color: rgba(250,250,247,0.65);
+      transition: color 0.2s;
+    }
+
+    .footer-links a:hover {
+      color: var(--beige-arena);
+    }
+
+    .footer-contacto-item {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: 0.875rem;
+      color: rgba(250,250,247,0.65);
+      margin-bottom: 0.6rem;
+    }
+
+    .footer-contacto-item a:hover {
+      color: var(--beige-arena);
+    }
+
+    .footer-bottom {
+      padding-top: 1.75rem;
+      text-align: center;
+      font-size: 0.78rem;
+      color: rgba(250,250,247,0.3);
+    }
+
+    /* ===========================
+       BOTÓN WHATSAPP FLOTANTE
+    =========================== */
+    .wa-flotante {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      z-index: 1000;
+      width: 58px;
+      height: 58px;
+      border-radius: 50%;
+      background-color: var(--whatsapp-verde);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 4px 20px rgba(37,211,102,0.4);
+      animation: pulse-wa 2s ease-in-out infinite;
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .wa-flotante:hover {
+      transform: scale(1.08);
+      box-shadow: 0 6px 28px rgba(37,211,102,0.55);
+      animation: none;
+    }
+
+    .wa-tooltip {
+      position: absolute;
+      right: 68px;
+      white-space: nowrap;
+      background-color: var(--texto-principal);
+      color: #fff;
+      font-size: 0.78rem;
+      font-weight: 500;
+      padding: 0.35rem 0.8rem;
+      border-radius: 6px;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.2s ease;
+    }
+
+    .wa-tooltip::after {
+      content: '';
+      position: absolute;
+      left: 100%;
+      top: 50%;
+      transform: translateY(-50%);
+      border: 6px solid transparent;
+      border-left-color: var(--texto-principal);
+    }
+
+    .wa-flotante:hover .wa-tooltip {
+      opacity: 1;
+    }
+
+    @keyframes pulse-wa {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.05); }
+    }
+
+    /* ===========================
+       SECCIÓN: REELS / TELÉFONO
+    =========================== */
+    #reels {
+      padding: 5rem 2rem;
+      background-color: var(--fondo-oscuro);
+      text-align: center;
+      overflow: hidden;
+    }
+
+    #reels .seccion-header {
+      margin-bottom: 3.5rem;
+    }
+
+    .reels-layout {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 3.5rem;
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+
+    @media (min-width: 900px) {
+      .reels-layout {
+        flex-direction: row;
+        justify-content: center;
+        align-items: center;
+        gap: 5rem;
+      }
+
+      .reels-texto {
+        text-align: left;
+        max-width: 380px;
+      }
+    }
+
+    .reels-texto .titulo-seccion {
+      color: var(--blanco-calido);
+    }
+
+    .reels-texto .subtitulo-seccion {
+      color: rgba(250,250,247,0.7);
+      margin-top: 1rem;
+    }
+
+    .reels-texto .separador {
+      margin-top: 1rem;
+    }
+
+    .reels-bullets {
+      margin-top: 2rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+
+    .reels-bullet {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      font-size: 0.9rem;
+      color: rgba(250,250,247,0.7);
+    }
+
+    .reels-bullet-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background-color: var(--verde-salvia);
+      flex-shrink: 0;
+    }
+
+    /* Teléfono mockup */
+    .phone-mockup {
+      position: relative;
+      width: 280px;
+      flex-shrink: 0;
+    }
+
+    .phone-frame {
+      position: relative;
+      width: 280px;
+      height: 560px;
+      background: #0d0d0d;
+      border-radius: 44px;
+      box-shadow:
+        0 0 0 2px #2a2a2a,
+        0 0 0 4px #1a1a1a,
+        0 30px 80px rgba(0,0,0,0.7),
+        0 0 0 10px #111;
+      overflow: hidden;
+      z-index: 1;
+    }
+
+    /* Dynamic island */
+    .phone-island {
+      position: absolute;
+      top: 14px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 88px;
+      height: 26px;
+      background: #000;
+      border-radius: 20px;
+      z-index: 10;
+    }
+
+    /* Botones laterales del teléfono (decorativos) */
+    .phone-btn-vol {
+      position: absolute;
+      left: -3px;
+      top: 120px;
+      width: 3px;
+      height: 36px;
+      background: #222;
+      border-radius: 2px 0 0 2px;
+    }
+
+    .phone-btn-vol + .phone-btn-vol {
+      top: 170px;
+    }
+
+    .phone-btn-power {
+      position: absolute;
+      right: -3px;
+      top: 160px;
+      width: 3px;
+      height: 56px;
+      background: #222;
+      border-radius: 0 2px 2px 0;
+    }
+
+    /* Home bar */
+    .phone-home {
+      position: absolute;
+      bottom: 10px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 100px;
+      height: 4px;
+      background: rgba(255,255,255,0.25);
+      border-radius: 2px;
+      z-index: 10;
+    }
+
+    /* Slider de videos */
+    .phone-slider {
+      position: absolute;
+      inset: 0;
+      overflow: hidden;
+    }
+
+    .phone-track {
+      display: flex;
+      flex-direction: column;
+      height: 100%;
+      transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .phone-slide {
+      min-height: 560px;
+      width: 280px;
+      position: relative;
+      flex-shrink: 0;
+      background: #111;
+    }
+
+    .phone-slide video {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    /* Overlay con info en cada reel */
+    .reel-overlay {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(to top, rgba(0,0,0,0.55) 0%, transparent 50%);
+      z-index: 2;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      padding: 1.25rem 1rem 2.5rem;
+      pointer-events: none;
+    }
+
+    .reel-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+      background: rgba(122,140,114,0.8);
+      color: #fff;
+      font-size: 0.68rem;
+      font-weight: 500;
+      padding: 0.25rem 0.6rem;
+      border-radius: 999px;
+      width: fit-content;
+      margin-bottom: 0.5rem;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+    }
+
+    .reel-titulo {
+      font-family: 'Playfair Display', serif;
+      font-size: 1rem;
+      color: #fff;
+      font-weight: 700;
+      line-height: 1.2;
+    }
+
+    /* Controles del slider */
+    .phone-controls {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 1rem;
+      margin-top: 1.5rem;
+    }
+
+    .phone-btn {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: rgba(250,250,247,0.1);
+      border: 1px solid rgba(250,250,247,0.2);
+      color: var(--blanco-calido);
+      font-size: 1.1rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background 0.2s, border-color 0.2s;
+    }
+
+    .phone-btn:hover {
+      background: rgba(250,250,247,0.2);
+      border-color: rgba(250,250,247,0.4);
+    }
+
+    .phone-dots {
+      display: flex;
+      gap: 6px;
+    }
+
+    .phone-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: rgba(250,250,247,0.25);
+      transition: background 0.3s, transform 0.3s;
+      cursor: pointer;
+    }
+
+    .phone-dot.activo {
+      background: var(--verde-salvia);
+      transform: scale(1.3);
+    }
+
+    /* Brillo del teléfono (decorativo) */
+    .phone-shine {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 40%;
+      background: linear-gradient(to bottom, rgba(255,255,255,0.04), transparent);
+      border-radius: 44px 44px 0 0;
+      pointer-events: none;
+      z-index: 5;
+    }
+
+    /* ===========================
+       UTILITIES
+    =========================== */
+    .text-center { text-align: center; }
+
+    .separador {
+      width: 48px;
+      height: 3px;
+      background-color: var(--verde-salvia);
+      margin: 1rem 0 0;
+      border-radius: 2px;
+    }
+
+    .separador.centrado {
+      margin: 1rem auto 0;
+    }
+  </style>
+</head>
+
+<body>
+
+<!-- =====================================================
+     SECCIÓN: NAVBAR
+===================================================== -->
+<header>
+  <nav id="navbar" role="navigation" aria-label="Menú principal">
+    <!-- Logo -->
+    <a href="#" class="nav-logo" aria-label="Aromas de Campo — inicio">
+      <!-- Usar logo color en navbar -->
+      <img src="logo/aromas-color.png" alt="Aromas de Campo" onerror="this.style.display='none'; this.nextElementSibling.style.display='block'">
+      <div class="nav-logo-texto" style="display:none">
+        Aromas de Campo
+        <span>Cabañas de Troncos</span>
+      </div>
+    </a>
+
+    <!-- Links desktop -->
+    <ul class="nav-links" aria-label="Navegación principal">
+      <li><a href="#cabanas">Cabañas</a></li>
+      <li><a href="#amenities">Amenities</a></li>
+      <li><a href="#reels">Videos</a></li>
+      <li><a href="#ubicacion">Ubicación</a></li>
+      <li><a href="#cta-final">Reservar</a></li>
+    </ul>
+
+    <!-- CTA desktop -->
+    <a href="https://wa.me/5491169495055?text=Hola!%20Quiero%20consultar%20disponibilidad%20en%20Aromas%20de%20Campo."
+       target="_blank" rel="noopener noreferrer"
+       class="btn btn-primario nav-cta"
+       aria-label="Consultar disponibilidad por WhatsApp">
+      Consultar disponibilidad
+    </a>
+
+    <!-- Hamburger mobile -->
+    <button class="hamburger" id="hamburger" aria-label="Abrir menú" aria-expanded="false" aria-controls="nav-mobile">
+      <span></span>
+      <span></span>
+      <span></span>
+    </button>
+  </nav>
+
+  <!-- Menú mobile -->
+  <div class="nav-mobile" id="nav-mobile" role="dialog" aria-modal="true" aria-label="Menú de navegación">
+    <a href="#cabanas" onclick="cerrarMenu()">Cabañas</a>
+    <a href="#amenities" onclick="cerrarMenu()">Amenities</a>
+    <a href="#reels" onclick="cerrarMenu()">Videos</a>
+    <a href="#ubicacion" onclick="cerrarMenu()">Ubicación</a>
+    <a href="#cta-final" onclick="cerrarMenu()">Reservar</a>
+    <a href="https://wa.me/5491169495055?text=Hola!%20Quiero%20consultar%20disponibilidad%20en%20Aromas%20de%20Campo."
+       target="_blank" rel="noopener noreferrer"
+       class="btn btn-primario" onclick="cerrarMenu()">
+      Consultar por WhatsApp
+    </a>
+  </div>
+</header>
+
+<main>
+
+<!-- =====================================================
+     SECCIÓN: HERO
+===================================================== -->
+<section id="hero" aria-label="Portada principal">
+  <!-- Video de fondo: colocar archivo en videos/hero.mp4 -->
+  <video class="hero-video"
+         src="videos/hero.mp4"
+         poster="fotos/hero-poster.jpg"
+         autoplay muted loop playsinline
+         aria-hidden="true"
+         onerror="this.style.display='none'">
+  </video>
+
+  <!-- Fallback gradient si no hay video -->
+  <div class="hero-bg-fallback" aria-hidden="true"></div>
+  <div class="hero-overlay" aria-hidden="true"></div>
+
+  <div class="hero-content">
+    <!-- Logo blanco para hero -->
+    <img class="hero-logo"
+         src="logo/aromas-blanco.png"
+         alt="Aromas de Campo"
+         onerror="this.style.display='none'; this.nextElementSibling.style.display='block'">
+    <div class="hero-logo-texto" style="display:none">
+      Aromas de Campo
+      <span>· Cabañas de Troncos ·</span>
+    </div>
+
+    <span class="hero-badge fade-in">📍 Colón, Entre Ríos, Argentina</span>
+
+    <h1 class="hero-headline fade-in delay-1">
+      Desconectate del ruido.<br>Conectate con la naturaleza.
+    </h1>
+
+    <p class="hero-subtitulo fade-in delay-2">
+      3 cabañas de tronco en Colón, Entre Ríos. Pileta, parrilla, naturaleza pura y el río a minutos.
+    </p>
+
+    <div class="hero-botones fade-in delay-3">
+      <a href="https://wa.me/5491169495055?text=Hola!%20Quiero%20consultar%20disponibilidad%20en%20Aromas%20de%20Campo."
+         target="_blank" rel="noopener noreferrer"
+         class="btn btn-primario">
+        Reservar ahora
+      </a>
+      <a href="#cabanas" class="btn btn-outline">
+        Ver cabañas
+      </a>
+    </div>
+  </div>
+
+  <!-- Scroll indicator -->
+  <div class="scroll-indicator" aria-hidden="true">
+    <span></span>
+  </div>
+</section>
+
+<!-- =====================================================
+     SECCIÓN: STATS
+===================================================== -->
+<section id="stats" aria-label="Datos del complejo">
+  <div class="stats-grid">
+    <div class="stat-item fade-in">
+      <span class="stat-numero" data-target="3">0</span>
+      <span class="stat-label">Cabañas disponibles</span>
+    </div>
+    <div class="stat-item fade-in delay-2">
+      <span class="stat-numero" data-target="4">0</span>
+      <span class="stat-label">Personas por cabaña</span>
+    </div>
+    <div class="stat-item fade-in delay-3">
+      <span class="stat-numero" data-prefix="+" data-target="4">0</span>
+      <span class="stat-label">Años recibiendo huéspedes</span>
+    </div>
+  </div>
+</section>
+
+<!-- =====================================================
+     SECCIÓN: CABAÑAS
+===================================================== -->
+<section id="cabanas" aria-label="Nuestras cabañas">
+  <div class="seccion-header fade-in">
+    <h2 class="titulo-seccion">Nuestras Cabañas</h2>
+    <div class="separador centrado"></div>
+    <p class="subtitulo-seccion">Tres cabañas de tronco auténticas, pensadas para descansar de verdad en medio de la naturaleza entrerriana.</p>
+  </div>
+
+  <div class="cabanas-grid">
+
+    <!-- Cabaña 1 -->
+    <article class="card-cabana slide-up delay-1">
+      <div class="card-imagen">
+        <!-- Imagen: colocar foto en fotos/cabana-1.jpg -->
+        <img src="fotos/cabana-1.jpg" alt="Cabaña El Tronco — Aromas de Campo" loading="lazy"
+             onerror="this.style.display='none'; this.nextElementSibling.style.display='flex'">
+        <div class="card-imagen-placeholder" style="display:none">
+          <svg width="64" height="64" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+            <path d="M32 8L8 28H16V56H48V28H56L32 8Z" stroke="rgba(255,255,255,0.5)" stroke-width="2" fill="none"/>
+            <rect x="24" y="38" width="16" height="18" stroke="rgba(255,255,255,0.5)" stroke-width="2" fill="none"/>
+            <circle cx="32" cy="32" r="4" stroke="rgba(255,255,255,0.5)" stroke-width="2" fill="none"/>
+          </svg>
+        </div>
+      </div>
+      <div class="card-cuerpo">
+        <h3 class="card-nombre">El Tronco</h3>
+        <p class="card-capacidad">👥 Hasta 4 personas</p>
+        <div class="card-amenities">
+          <span class="amenity-tag">🛏️ Habitaciones</span>
+          <span class="amenity-tag">🚿 Baño privado</span>
+          <span class="amenity-tag">🔥 Parrilla</span>
+          <span class="amenity-tag">📶 WiFi</span>
+        </div>
+        <a href="https://wa.me/5491169495055?text=Hola!%20Me%20interesa%20la%20Caba%C3%B1a%20El%20Tronco."
+           target="_blank" rel="noopener noreferrer"
+           class="card-btn" aria-label="Consultar cabaña El Tronco por WhatsApp">
+          Consultar esta cabaña
+        </a>
+      </div>
+    </article>
+
+    <!-- Cabaña 2 -->
+    <article class="card-cabana slide-up delay-2">
+      <div class="card-imagen">
+        <!-- Imagen: colocar foto en fotos/cabana-2.jpg -->
+        <img src="fotos/cabana-2.jpg" alt="Cabaña El Sauce — Aromas de Campo" loading="lazy"
+             onerror="this.style.display='none'; this.nextElementSibling.style.display='flex'">
+        <div class="card-imagen-placeholder" style="display:none">
+          <svg width="64" height="64" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+            <path d="M32 8L8 28H16V56H48V28H56L32 8Z" stroke="rgba(255,255,255,0.5)" stroke-width="2" fill="none"/>
+            <rect x="24" y="38" width="16" height="18" stroke="rgba(255,255,255,0.5)" stroke-width="2" fill="none"/>
+            <circle cx="32" cy="32" r="4" stroke="rgba(255,255,255,0.5)" stroke-width="2" fill="none"/>
+          </svg>
+        </div>
+      </div>
+      <div class="card-cuerpo">
+        <h3 class="card-nombre">El Sauce</h3>
+        <p class="card-capacidad">👥 Hasta 4 personas</p>
+        <div class="card-amenities">
+          <span class="amenity-tag">🛏️ Habitaciones</span>
+          <span class="amenity-tag">🚿 Baño privado</span>
+          <span class="amenity-tag">🔥 Parrilla</span>
+          <span class="amenity-tag">📶 WiFi</span>
+        </div>
+        <a href="https://wa.me/5491169495055?text=Hola!%20Me%20interesa%20la%20Caba%C3%B1a%20El%20Sauce."
+           target="_blank" rel="noopener noreferrer"
+           class="card-btn" aria-label="Consultar cabaña El Sauce por WhatsApp">
+          Consultar esta cabaña
+        </a>
+      </div>
+    </article>
+
+    <!-- Cabaña 3 -->
+    <article class="card-cabana slide-up delay-3">
+      <div class="card-imagen">
+        <!-- Imagen: colocar foto en fotos/cabana-3.jpg -->
+        <img src="fotos/cabana-3.jpg" alt="Cabaña El Ceibo — Aromas de Campo" loading="lazy"
+             onerror="this.style.display='none'; this.nextElementSibling.style.display='flex'">
+        <div class="card-imagen-placeholder" style="display:none">
+          <svg width="64" height="64" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+            <path d="M32 8L8 28H16V56H48V28H56L32 8Z" stroke="rgba(255,255,255,0.5)" stroke-width="2" fill="none"/>
+            <rect x="24" y="38" width="16" height="18" stroke="rgba(255,255,255,0.5)" stroke-width="2" fill="none"/>
+            <circle cx="32" cy="32" r="4" stroke="rgba(255,255,255,0.5)" stroke-width="2" fill="none"/>
+          </svg>
+        </div>
+      </div>
+      <div class="card-cuerpo">
+        <h3 class="card-nombre">El Ceibo</h3>
+        <p class="card-capacidad">👥 Hasta 4 personas</p>
+        <div class="card-amenities">
+          <span class="amenity-tag">🛏️ Habitaciones</span>
+          <span class="amenity-tag">🚿 Baño privado</span>
+          <span class="amenity-tag">🔥 Parrilla</span>
+          <span class="amenity-tag">📶 WiFi</span>
+        </div>
+        <a href="https://wa.me/5491169495055?text=Hola!%20Me%20interesa%20la%20Caba%C3%B1a%20El%20Ceibo."
+           target="_blank" rel="noopener noreferrer"
+           class="card-btn" aria-label="Consultar cabaña El Ceibo por WhatsApp">
+          Consultar esta cabaña
+        </a>
+      </div>
+    </article>
+
+  </div>
+</section>
+
+<!-- =====================================================
+     SECCIÓN: AMENITIES
+===================================================== -->
+<section id="amenities" aria-label="Amenities del complejo">
+  <div class="seccion-header fade-in">
+    <h2 class="titulo-seccion">Todo lo que necesitás para<br>descansar de verdad</h2>
+    <div class="separador centrado"></div>
+  </div>
+
+  <div class="amenities-grid">
+    <div class="amenity-card fade-in delay-1">
+      <span class="amenity-icono" aria-hidden="true">🏊</span>
+      <h3 class="amenity-titulo">Pileta</h3>
+      <p class="amenity-desc">Refrescate rodeado de verde. La pileta es el corazón del complejo en verano.</p>
+    </div>
+    <div class="amenity-card fade-in delay-2">
+      <span class="amenity-icono" aria-hidden="true">🔥</span>
+      <h3 class="amenity-titulo">Parrilla y fogón</h3>
+      <p class="amenity-desc">Asado bajo las estrellas entrerrianas. Cada cabaña tiene su parrilla exclusiva.</p>
+    </div>
+    <div class="amenity-card fade-in delay-3">
+      <span class="amenity-icono" aria-hidden="true">🌳</span>
+      <h3 class="amenity-titulo">Jardín y naturaleza</h3>
+      <p class="amenity-desc">Árboles, pájaros y silencio real. El campo que esperabas encontrar.</p>
+    </div>
+    <div class="amenity-card fade-in delay-1">
+      <span class="amenity-icono" aria-hidden="true">🌊</span>
+      <h3 class="amenity-titulo">Río y termas cerca</h3>
+      <p class="amenity-desc">A minutos del río Uruguay y las termas de Colón. Dos de los mejores atractivos de Entre Ríos.</p>
+    </div>
+    <div class="amenity-card fade-in delay-2">
+      <span class="amenity-icono" aria-hidden="true">📶</span>
+      <h3 class="amenity-titulo">WiFi y confort</h3>
+      <p class="amenity-desc">TV, cocina equipada, ropa de cama incluida. Todo lo necesario sin que sobre nada.</p>
+    </div>
+    <div class="amenity-card fade-in delay-3">
+      <span class="amenity-icono" aria-hidden="true">🌅</span>
+      <h3 class="amenity-titulo">Tranquilidad total</h3>
+      <p class="amenity-desc">Lejos del ruido, cerca de todo. El equilibrio perfecto para una escapada de verdad.</p>
+    </div>
+  </div>
+</section>
+
+<!-- =====================================================
+     SECCIÓN: REELS / TELÉFONO
+===================================================== -->
+<section id="reels" aria-label="Videos del complejo">
+  <div class="reels-layout">
+
+    <!-- Texto lateral -->
+    <div class="reels-texto fade-in">
+      <h2 class="titulo-seccion">Miralo antes<br>de venir</h2>
+      <div class="separador"></div>
+      <p class="subtitulo-seccion">
+        Así se vive en Aromas de Campo. Videos reales, sin filtros. Porque el lugar habla solo.
+      </p>
+      <div class="reels-bullets">
+        <div class="reels-bullet">
+          <span class="reels-bullet-dot"></span>
+          <span>Cabañas de tronco auténticas, filmadas en el lugar</span>
+        </div>
+        <div class="reels-bullet">
+          <span class="reels-bullet-dot"></span>
+          <span>Pileta, parrilla, jardín y atardeceres entrerrianos</span>
+        </div>
+        <div class="reels-bullet">
+          <span class="reels-bullet-dot"></span>
+          <span>Colón, el río Uruguay y las termas a minutos</span>
+        </div>
+        <div class="reels-bullet">
+          <span class="reels-bullet-dot"></span>
+          <span>Seguinos en Instagram <a href="https://instagram.com/aromasdecampo22" target="_blank" rel="noopener noreferrer" style="color:var(--beige-arena)">@aromasdecampo22</a></span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Teléfono -->
+    <div class="phone-mockup fade-in delay-2">
+      <!-- Botones decorativos -->
+      <div class="phone-btn-vol" aria-hidden="true"></div>
+      <div class="phone-btn-vol" aria-hidden="true"></div>
+      <div class="phone-btn-power" aria-hidden="true"></div>
+
+      <div class="phone-frame">
+        <div class="phone-island" aria-hidden="true"></div>
+        <div class="phone-shine" aria-hidden="true"></div>
+
+        <div class="phone-slider">
+          <div class="phone-track" id="phoneTrack">
+
+            <!-- Reel 1: Video principal cabañas -->
+            <!-- Archivo: videos/reel-1.mp4 (copiar desde: "Video Cabañas.mp4") -->
+            <div class="phone-slide">
+              <video src="videos/reel-1.mp4"
+                     muted playsinline loop preload="none"
+                     aria-label="Video: Cabañas Aromas de Campo"></video>
+              <div class="reel-overlay">
+                <span class="reel-tag">🏡 Cabañas</span>
+                <p class="reel-titulo">Así son nuestras cabañas de tronco</p>
+              </div>
+            </div>
+
+            <!-- Reel 2 -->
+            <!-- Archivo: videos/reel-2.mp4 (copiar desde: "WhatsApp Video 2026-03-03 at 23.51.31.mp4") -->
+            <div class="phone-slide">
+              <video src="videos/reel-2.mp4"
+                     muted playsinline loop preload="none"
+                     aria-label="Video: Ambiente Aromas de Campo"></video>
+              <div class="reel-overlay">
+                <span class="reel-tag">🌿 Naturaleza</span>
+                <p class="reel-titulo">Verde, tranquilidad y aire puro</p>
+              </div>
+            </div>
+
+            <!-- Reel 3 -->
+            <!-- Archivo: videos/reel-3.mp4 (copiar desde: "WhatsApp Video 2025-11-17 at 20.47.03.mp4") -->
+            <div class="phone-slide">
+              <video src="videos/reel-3.mp4"
+                     muted playsinline loop preload="none"
+                     aria-label="Video: Pileta y amenities"></video>
+              <div class="reel-overlay">
+                <span class="reel-tag">🏊 Pileta</span>
+                <p class="reel-titulo">Refrescate rodeado de campo</p>
+              </div>
+            </div>
+
+            <!-- Reel 4 -->
+            <!-- Archivo: videos/reel-4.mp4 (copiar desde: "07-03.mp4") -->
+            <div class="phone-slide">
+              <video src="videos/reel-4.mp4"
+                     muted playsinline loop preload="none"
+                     aria-label="Video: Colón y alrededores"></video>
+              <div class="reel-overlay">
+                <span class="reel-tag">📍 Colón</span>
+                <p class="reel-titulo">El río Uruguay, a minutos de acá</p>
+              </div>
+            </div>
+
+          </div><!-- /phone-track -->
+        </div><!-- /phone-slider -->
+
+        <div class="phone-home" aria-hidden="true"></div>
+      </div><!-- /phone-frame -->
+
+      <!-- Controles debajo del teléfono -->
+      <div class="phone-controls">
+        <button class="phone-btn" id="reelPrev" aria-label="Video anterior">&#8593;</button>
+        <div class="phone-dots" id="reelDots" role="tablist" aria-label="Seleccionar video">
+          <span class="phone-dot activo" role="tab" aria-selected="true" tabindex="0" aria-label="Video 1"></span>
+          <span class="phone-dot" role="tab" aria-selected="false" tabindex="0" aria-label="Video 2"></span>
+          <span class="phone-dot" role="tab" aria-selected="false" tabindex="0" aria-label="Video 3"></span>
+          <span class="phone-dot" role="tab" aria-selected="false" tabindex="0" aria-label="Video 4"></span>
+        </div>
+        <button class="phone-btn" id="reelNext" aria-label="Siguiente video">&#8595;</button>
+      </div>
+    </div><!-- /phone-mockup -->
+
+  </div>
+</section>
+
+<!-- =====================================================
+     SECCIÓN: GALERÍA
+===================================================== -->
+<section id="galeria" aria-label="Galería de fotos">
+  <div class="seccion-header fade-in">
+    <h2 class="titulo-seccion">El lugar habla solo</h2>
+    <div class="separador centrado"></div>
+  </div>
+
+  <div class="galeria-grid" id="galeriaGrid">
+
+    <!-- Las imágenes van en fotos/galeria-1.jpg … fotos/galeria-6.jpg -->
+
+    <div class="galeria-item fade-in delay-1" data-index="0" role="button" tabindex="0" aria-label="Ver foto 1 en tamaño completo">
+      <img src="fotos/galeria-1.jpg" alt="Aromas de Campo — foto 1" loading="lazy"
+           onerror="this.style.display='none'; this.nextElementSibling.style.display='flex'">
+      <div class="galeria-placeholder" style="display:none">
+        <svg width="32" height="32" fill="none" viewBox="0 0 24 24" aria-hidden="true"><path d="M21 15l-5-5L5 21" stroke="rgba(255,255,255,0.5)" stroke-width="1.5"/><circle cx="8.5" cy="8.5" r="2.5" stroke="rgba(255,255,255,0.5)" stroke-width="1.5"/><rect x="3" y="3" width="18" height="18" rx="2" stroke="rgba(255,255,255,0.5)" stroke-width="1.5"/></svg>
+        <span>Foto próximamente</span>
+      </div>
+      <div class="galeria-overlay" aria-hidden="true"></div>
+    </div>
+
+    <div class="galeria-item fade-in delay-2" data-index="1" role="button" tabindex="0" aria-label="Ver foto 2 en tamaño completo">
+      <img src="fotos/galeria-2.jpg" alt="Aromas de Campo — foto 2" loading="lazy"
+           onerror="this.style.display='none'; this.nextElementSibling.style.display='flex'">
+      <div class="galeria-placeholder" style="display:none">
+        <svg width="32" height="32" fill="none" viewBox="0 0 24 24" aria-hidden="true"><path d="M21 15l-5-5L5 21" stroke="rgba(255,255,255,0.5)" stroke-width="1.5"/><circle cx="8.5" cy="8.5" r="2.5" stroke="rgba(255,255,255,0.5)" stroke-width="1.5"/><rect x="3" y="3" width="18" height="18" rx="2" stroke="rgba(255,255,255,0.5)" stroke-width="1.5"/></svg>
+        <span>Foto próximamente</span>
+      </div>
+      <div class="galeria-overlay" aria-hidden="true"></div>
+    </div>
+
+    <div class="galeria-item fade-in delay-3" data-index="2" role="button" tabindex="0" aria-label="Ver foto 3 en tamaño completo">
+      <img src="fotos/galeria-3.jpg" alt="Aromas de Campo — foto 3" loading="lazy"
+           onerror="this.style.display='none'; this.nextElementSibling.style.display='flex'">
+      <div class="galeria-placeholder" style="display:none">
+        <svg width="32" height="32" fill="none" viewBox="0 0 24 24" aria-hidden="true"><path d="M21 15l-5-5L5 21" stroke="rgba(255,255,255,0.5)" stroke-width="1.5"/><circle cx="8.5" cy="8.5" r="2.5" stroke="rgba(255,255,255,0.5)" stroke-width="1.5"/><rect x="3" y="3" width="18" height="18" rx="2" stroke="rgba(255,255,255,0.5)" stroke-width="1.5"/></svg>
+        <span>Foto próximamente</span>
+      </div>
+      <div class="galeria-overlay" aria-hidden="true"></div>
+    </div>
+
+    <div class="galeria-item fade-in delay-1" data-index="3" role="button" tabindex="0" aria-label="Ver foto 4 en tamaño completo">
+      <img src="fotos/galeria-4.jpg" alt="Aromas de Campo — foto 4" loading="lazy"
+           onerror="this.style.display='none'; this.nextElementSibling.style.display='flex'">
+      <div class="galeria-placeholder" style="display:none">
+        <svg width="32" height="32" fill="none" viewBox="0 0 24 24" aria-hidden="true"><path d="M21 15l-5-5L5 21" stroke="rgba(255,255,255,0.5)" stroke-width="1.5"/><circle cx="8.5" cy="8.5" r="2.5" stroke="rgba(255,255,255,0.5)" stroke-width="1.5"/><rect x="3" y="3" width="18" height="18" rx="2" stroke="rgba(255,255,255,0.5)" stroke-width="1.5"/></svg>
+        <span>Foto próximamente</span>
+      </div>
+      <div class="galeria-overlay" aria-hidden="true"></div>
+    </div>
+
+    <div class="galeria-item fade-in delay-2" data-index="4" role="button" tabindex="0" aria-label="Ver foto 5 en tamaño completo">
+      <img src="fotos/galeria-5.jpg" alt="Aromas de Campo — foto 5" loading="lazy"
+           onerror="this.style.display='none'; this.nextElementSibling.style.display='flex'">
+      <div class="galeria-placeholder" style="display:none">
+        <svg width="32" height="32" fill="none" viewBox="0 0 24 24" aria-hidden="true"><path d="M21 15l-5-5L5 21" stroke="rgba(255,255,255,0.5)" stroke-width="1.5"/><circle cx="8.5" cy="8.5" r="2.5" stroke="rgba(255,255,255,0.5)" stroke-width="1.5"/><rect x="3" y="3" width="18" height="18" rx="2" stroke="rgba(255,255,255,0.5)" stroke-width="1.5"/></svg>
+        <span>Foto próximamente</span>
+      </div>
+      <div class="galeria-overlay" aria-hidden="true"></div>
+    </div>
+
+    <div class="galeria-item fade-in delay-3" data-index="5" role="button" tabindex="0" aria-label="Ver foto 6 en tamaño completo">
+      <img src="fotos/galeria-6.jpg" alt="Aromas de Campo — foto 6" loading="lazy"
+           onerror="this.style.display='none'; this.nextElementSibling.style.display='flex'">
+      <div class="galeria-placeholder" style="display:none">
+        <svg width="32" height="32" fill="none" viewBox="0 0 24 24" aria-hidden="true"><path d="M21 15l-5-5L5 21" stroke="rgba(255,255,255,0.5)" stroke-width="1.5"/><circle cx="8.5" cy="8.5" r="2.5" stroke="rgba(255,255,255,0.5)" stroke-width="1.5"/><rect x="3" y="3" width="18" height="18" rx="2" stroke="rgba(255,255,255,0.5)" stroke-width="1.5"/></svg>
+        <span>Foto próximamente</span>
+      </div>
+      <div class="galeria-overlay" aria-hidden="true"></div>
+    </div>
+
+  </div>
+
+  <p class="galeria-leyenda fade-in">"Las fotos son reales — el lugar todavía las supera."</p>
+</section>
+
+<!-- Lightbox -->
+<div class="lightbox" id="lightbox" role="dialog" aria-modal="true" aria-label="Vista ampliada de foto">
+  <button class="lightbox-cerrar" id="lightboxCerrar" aria-label="Cerrar">&times;</button>
+  <button class="lightbox-nav lightbox-prev" id="lightboxPrev" aria-label="Foto anterior">&#8249;</button>
+  <img class="lightbox-img" id="lightboxImg" src="" alt="Foto ampliada — Aromas de Campo">
+  <button class="lightbox-nav lightbox-next" id="lightboxNext" aria-label="Siguiente foto">&#8250;</button>
+</div>
+
+<!-- =====================================================
+     SECCIÓN: UBICACIÓN
+===================================================== -->
+<section id="ubicacion" aria-label="Ubicación del complejo">
+  <div class="ubicacion-inner">
+    <div class="ubicacion-texto fade-in">
+      <h2 class="titulo-seccion claro">Estamos en<br>Colón, Entre Ríos</h2>
+      <div class="separador"></div>
+      <p class="subtitulo-seccion claro">
+        A 350 km de Buenos Aires. A minutos de las termas, el río Uruguay y el centro de Colón.
+      </p>
+      <div class="ubicacion-datos">
+        <div class="ubicacion-dato">
+          <span aria-hidden="true">📍</span>
+          <span><strong>Colón, Entre Ríos</strong> · Ruta 135</span>
+        </div>
+        <div class="ubicacion-dato">
+          <span aria-hidden="true">🚗</span>
+          <span>350 km desde Buenos Aires · 4 hs en auto</span>
+        </div>
+        <div class="ubicacion-dato">
+          <span aria-hidden="true">♨️</span>
+          <span>Termas de Colón a 5 minutos</span>
+        </div>
+        <div class="ubicacion-dato">
+          <span aria-hidden="true">🌊</span>
+          <span>Río Uruguay a 10 minutos</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="mapa-container fade-in delay-2">
+      <!-- Mapa: Colón, Entre Ríos, Argentina -->
+      <iframe
+        src="https://maps.google.com/maps?q=-32.2233,-58.1457&z=14&output=embed"
+        title="Mapa de Aromas de Campo en Colón, Entre Ríos"
+        loading="lazy"
+        referrerpolicy="no-referrer-when-downgrade"
+        allowfullscreen>
+      </iframe>
+    </div>
+  </div>
+</section>
+
+<!-- =====================================================
+     SECCIÓN: POR QUÉ AROMAS DE CAMPO
+===================================================== -->
+<section id="por-que" aria-label="Por qué elegirnos">
+  <div class="seccion-header fade-in">
+    <h2 class="titulo-seccion">¿Por qué Aromas de Campo?</h2>
+    <div class="separador centrado"></div>
+  </div>
+
+  <div class="porque-lista">
+    <div class="porque-item fade-in delay-1">
+      <span class="porque-icono" aria-hidden="true">🏡</span>
+      <div class="porque-texto">
+        <h3>Cabañas de tronco auténticas</h3>
+        <p>No prefabricadas. Construcción real con madera, pensada para durar y para que se note la diferencia cuando entrás.</p>
+      </div>
+    </div>
+    <div class="porque-item fade-in delay-2">
+      <span class="porque-icono" aria-hidden="true">👨‍👩‍👧</span>
+      <div class="porque-texto">
+        <h3>Atención familiar</h3>
+        <p>Los dueños son los anfitriones. El trato es personal, directo y sin intermediarios. Eso se siente desde el primer mensaje.</p>
+      </div>
+    </div>
+    <div class="porque-item fade-in delay-3">
+      <span class="porque-icono" aria-hidden="true">📍</span>
+      <div class="porque-texto">
+        <h3>Ubicación inmejorable</h3>
+        <p>En el corazón de Colón, a minutos de todo. Las termas, el río, el centro, los parques. Nada queda lejos.</p>
+      </div>
+    </div>
+    <div class="porque-item fade-in delay-4">
+      <span class="porque-icono" aria-hidden="true">⭐</span>
+      <div class="porque-texto">
+        <h3>Huéspedes que vuelven</h3>
+        <p>La mejor referencia es quien ya estuvo. Muchos de nuestros huéspedes vuelven año a año. Eso lo dice todo.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- =====================================================
+     SECCIÓN: CTA FINAL
+===================================================== -->
+<section id="cta-final" aria-label="Llamada a la acción — reservar">
+  <div class="cta-final-inner">
+    <h2 class="titulo-seccion claro fade-in">¿Cuándo es tu próxima escapada?</h2>
+    <p class="subtitulo-seccion claro fade-in delay-1">
+      Escribinos hoy y te confirmamos disponibilidad al instante.
+    </p>
+
+    <a href="https://wa.me/5491169495055?text=Hola!%20Quiero%20consultar%20disponibilidad%20en%20Aromas%20de%20Campo."
+       target="_blank" rel="noopener noreferrer"
+       class="btn btn-whatsapp fade-in delay-2"
+       aria-label="Reservar por WhatsApp">
+      <!-- SVG WhatsApp inline -->
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+        <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51a12.8 12.8 0 00-.57-.01c-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
+      </svg>
+      Reservar por WhatsApp
+    </a>
+
+    <!-- Redes sociales -->
+    <div class="cta-redes fade-in delay-3">
+      <a href="https://instagram.com/aromasdecampo22"
+         target="_blank" rel="noopener noreferrer"
+         class="cta-red-link"
+         aria-label="Instagram de Aromas de Campo">
+        <!-- SVG Instagram inline -->
+        <svg width="28" height="28" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+          <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/>
+        </svg>
+      </a>
+      <a href="https://facebook.com/aromasdecampo022"
+         target="_blank" rel="noopener noreferrer"
+         class="cta-red-link"
+         aria-label="Facebook de Aromas de Campo">
+        <!-- SVG Facebook inline -->
+        <svg width="28" height="28" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+          <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
+        </svg>
+      </a>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<!-- =====================================================
+     SECCIÓN: FOOTER
+===================================================== -->
+<footer id="footer">
+  <div class="footer-inner">
+    <div class="footer-top">
+      <!-- Columna 1: Logo y tagline -->
+      <div>
+        <!-- Logo blanco para footer -->
+        <div class="footer-logo">
+          <img src="logo/aromas-blanco.png" alt="Aromas de Campo"
+               onerror="this.style.display='none'; this.nextElementSibling.style.display='block'">
+          <div class="footer-logo-texto" style="display:none">Aromas de Campo</div>
+        </div>
+        <p class="footer-tagline">Cabañas de tronco en Colón, Entre Ríos.<br>Naturaleza, tranquilidad y atención familiar.</p>
+      </div>
+
+      <!-- Columna 2: Links -->
+      <div class="footer-col">
+        <h4>Navegación</h4>
+        <ul class="footer-links">
+          <li><a href="#cabanas">Cabañas</a></li>
+          <li><a href="#amenities">Amenities</a></li>
+          <li><a href="#ubicacion">Ubicación</a></li>
+          <li><a href="#cta-final">Reservar</a></li>
+        </ul>
+      </div>
+
+      <!-- Columna 3: Contacto -->
+      <div class="footer-col">
+        <h4>Contacto</h4>
+        <div class="footer-contacto-item">
+          <span aria-hidden="true">📱</span>
+          <a href="https://wa.me/5491169495055?text=Hola!%20Quiero%20consultar%20disponibilidad%20en%20Aromas%20de%20Campo."
+             target="_blank" rel="noopener noreferrer">
+            +54 9 11 6949-5055
+          </a>
+        </div>
+        <div class="footer-contacto-item">
+          <span aria-hidden="true">📸</span>
+          <a href="https://instagram.com/aromasdecampo22" target="_blank" rel="noopener noreferrer">
+            @aromasdecampo22
+          </a>
+        </div>
+        <div class="footer-contacto-item">
+          <span aria-hidden="true">👍</span>
+          <a href="https://facebook.com/aromasdecampo022" target="_blank" rel="noopener noreferrer">
+            aromasdecampo022
+          </a>
+        </div>
+        <div class="footer-contacto-item">
+          <span aria-hidden="true">📍</span>
+          <span>Colón, Entre Ríos, Argentina</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="footer-bottom">
+      <p>© 2025 Aromas de Campo — Colón, Entre Ríos. Todos los derechos reservados.</p>
+    </div>
+  </div>
+</footer>
+
+<!-- =====================================================
+     BOTÓN WHATSAPP FLOTANTE
+===================================================== -->
+<a href="https://wa.me/5491169495055?text=Hola!%20Quiero%20consultar%20disponibilidad."
+   target="_blank" rel="noopener noreferrer"
+   class="wa-flotante"
+   aria-label="Contactar por WhatsApp">
+  <span class="wa-tooltip">Consultanos</span>
+  <!-- SVG WhatsApp inline -->
+  <svg width="28" height="28" viewBox="0 0 24 24" fill="#ffffff" aria-hidden="true">
+    <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51a12.8 12.8 0 00-.57-.01c-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
+  </svg>
+</a>
+
+<!-- =====================================================
+     JAVASCRIPT
+===================================================== -->
+<script>
+  // ---- Phone Reels ----
+  (function() {
+    const track = document.getElementById('phoneTrack');
+    if (!track) return;
+
+    const slides = track.querySelectorAll('.phone-slide');
+    const dots = document.querySelectorAll('#reelDots .phone-dot');
+    const btnPrev = document.getElementById('reelPrev');
+    const btnNext = document.getElementById('reelNext');
+    const total = slides.length;
+    let actual = 0;
+
+    function irA(idx) {
+      // Pausar video anterior
+      const videoAnterior = slides[actual].querySelector('video');
+      if (videoAnterior) videoAnterior.pause();
+
+      actual = (idx + total) % total;
+      track.style.transform = 'translateY(-' + (actual * 560) + 'px)';
+
+      // Actualizar dots
+      dots.forEach(function(d, i) {
+        d.classList.toggle('activo', i === actual);
+        d.setAttribute('aria-selected', i === actual);
+      });
+
+      // Reproducir video actual
+      const videoActual = slides[actual].querySelector('video');
+      if (videoActual) {
+        videoActual.load();
+        videoActual.play().catch(function() {});
+      }
+    }
+
+    btnNext.addEventListener('click', function() { irA(actual + 1); });
+    btnPrev.addEventListener('click', function() { irA(actual - 1); });
+
+    dots.forEach(function(dot, i) {
+      dot.addEventListener('click', function() { irA(i); });
+      dot.addEventListener('keydown', function(e) {
+        if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); irA(i); }
+      });
+    });
+
+    // Touch swipe vertical en el teléfono
+    const phoneFrame = track.closest('.phone-frame');
+    if (phoneFrame) {
+      let touchStartY = 0;
+      phoneFrame.addEventListener('touchstart', function(e) {
+        touchStartY = e.touches[0].clientY;
+      }, { passive: true });
+      phoneFrame.addEventListener('touchend', function(e) {
+        const diff = touchStartY - e.changedTouches[0].clientY;
+        if (Math.abs(diff) > 40) {
+          irA(diff > 0 ? actual + 1 : actual - 1);
+        }
+      }, { passive: true });
+    }
+
+    // Auto-avance cada 6 segundos
+    let intervaloReels = setInterval(function() { irA(actual + 1); }, 6000);
+
+    // Pausar auto-avance cuando se interactúa
+    [btnNext, btnPrev].forEach(function(btn) {
+      btn.addEventListener('click', function() {
+        clearInterval(intervaloReels);
+        intervaloReels = setInterval(function() { irA(actual + 1); }, 6000);
+      });
+    });
+
+    // Reproducir primer video cuando la sección entra al viewport
+    const seccionReels = document.getElementById('reels');
+    if (seccionReels) {
+      const obsReels = new IntersectionObserver(function(entries) {
+        if (entries[0].isIntersecting) {
+          const v = slides[0].querySelector('video');
+          if (v) v.play().catch(function() {});
+          obsReels.disconnect();
+        }
+      }, { threshold: 0.3 });
+      obsReels.observe(seccionReels);
+    }
+  })();
+
+  // ---- Navbar scroll ----
+  const navbar = document.getElementById('navbar');
+  window.addEventListener('scroll', function() {
+    if (window.scrollY > 60) {
+      navbar.classList.add('scrolled');
+    } else {
+      navbar.classList.remove('scrolled');
+    }
+  }, { passive: true });
+
+  // ---- Hamburger menu ----
+  const hamburger = document.getElementById('hamburger');
+  const navMobile = document.getElementById('nav-mobile');
+
+  hamburger.addEventListener('click', function() {
+    const estaAbierto = hamburger.classList.contains('open');
+    hamburger.classList.toggle('open');
+    navMobile.classList.toggle('open');
+    hamburger.setAttribute('aria-expanded', !estaAbierto);
+    document.body.style.overflow = estaAbierto ? '' : 'hidden';
+  });
+
+  function cerrarMenu() {
+    hamburger.classList.remove('open');
+    navMobile.classList.remove('open');
+    hamburger.setAttribute('aria-expanded', 'false');
+    document.body.style.overflow = '';
+  }
+
+  // Cerrar menú con ESC
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') {
+      cerrarMenu();
+      cerrarLightbox();
+    }
+  });
+
+  // ---- Scroll reveal con IntersectionObserver ----
+  const elementosAnimados = document.querySelectorAll('.fade-in, .slide-up');
+
+  const observadorScroll = new IntersectionObserver(function(entries) {
+    entries.forEach(function(entry) {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('visible');
+        observadorScroll.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.15 });
+
+  elementosAnimados.forEach(function(el) {
+    observadorScroll.observe(el);
+  });
+
+  // ---- Counter JS animado ----
+  const contadores = document.querySelectorAll('.stat-numero[data-target]');
+
+  const observadorCounter = new IntersectionObserver(function(entries) {
+    entries.forEach(function(entry) {
+      if (entry.isIntersecting) {
+        const el = entry.target;
+        const objetivo = parseInt(el.getAttribute('data-target'));
+        const prefijo = el.getAttribute('data-prefix') || '';
+        const duracion = 1400;
+        const inicio = performance.now();
+
+        function actualizar(tiempoActual) {
+          const transcurrido = tiempoActual - inicio;
+          const progreso = Math.min(transcurrido / duracion, 1);
+          // Easing ease-out
+          const ease = 1 - Math.pow(1 - progreso, 3);
+          const valorActual = Math.floor(ease * objetivo);
+          el.textContent = prefijo + valorActual;
+          if (progreso < 1) {
+            requestAnimationFrame(actualizar);
+          } else {
+            el.textContent = prefijo + objetivo;
+          }
+        }
+
+        requestAnimationFrame(actualizar);
+        observadorCounter.unobserve(el);
+      }
+    });
+  }, { threshold: 0.5 });
+
+  contadores.forEach(function(el) {
+    observadorCounter.observe(el);
+  });
+
+  // ---- Lightbox ----
+  const galeriaItems = document.querySelectorAll('.galeria-item');
+  const lightbox = document.getElementById('lightbox');
+  const lightboxImg = document.getElementById('lightboxImg');
+  const lightboxCerrar = document.getElementById('lightboxCerrar');
+  const lightboxPrev = document.getElementById('lightboxPrev');
+  const lightboxNext = document.getElementById('lightboxNext');
+
+  // Recolectar solo los src de imágenes que existen
+  const srcsGaleria = [];
+  galeriaItems.forEach(function(item) {
+    const img = item.querySelector('img');
+    if (img) srcsGaleria.push(img.src);
+  });
+
+  let indiceActual = 0;
+
+  function abrirLightbox(indice) {
+    indiceActual = indice;
+    lightboxImg.src = srcsGaleria[indice];
+    lightboxImg.alt = 'Aromas de Campo — foto ' + (indice + 1);
+    lightbox.classList.add('open');
+    document.body.style.overflow = 'hidden';
+  }
+
+  function cerrarLightbox() {
+    lightbox.classList.remove('open');
+    lightboxImg.src = '';
+    document.body.style.overflow = '';
+  }
+
+  function irPrev() {
+    indiceActual = (indiceActual - 1 + srcsGaleria.length) % srcsGaleria.length;
+    lightboxImg.src = srcsGaleria[indiceActual];
+  }
+
+  function irNext() {
+    indiceActual = (indiceActual + 1) % srcsGaleria.length;
+    lightboxImg.src = srcsGaleria[indiceActual];
+  }
+
+  galeriaItems.forEach(function(item) {
+    item.addEventListener('click', function() {
+      const idx = parseInt(item.getAttribute('data-index'));
+      if (srcsGaleria[idx]) abrirLightbox(idx);
+    });
+    item.addEventListener('keydown', function(e) {
+      if (e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault();
+        const idx = parseInt(item.getAttribute('data-index'));
+        if (srcsGaleria[idx]) abrirLightbox(idx);
+      }
+    });
+  });
+
+  lightboxCerrar.addEventListener('click', cerrarLightbox);
+  lightboxPrev.addEventListener('click', irPrev);
+  lightboxNext.addEventListener('click', irNext);
+
+  // Cerrar al hacer click fuera de la imagen
+  lightbox.addEventListener('click', function(e) {
+    if (e.target === lightbox) cerrarLightbox();
+  });
+
+  // Navegación con flechas del teclado
+  document.addEventListener('keydown', function(e) {
+    if (!lightbox.classList.contains('open')) return;
+    if (e.key === 'ArrowLeft') irPrev();
+    if (e.key === 'ArrowRight') irNext();
+  });
+</script>
+
+</body>
+</html>

@@ -1,0 +1,48 @@
+# Ignorar videos originales con nombres largos/espacios
+# Solo se commitean los renombrados: hero.mp4, reel-1.mp4 … reel-4.mp4
+
+videos/07-03.mp4
+videos/AQOJ*.mp4
+videos/AQOy*.mp4
+videos/AQPn*.mp4
+videos/COLON*.mp4
+videos/Finde*.mp4
+videos/Vamos*.mp4
+videos/Video Cabañas.mp4
+videos/WhatsApp*.mp4
+videos/ssstik*.mp4
+videos/Grau*.mp4
+
+# Ignorar fotos originales con nombres largos/espacios
+# Solo se committean las renombradas: cabana-*.jpg, galeria-*.jpg, hero-poster.jpg
+fotos/WhatsApp*.jpeg
+fotos/WhatsApp*.jpg
+fotos/Foto cabañas*.jpg
+fotos/Atardecer*.JPG
+fotos/Atardecer*.jpeg
+fotos/Vista*.JPG
+fotos/Foto.jpg
+fotos/Foto 2.jpg
+fotos/Playa.jpg
+fotos/Diseño*.png
+fotos/descarga*.jpeg
+fotos/471*.jpg
+fotos/471*.jpeg
+fotos/472*.jpg
+fotos/Colon.mp4
+fotos/Copia*.mp4
+fotos/VIDEO*.mp4
+fotos/1.png
+fotos/2.png
+fotos/3.png
+fotos/1.jpg
+fotos/2.jpg
+
+# Logos originales
+logo/1.jpg
+logo/2.jpg
+
+# Sistema
+.DS_Store
+Thumbs.db
+*.tmp
