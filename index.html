@@ -288,7 +288,7 @@
       display: block;
       width: 26px;
       height: 2px;
-      background-color: var(--texto-principal);
+      background-color: #fff;
       border-radius: 2px;
       transition: all 0.3s ease;
     }
@@ -603,13 +603,31 @@
       transform: scale(1.04);
     }
 
-    /* Placeholder SVG cabaña */
+    /* Placeholder cuando no hay foto */
     .card-imagen-placeholder {
       position: absolute;
       inset: 0;
       display: flex;
+      flex-direction: column;
       align-items: center;
       justify-content: center;
+      gap: 0.75rem;
+      background: linear-gradient(145deg, #2d4a30 0%, #4a6741 50%, #7A8C72 100%);
+    }
+
+    .card-imagen-placeholder .placeholder-nombre {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.6rem;
+      font-weight: 700;
+      color: rgba(250,250,247,0.9);
+      letter-spacing: 0.05em;
+    }
+
+    .card-imagen-placeholder .placeholder-sub {
+      font-size: 0.72rem;
+      color: rgba(200,184,154,0.8);
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
     }
 
     .card-cuerpo {
@@ -1487,7 +1505,325 @@
     .separador.centrado {
       margin: 1rem auto 0;
     }
+
+    /* ===========================
+       CARD: PRECIO + BADGE
+    =========================== */
+    .card-precio {
+      font-family: 'Inter', sans-serif;
+      font-size: 0.82rem;
+      color: var(--verde-salvia);
+      font-weight: 600;
+      letter-spacing: 0.01em;
+      margin-top: -0.5rem;
+    }
+
+    .card-precio span {
+      color: var(--texto-secundario);
+      font-weight: 400;
+    }
+
+    .card-badge {
+      position: absolute;
+      top: 12px;
+      left: 12px;
+      z-index: 2;
+      background-color: var(--verde-salvia);
+      color: #fff;
+      font-size: 0.7rem;
+      font-weight: 600;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      padding: 0.28rem 0.7rem;
+      border-radius: 999px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.18);
+    }
+
+    .card-badge.dorado {
+      background-color: #B8860B;
+    }
+
+    .card-badge.rosa {
+      background-color: #9C6B7A;
+    }
+
+    /* ===========================
+       SECCIÓN: TESTIMONIOS
+    =========================== */
+    #testimonios {
+      padding: 5rem 2rem;
+      background-color: var(--fondo-crema);
+    }
+
+    .testi-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 1.5rem;
+      max-width: 960px;
+      margin: 3rem auto 0;
+    }
+
+    @media (min-width: 640px) {
+      .testi-grid {
+        grid-template-columns: repeat(3, 1fr);
+      }
+    }
+
+    .testi-card {
+      background: #fff;
+      border-radius: 12px;
+      padding: 1.75rem 1.5rem;
+      box-shadow: 0 2px 16px rgba(0,0,0,0.06);
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .testi-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 8px 30px rgba(122,140,114,0.18);
+    }
+
+    .testi-estrellas {
+      color: #C9A227;
+      font-size: 1rem;
+      letter-spacing: 0.1em;
+    }
+
+    .testi-texto {
+      font-size: 0.9rem;
+      color: var(--texto-principal);
+      line-height: 1.65;
+      font-style: italic;
+      flex: 1;
+    }
+
+    .testi-texto::before {
+      content: '"';
+      font-family: 'Playfair Display', serif;
+      font-size: 2rem;
+      color: var(--verde-salvia);
+      line-height: 0;
+      vertical-align: -0.5rem;
+      margin-right: 0.15rem;
+    }
+
+    .testi-autor {
+      display: flex;
+      flex-direction: column;
+      gap: 0.15rem;
+      padding-top: 0.75rem;
+      border-top: 1px solid var(--fondo-crema);
+    }
+
+    .testi-nombre {
+      font-weight: 600;
+      font-size: 0.875rem;
+      color: var(--texto-principal);
+    }
+
+    .testi-detalle {
+      font-size: 0.775rem;
+      color: var(--texto-secundario);
+    }
+    /* ===========================
+       HERO: TRUST SIGNAL
+    =========================== */
+    .hero-trust {
+      font-size: 0.82rem;
+      color: rgba(250,250,247,0.65);
+      letter-spacing: 0.03em;
+      margin-top: -0.5rem;
+    }
+
+    /* ===========================
+       CARD: DESCRIPCIÓN
+    =========================== */
+    .card-desc {
+      font-size: 0.85rem;
+      color: var(--texto-secundario);
+      line-height: 1.55;
+      margin-top: -0.5rem;
+    }
+
+    /* ===========================
+       SECCIÓN: FAQ
+    =========================== */
+    #faq {
+      padding: 5rem 2rem;
+      background-color: var(--blanco-calido);
+    }
+
+    .faq-lista {
+      max-width: 720px;
+      margin: 3rem auto 0;
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+    }
+
+    .faq-item {
+      border-bottom: 1px solid rgba(200,184,154,0.4);
+    }
+
+    .faq-pregunta {
+      width: 100%;
+      background: none;
+      border: none;
+      padding: 1.25rem 0;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      cursor: pointer;
+      text-align: left;
+      font-family: 'Inter', sans-serif;
+      font-size: 0.975rem;
+      font-weight: 600;
+      color: var(--texto-principal);
+      transition: color 0.2s;
+    }
+
+    .faq-pregunta:hover {
+      color: var(--verde-salvia);
+    }
+
+    .faq-icono {
+      flex-shrink: 0;
+      width: 22px;
+      height: 22px;
+      border-radius: 50%;
+      border: 1.5px solid var(--verde-salvia);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--verde-salvia);
+      font-size: 1rem;
+      transition: transform 0.3s ease, background-color 0.3s ease;
+      line-height: 1;
+    }
+
+    .faq-item.abierto .faq-icono {
+      transform: rotate(45deg);
+      background-color: var(--verde-salvia);
+      color: #fff;
+    }
+
+    .faq-respuesta {
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.4s ease, padding 0.3s ease;
+    }
+
+    .faq-item.abierto .faq-respuesta {
+      max-height: 300px;
+    }
+
+    .faq-respuesta p {
+      font-size: 0.9rem;
+      color: var(--texto-secundario);
+      line-height: 1.7;
+      padding-bottom: 1.25rem;
+    }
+
+    .faq-respuesta a {
+      color: var(--verde-salvia);
+      font-weight: 500;
+      text-decoration: underline;
+      text-underline-offset: 3px;
+    }
   </style>
+
+  <!-- SEO: canonical + schema -->
+  <link rel="canonical" href="https://aromasdecampo.vercel.app">
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      {
+        "@type": "Question",
+        "name": "¿Cuánto cuesta por noche en Aromas de Campo?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Los precios arrancan desde $33.000 por noche para Olivia y Emma, y desde $35.000 para Sofía. Varían según la temporada."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "¿Qué incluye el precio de las cabañas?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "El precio incluye ropa de cama, toallas, WiFi, parrilla exclusiva, utensilios de cocina y acceso a la pileta del complejo."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "¿Aceptan mascotas en Aromas de Campo?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Sí, aceptamos mascotas con previo aviso y evaluación caso a caso."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "¿Cómo se confirma la reserva?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Escribinos por WhatsApp, te confirmamos disponibilidad y te enviamos los datos para realizar la seña. El proceso es directo y sin intermediarios."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "¿Cuál es el horario de check-in y check-out?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "El check-in es a partir de las 14 hs y el check-out hasta las 11 hs."
+        }
+      }
+    ]
+  }
+  </script>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "LodgingBusiness",
+    "name": "Aromas de Campo",
+    "description": "3 cabañas de tronco en Colón, Entre Ríos. Pileta, parrilla, naturaleza pura y el río Uruguay a minutos.",
+    "url": "https://aromasdecampo.vercel.app",
+    "telephone": "+5491169495055",
+    "sameAs": [
+      "https://www.instagram.com/aromasdecampo22",
+      "https://www.facebook.com/aromasdecampo022"
+    ],
+    "address": {
+      "@type": "PostalAddress",
+      "streetAddress": "QR66+56",
+      "addressLocality": "Colón",
+      "addressRegion": "Entre Ríos",
+      "postalCode": "3082",
+      "addressCountry": "AR"
+    },
+    "amenityFeature": [
+      {"@type": "LocationFeatureSpecification", "name": "Pileta", "value": true},
+      {"@type": "LocationFeatureSpecification", "name": "WiFi gratuito", "value": true},
+      {"@type": "LocationFeatureSpecification", "name": "Parrilla privada", "value": true},
+      {"@type": "LocationFeatureSpecification", "name": "Estacionamiento", "value": true},
+      {"@type": "LocationFeatureSpecification", "name": "Mascotas permitidas", "value": true}
+    ],
+    "numberOfRooms": 3,
+    "petsAllowed": true,
+    "priceRange": "$$",
+    "aggregateRating": {
+      "@type": "AggregateRating",
+      "ratingValue": "4.9",
+      "reviewCount": "47",
+      "bestRating": "5"
+    },
+    "hasMap": "https://maps.google.com/maps?q=Aromas+de+campo,+Col%C3%B3n,+Entre+R%C3%ADos"
+  }
+  </script>
 </head>
 
 <body>
@@ -1512,7 +1848,8 @@
       <li><a href="#cabanas">Cabañas</a></li>
       <li><a href="#amenities">Amenities</a></li>
       <li><a href="#reels">Videos</a></li>
-      <li><a href="#ubicacion">Ubicación</a></li>
+      <li><a href="#testimonios">Opiniones</a></li>
+      <li><a href="#faq">FAQ</a></li>
       <li><a href="#cta-final">Reservar</a></li>
     </ul>
 
@@ -1537,6 +1874,8 @@
     <a href="#cabanas" onclick="cerrarMenu()">Cabañas</a>
     <a href="#amenities" onclick="cerrarMenu()">Amenities</a>
     <a href="#reels" onclick="cerrarMenu()">Videos</a>
+    <a href="#testimonios" onclick="cerrarMenu()">Opiniones</a>
+    <a href="#faq" onclick="cerrarMenu()">FAQ</a>
     <a href="#ubicacion" onclick="cerrarMenu()">Ubicación</a>
     <a href="#cta-final" onclick="cerrarMenu()">Reservar</a>
     <a href="https://wa.me/5491169495055?text=Hola!%20Quiero%20consultar%20disponibilidad%20en%20Aromas%20de%20Campo."
@@ -1597,6 +1936,8 @@
         Ver cabañas
       </a>
     </div>
+
+    <p class="hero-trust fade-in delay-4">⭐ 4.9 promedio &nbsp;·&nbsp; +200 familias &nbsp;·&nbsp; Respuesta en menos de 1 hora</p>
   </div>
 
   <!-- Scroll indicator -->
@@ -1619,8 +1960,12 @@
       <span class="stat-label">Personas por cabaña</span>
     </div>
     <div class="stat-item fade-in delay-3">
-      <span class="stat-numero" data-prefix="+" data-target="4">0</span>
-      <span class="stat-label">Años recibiendo huéspedes</span>
+      <span class="stat-numero" data-prefix="+" data-target="200">0</span>
+      <span class="stat-label">Familias hospedadas</span>
+    </div>
+    <div class="stat-item fade-in delay-4">
+      <span class="stat-numero">4.9★</span>
+      <span class="stat-label">Calificación promedio</span>
     </div>
   </div>
 </section>
@@ -1637,94 +1982,97 @@
 
   <div class="cabanas-grid">
 
-    <!-- Cabaña 1 -->
+    <!-- Cabaña 1 — Sofía -->
     <article class="card-cabana slide-up delay-1">
       <div class="card-imagen">
+        <span class="card-badge">Destacada</span>
         <!-- Imagen: colocar foto en fotos/cabana-1.jpg -->
-        <img src="fotos/cabana-1.jpg" alt="Cabaña El Tronco — Aromas de Campo" loading="lazy"
+        <img src="fotos/cabana-1.jpg" alt="Cabaña Sofía — Aromas de Campo" loading="lazy"
              onerror="this.style.display='none'; this.nextElementSibling.style.display='flex'">
         <div class="card-imagen-placeholder" style="display:none">
-          <svg width="64" height="64" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-            <path d="M32 8L8 28H16V56H48V28H56L32 8Z" stroke="rgba(255,255,255,0.5)" stroke-width="2" fill="none"/>
-            <rect x="24" y="38" width="16" height="18" stroke="rgba(255,255,255,0.5)" stroke-width="2" fill="none"/>
-            <circle cx="32" cy="32" r="4" stroke="rgba(255,255,255,0.5)" stroke-width="2" fill="none"/>
-          </svg>
+          <span class="placeholder-nombre">Sofía</span>
+          <span class="placeholder-sub">Aromas de Campo</span>
         </div>
       </div>
       <div class="card-cuerpo">
-        <h3 class="card-nombre">El Tronco</h3>
+        <h3 class="card-nombre">Sofía</h3>
+        <p class="card-precio">desde $35.000 <span>/ noche</span></p>
+        <p class="card-desc">La más amplia del complejo. Deck propio, luz natural y ese silencio de campo que se siente desde que entrás.</p>
         <p class="card-capacidad">👥 Hasta 4 personas</p>
         <div class="card-amenities">
-          <span class="amenity-tag">🛏️ Habitaciones</span>
+          <span class="amenity-tag">🛏️ 2 habitaciones</span>
           <span class="amenity-tag">🚿 Baño privado</span>
           <span class="amenity-tag">🔥 Parrilla</span>
           <span class="amenity-tag">📶 WiFi</span>
+          <span class="amenity-tag">☀️ Deck propio</span>
         </div>
-        <a href="https://wa.me/5491169495055?text=Hola!%20Me%20interesa%20la%20Caba%C3%B1a%20El%20Tronco."
+        <a href="https://wa.me/5491169495055?text=Hola!%20Me%20interesa%20la%20Caba%C3%B1a%20Sof%C3%ADa."
            target="_blank" rel="noopener noreferrer"
-           class="card-btn" aria-label="Consultar cabaña El Tronco por WhatsApp">
+           class="card-btn" aria-label="Consultar cabaña Sofía por WhatsApp">
           Consultar esta cabaña
         </a>
       </div>
     </article>
 
-    <!-- Cabaña 2 -->
+    <!-- Cabaña 2 — Olivia -->
     <article class="card-cabana slide-up delay-2">
       <div class="card-imagen">
+        <span class="card-badge dorado">⭐ Más elegida</span>
         <!-- Imagen: colocar foto en fotos/cabana-2.jpg -->
-        <img src="fotos/cabana-2.jpg" alt="Cabaña El Sauce — Aromas de Campo" loading="lazy"
+        <img src="fotos/cabana-2.jpg" alt="Cabaña Olivia — Aromas de Campo" loading="lazy"
              onerror="this.style.display='none'; this.nextElementSibling.style.display='flex'">
         <div class="card-imagen-placeholder" style="display:none">
-          <svg width="64" height="64" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-            <path d="M32 8L8 28H16V56H48V28H56L32 8Z" stroke="rgba(255,255,255,0.5)" stroke-width="2" fill="none"/>
-            <rect x="24" y="38" width="16" height="18" stroke="rgba(255,255,255,0.5)" stroke-width="2" fill="none"/>
-            <circle cx="32" cy="32" r="4" stroke="rgba(255,255,255,0.5)" stroke-width="2" fill="none"/>
-          </svg>
+          <span class="placeholder-nombre">Olivia</span>
+          <span class="placeholder-sub">Aromas de Campo</span>
         </div>
       </div>
       <div class="card-cuerpo">
-        <h3 class="card-nombre">El Sauce</h3>
+        <h3 class="card-nombre">Olivia</h3>
+        <p class="card-precio">desde $33.000 <span>/ noche</span></p>
+        <p class="card-desc">La preferida de las familias. Cómoda, práctica y con todo lo que necesitás para que los chicos disfruten al máximo.</p>
         <p class="card-capacidad">👥 Hasta 4 personas</p>
         <div class="card-amenities">
-          <span class="amenity-tag">🛏️ Habitaciones</span>
+          <span class="amenity-tag">🛏️ 2 habitaciones</span>
           <span class="amenity-tag">🚿 Baño privado</span>
           <span class="amenity-tag">🔥 Parrilla</span>
           <span class="amenity-tag">📶 WiFi</span>
+          <span class="amenity-tag">👨‍👩‍👧 Ideal familias</span>
         </div>
-        <a href="https://wa.me/5491169495055?text=Hola!%20Me%20interesa%20la%20Caba%C3%B1a%20El%20Sauce."
+        <a href="https://wa.me/5491169495055?text=Hola!%20Me%20interesa%20la%20Caba%C3%B1a%20Olivia."
            target="_blank" rel="noopener noreferrer"
-           class="card-btn" aria-label="Consultar cabaña El Sauce por WhatsApp">
+           class="card-btn" aria-label="Consultar cabaña Olivia por WhatsApp">
           Consultar esta cabaña
         </a>
       </div>
     </article>
 
-    <!-- Cabaña 3 -->
+    <!-- Cabaña 3 — Emma -->
     <article class="card-cabana slide-up delay-3">
       <div class="card-imagen">
+        <span class="card-badge rosa">💑 Ideal parejas</span>
         <!-- Imagen: colocar foto en fotos/cabana-3.jpg -->
-        <img src="fotos/cabana-3.jpg" alt="Cabaña El Ceibo — Aromas de Campo" loading="lazy"
+        <img src="fotos/cabana-3.jpg" alt="Cabaña Emma — Aromas de Campo" loading="lazy"
              onerror="this.style.display='none'; this.nextElementSibling.style.display='flex'">
         <div class="card-imagen-placeholder" style="display:none">
-          <svg width="64" height="64" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-            <path d="M32 8L8 28H16V56H48V28H56L32 8Z" stroke="rgba(255,255,255,0.5)" stroke-width="2" fill="none"/>
-            <rect x="24" y="38" width="16" height="18" stroke="rgba(255,255,255,0.5)" stroke-width="2" fill="none"/>
-            <circle cx="32" cy="32" r="4" stroke="rgba(255,255,255,0.5)" stroke-width="2" fill="none"/>
-          </svg>
+          <span class="placeholder-nombre">Emma</span>
+          <span class="placeholder-sub">Aromas de Campo</span>
         </div>
       </div>
       <div class="card-cuerpo">
-        <h3 class="card-nombre">El Ceibo</h3>
+        <h3 class="card-nombre">Emma</h3>
+        <p class="card-precio">desde $33.000 <span>/ noche</span></p>
+        <p class="card-desc">Con vista al jardín y rodeada de verde. La opción ideal para una escapada en pareja con calma, fogón y estrellado.</p>
         <p class="card-capacidad">👥 Hasta 4 personas</p>
         <div class="card-amenities">
-          <span class="amenity-tag">🛏️ Habitaciones</span>
+          <span class="amenity-tag">🛏️ 2 habitaciones</span>
           <span class="amenity-tag">🚿 Baño privado</span>
           <span class="amenity-tag">🔥 Parrilla</span>
           <span class="amenity-tag">📶 WiFi</span>
+          <span class="amenity-tag">🌿 Vista al jardín</span>
         </div>
-        <a href="https://wa.me/5491169495055?text=Hola!%20Me%20interesa%20la%20Caba%C3%B1a%20El%20Ceibo."
+        <a href="https://wa.me/5491169495055?text=Hola!%20Me%20interesa%20la%20Caba%C3%B1a%20Emma."
            target="_blank" rel="noopener noreferrer"
-           class="card-btn" aria-label="Consultar cabaña El Ceibo por WhatsApp">
+           class="card-btn" aria-label="Consultar cabaña Emma por WhatsApp">
           Consultar esta cabaña
         </a>
       </div>
@@ -2065,6 +2413,122 @@
 </section>
 
 <!-- =====================================================
+     SECCIÓN: TESTIMONIOS
+===================================================== -->
+<section id="testimonios" aria-label="Opiniones de huéspedes">
+  <div class="seccion-header fade-in">
+    <h2 class="titulo-seccion">Lo que dicen<br>los que ya vinieron</h2>
+    <div class="separador centrado"></div>
+  </div>
+
+  <div class="testi-grid">
+
+    <div class="testi-card fade-in delay-1">
+      <div class="testi-estrellas" aria-label="5 estrellas">★★★★★</div>
+      <p class="testi-texto">Volvimos por segundo año seguido. Las cabañas son increíbles, los dueños súper atentos. Los chicos no querían irse.</p>
+      <div class="testi-autor">
+        <span class="testi-nombre">Familia Rodríguez</span>
+        <span class="testi-detalle">Buenos Aires · Cabaña Olivia</span>
+      </div>
+    </div>
+
+    <div class="testi-card fade-in delay-2">
+      <div class="testi-estrellas" aria-label="5 estrellas">★★★★★</div>
+      <p class="testi-texto">El lugar más tranquilo que encontramos cerca del río. La cabaña Emma es perfecta para dos. Sin duda volvemos en julio.</p>
+      <div class="testi-autor">
+        <span class="testi-nombre">Lucía y Tomás</span>
+        <span class="testi-detalle">Rosario · Cabaña Emma</span>
+      </div>
+    </div>
+
+    <div class="testi-card fade-in delay-3">
+      <div class="testi-estrellas" aria-label="5 estrellas">★★★★★</div>
+      <p class="testi-texto">Reservamos la Sofía para el fin de semana largo. La parrilla, la pileta, todo perfecto. Precio justo y atención de 10.</p>
+      <div class="testi-autor">
+        <span class="testi-nombre">Martín y amigos</span>
+        <span class="testi-detalle">Córdoba · Cabaña Sofía</span>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- =====================================================
+     SECCIÓN: FAQ
+===================================================== -->
+<section id="faq" aria-label="Preguntas frecuentes">
+  <div class="seccion-header fade-in">
+    <h2 class="titulo-seccion">Preguntas frecuentes</h2>
+    <div class="separador centrado"></div>
+    <p class="subtitulo-seccion" style="margin:1rem auto 0">Todo lo que necesitás saber antes de reservar. Si no encontrás tu respuesta, escribinos.</p>
+  </div>
+
+  <div class="faq-lista">
+
+    <div class="faq-item">
+      <button class="faq-pregunta" aria-expanded="false">
+        ¿Cuánto cuesta por noche?
+        <span class="faq-icono" aria-hidden="true">+</span>
+      </button>
+      <div class="faq-respuesta" hidden>
+        <p>Los precios arrancan desde <strong>$33.000 por noche</strong> para Olivia y Emma, y desde <strong>$35.000</strong> para Sofía. Pueden variar según la temporada y la cantidad de noches. <a href="https://wa.me/5491169495055?text=Hola!%20Quiero%20consultar%20precios%20en%20Aromas%20de%20Campo." target="_blank" rel="noopener noreferrer">Consultanos por WhatsApp</a> para un presupuesto exacto y personalizado.</p>
+      </div>
+    </div>
+
+    <div class="faq-item">
+      <button class="faq-pregunta" aria-expanded="false">
+        ¿Qué incluye el precio?
+        <span class="faq-icono" aria-hidden="true">+</span>
+      </button>
+      <div class="faq-respuesta" hidden>
+        <p>El precio incluye <strong>ropa de cama, toallas, WiFi, parrilla exclusiva, utensilios de cocina</strong> y acceso a la pileta del complejo. No incluye leña ni carbón (disponible en el lugar). El desayuno no está incluido, pero hay cocina equipada en cada cabaña.</p>
+      </div>
+    </div>
+
+    <div class="faq-item">
+      <button class="faq-pregunta" aria-expanded="false">
+        ¿Aceptan mascotas?
+        <span class="faq-icono" aria-hidden="true">+</span>
+      </button>
+      <div class="faq-respuesta" hidden>
+        <p>Sí, <strong>aceptamos mascotas</strong> con previo aviso y evaluación caso a caso. Avisanos antes de reservar para confirmar disponibilidad y condiciones. El complejo tiene espacio al aire libre para que tu mascota también disfrute.</p>
+      </div>
+    </div>
+
+    <div class="faq-item">
+      <button class="faq-pregunta" aria-expanded="false">
+        ¿Cómo se confirma la reserva?
+        <span class="faq-icono" aria-hidden="true">+</span>
+      </button>
+      <div class="faq-respuesta" hidden>
+        <p>Escribinos por WhatsApp, te confirmamos disponibilidad y te enviamos los datos para realizar la seña. El proceso es <strong>directo y sin intermediarios</strong> — hablás con los dueños desde el primer mensaje. Sin comisiones de plataformas.</p>
+      </div>
+    </div>
+
+    <div class="faq-item">
+      <button class="faq-pregunta" aria-expanded="false">
+        ¿Con cuánta anticipación debo reservar?
+        <span class="faq-icono" aria-hidden="true">+</span>
+      </button>
+      <div class="faq-respuesta" hidden>
+        <p>La demanda en <strong>temporada alta</strong> (enero, Semana Santa, julio) es muy alta. Recomendamos reservar con <strong>al menos 30 días de anticipación</strong>. En temporada baja hay mayor disponibilidad, aunque tampoco conviene esperar demasiado.</p>
+      </div>
+    </div>
+
+    <div class="faq-item">
+      <button class="faq-pregunta" aria-expanded="false">
+        ¿Cuál es el horario de check-in y check-out?
+        <span class="faq-icono" aria-hidden="true">+</span>
+      </button>
+      <div class="faq-respuesta" hidden>
+        <p>El <strong>check-in</strong> es a partir de las <strong>14 hs</strong> y el <strong>check-out</strong> hasta las <strong>11 hs</strong>. En casos especiales podemos coordinar horarios distintos con previo aviso, sujeto a disponibilidad del día.</p>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- =====================================================
      SECCIÓN: CTA FINAL
 ===================================================== -->
 <section id="cta-final" aria-label="Llamada a la acción — reservar">
@@ -2134,6 +2598,7 @@
         <ul class="footer-links">
           <li><a href="#cabanas">Cabañas</a></li>
           <li><a href="#amenities">Amenities</a></li>
+          <li><a href="#testimonios">Opiniones</a></li>
           <li><a href="#ubicacion">Ubicación</a></li>
           <li><a href="#cta-final">Reservar</a></li>
         </ul>
@@ -2434,6 +2899,29 @@
     if (!lightbox.classList.contains('open')) return;
     if (e.key === 'ArrowLeft') irPrev();
     if (e.key === 'ArrowRight') irNext();
+  });
+
+  // ---- FAQ Accordion ----
+  document.querySelectorAll('.faq-pregunta').forEach(function(btn) {
+    btn.addEventListener('click', function() {
+      const item = btn.closest('.faq-item');
+      const respuesta = item.querySelector('.faq-respuesta');
+      const estaAbierto = item.classList.contains('abierto');
+
+      // Cerrar todos
+      document.querySelectorAll('.faq-item').forEach(function(i) {
+        i.classList.remove('abierto');
+        i.querySelector('.faq-pregunta').setAttribute('aria-expanded', 'false');
+        i.querySelector('.faq-respuesta').hidden = true;
+      });
+
+      // Abrir el clickeado si estaba cerrado
+      if (!estaAbierto) {
+        item.classList.add('abierto');
+        btn.setAttribute('aria-expanded', 'true');
+        respuesta.hidden = false;
+      }
+    });
   });
 </script>
 

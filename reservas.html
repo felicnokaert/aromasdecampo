@@ -770,9 +770,9 @@ async function cargarCabanas() {
   if (!window.db) {
     // Sin Supabase: mostrar datos hardcodeados de fallback
     estado.cabanas = [
-      { id: '1', slug: 'el-tronco', nombre: 'El Tronco', precio_base: 35000, fotos: ['fotos/cabana-1.jpg'], capacidad_max: 4 },
-      { id: '2', slug: 'el-sauce',  nombre: 'El Sauce',  precio_base: 33000, fotos: ['fotos/cabana-2.jpg'], capacidad_max: 4 },
-      { id: '3', slug: 'el-ceibo',  nombre: 'El Ceibo',  precio_base: 33000, fotos: ['fotos/cabana-3.jpg'], capacidad_max: 4 },
+      { id: '1', slug: 'sofia',  nombre: 'Sofía',  precio_base: 35000, fotos: ['fotos/cabana-1.jpg'], capacidad_max: 4 },
+      { id: '2', slug: 'olivia', nombre: 'Olivia', precio_base: 33000, fotos: ['fotos/cabana-2.jpg'], capacidad_max: 4 },
+      { id: '3', slug: 'emma',   nombre: 'Emma',   precio_base: 33000, fotos: ['fotos/cabana-3.jpg'], capacidad_max: 4 },
     ];
   } else {
     const { data, error } = await window.db
