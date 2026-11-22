@@ -2,2989 +2,827 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Aromas de Campo — Cabañas de Troncos en Colón, Entre Ríos</title>
-  <meta name="description" content="Aromas de Campo: Cabañas de tronco en Colón, Entre Ríos. Pileta, parrilla, naturaleza y el río a minutos. Reservá por WhatsApp.">
-
-  <!-- Open Graph -->
-  <meta property="og:title" content="Aromas de Campo — Cabañas de Troncos en Colón, Entre Ríos">
-  <meta property="og:description" content="Cabañas de tronco rodeadas de naturaleza en Colón, Entre Ríos. Pileta, parrilla y el río Uruguay a minutos.">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>Aromas de Campo · Cabañas de tronco en Colón, Entre Ríos</title>
+  <meta name="description" content="Cabañas de tronco para hasta 4 personas en Colón, Entre Ríos. Pileta, parque y parrilla propia. Mirá precios en pesos y fechas libres, y reservá directo.">
+  <meta property="og:title" content="Aromas de Campo · Cabañas de tronco en Colón">
+  <meta property="og:description" content="Cabañas de tronco con pileta y parque en Colón, Entre Ríos. Precios en pesos y fechas libres en la web.">
   <meta property="og:type" content="website">
   <meta property="og:url" content="https://aromasdecampo.vercel.app">
-  <meta property="og:image" content="fotos/hero-poster.jpg">
-
-  <!-- Favicon: negro para modo claro, blanco para modo oscuro -->
+  <meta property="og:image" content="https://aromasdecampo.vercel.app/fotos/hero-poster.jpg">
+  <meta name="theme-color" content="#24301F">
   <link rel="icon" type="image/png" href="logo/favicon-dark.png" media="(prefers-color-scheme: light)">
   <link rel="icon" type="image/png" href="logo/favicon.png" media="(prefers-color-scheme: dark)">
-  <link rel="icon" type="image/png" href="logo/favicon-dark.png">
-
-  <!-- Google Fonts -->
-  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Inter:wght@400;500&display=swap" rel="stylesheet">
-
-  <style>
-    /* ===========================
-       VARIABLES Y RESET
-    =========================== */
-    :root {
-      --verde-salvia:    #7A8C72;
-      --beige-arena:     #C8B89A;
-      --fondo-crema:     #F5EFE4;
-      --fondo-oscuro:    #1C2B1E;
-      --blanco-calido:   #FAFAF7;
-      --texto-principal: #1E1E1E;
-      --texto-secundario:#6B6B6B;
-      --whatsapp-verde:  #25D366;
-      --footer-oscuro:   #111A12;
-      --beige-claro:     #F0EBE1;
-    }
-
-    *, *::before, *::after {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-    }
-
-    html {
-      scroll-behavior: smooth;
-    }
-
-    body {
-      font-family: 'Inter', sans-serif;
-      font-weight: 400;
-      color: var(--texto-principal);
-      background-color: var(--fondo-crema);
-      line-height: 1.6;
-      overflow-x: hidden;
-    }
-
-    img {
-      max-width: 100%;
-      display: block;
-    }
-
-    a {
-      text-decoration: none;
-      color: inherit;
-    }
-
-    /* ===========================
-       TIPOGRAFÍA
-    =========================== */
-    .titulo-seccion {
-      font-family: 'Playfair Display', serif;
-      font-size: clamp(2rem, 4vw, 3rem);
-      font-weight: 700;
-      line-height: 1.2;
-      color: var(--texto-principal);
-    }
-
-    .titulo-seccion.claro {
-      color: var(--blanco-calido);
-    }
-
-    .subtitulo-seccion {
-      font-family: 'Inter', sans-serif;
-      font-size: clamp(1rem, 2vw, 1.125rem);
-      color: var(--texto-secundario);
-      margin-top: 1rem;
-      max-width: 600px;
-    }
-
-    .subtitulo-seccion.claro {
-      color: rgba(250,250,247,0.75);
-    }
-
-    /* ===========================
-       BOTONES
-    =========================== */
-    .btn {
-      display: inline-flex;
-      align-items: center;
-      gap: 0.5rem;
-      padding: 0.875rem 1.75rem;
-      border-radius: 6px;
-      font-family: 'Inter', sans-serif;
-      font-size: 0.9375rem;
-      font-weight: 500;
-      cursor: pointer;
-      transition: all 0.25s ease;
-      border: 2px solid transparent;
-      text-decoration: none;
-    }
-
-    .btn-primario {
-      background-color: var(--verde-salvia);
-      color: var(--blanco-calido);
-      border-color: var(--verde-salvia);
-    }
-
-    .btn-primario:hover {
-      background-color: #67795f;
-      border-color: #67795f;
-      transform: translateY(-2px);
-    }
-
-    .btn-outline {
-      background-color: transparent;
-      color: var(--blanco-calido);
-      border-color: rgba(250,250,247,0.6);
-    }
-
-    .btn-outline:hover {
-      background-color: rgba(250,250,247,0.1);
-      border-color: var(--blanco-calido);
-      transform: translateY(-2px);
-    }
-
-    .btn-whatsapp {
-      background-color: var(--whatsapp-verde);
-      color: #fff;
-      border-color: var(--whatsapp-verde);
-      font-size: 1.0625rem;
-      padding: 1rem 2.25rem;
-    }
-
-    .btn-whatsapp:hover {
-      background-color: #1ebe5a;
-      border-color: #1ebe5a;
-      transform: translateY(-2px);
-    }
-
-    /* ===========================
-       ANIMACIONES SCROLL REVEAL
-    =========================== */
-    .fade-in {
-      opacity: 0;
-      transform: translateY(30px);
-      transition: opacity 0.7s ease, transform 0.7s ease;
-    }
-
-    .fade-in.visible {
-      opacity: 1;
-      transform: translateY(0);
-    }
-
-    .slide-up {
-      opacity: 0;
-      transform: translateY(50px);
-      transition: opacity 0.8s ease, transform 0.8s ease;
-    }
-
-    .slide-up.visible {
-      opacity: 1;
-      transform: translateY(0);
-    }
-
-    .delay-1 { transition-delay: 0.1s; }
-    .delay-2 { transition-delay: 0.2s; }
-    .delay-3 { transition-delay: 0.3s; }
-    .delay-4 { transition-delay: 0.4s; }
-    .delay-5 { transition-delay: 0.5s; }
-
-    /* ===========================
-       SECCIÓN: NAVBAR
-    =========================== */
-    #navbar {
-      position: sticky;
-      top: 0;
-      z-index: 900;
-      padding: 0.75rem 2rem;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      background-color: rgba(180, 152, 112, 0.92);
-      backdrop-filter: blur(8px);
-      -webkit-backdrop-filter: blur(8px);
-      transition: box-shadow 0.3s ease, background-color 0.3s ease;
-    }
-
-    #navbar.scrolled {
-      box-shadow: 0 2px 20px rgba(0,0,0,0.15);
-      background-color: rgba(172, 144, 105, 0.98);
-    }
-
-    .nav-logo img {
-      height: 96px;
-      width: auto;
-    }
-
-    .nav-logo-texto {
-      font-family: 'Playfair Display', serif;
-      font-size: 1.25rem;
-      font-weight: 700;
-      color: #fff;
-      letter-spacing: 0.03em;
-      line-height: 1.1;
-    }
-
-    .nav-logo-texto span {
-      display: block;
-      font-size: 0.65rem;
-      font-family: 'Inter', sans-serif;
-      font-weight: 500;
-      letter-spacing: 0.15em;
-      text-transform: uppercase;
-      color: rgba(250,250,247,0.7);
-    }
-
-    .nav-links {
-      display: none;               /* en celular y tablet se usa el menú de tres rayitas */
-      align-items: center;
-      gap: 1.6rem;
-      list-style: none;
-      white-space: nowrap;
-    }
-    @media (min-width: 1100px) {
-      .nav-links { display: flex; }
-    }
-
-    .nav-links a {
-      font-family: 'Inter', sans-serif;
-      font-size: 0.9rem;
-      font-weight: 500;
-      color: rgba(250,250,247,0.9);
-      position: relative;
-      transition: color 0.2s;
-    }
-
-    .nav-links a::after {
-      content: '';
-      position: absolute;
-      left: 0;
-      bottom: -3px;
-      width: 0;
-      height: 2px;
-      background-color: rgba(250,250,247,0.8);
-      transition: width 0.25s ease;
-    }
-
-    .nav-links a:hover {
-      color: #fff;
-    }
-
-    .nav-links a:hover::after {
-      width: 100%;
-    }
-
-    .nav-cta {
-      display: none;
-    }
-
-    @media (min-width: 768px) {
-      .nav-cta {
-        display: inline-flex;
-      }
-    }
-
-    /* Hamburger */
-    .hamburger {
-      display: flex;
-      flex-direction: column;
-      gap: 5px;
-      cursor: pointer;
-      background: none;
-      border: none;
-      padding: 4px;
-      z-index: 1001;
-    }
-
-    .hamburger span {
-      display: block;
-      width: 26px;
-      height: 2px;
-      background-color: #fff;
-      border-radius: 2px;
-      transition: all 0.3s ease;
-    }
-
-    .hamburger.open span:nth-child(1) {
-      transform: translateY(7px) rotate(45deg);
-    }
-
-    .hamburger.open span:nth-child(2) {
-      opacity: 0;
-      transform: scaleX(0);
-    }
-
-    .hamburger.open span:nth-child(3) {
-      transform: translateY(-7px) rotate(-45deg);
-    }
-
-    /* Mobile menu */
-    .nav-mobile {
-      display: none;
-      position: fixed;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      background-color: var(--fondo-crema);
-      z-index: 999;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      gap: 2.5rem;
-    }
-
-    .nav-mobile.open {
-      display: flex;
-    }
-
-    .nav-mobile a {
-      font-family: 'Playfair Display', serif;
-      font-size: 2rem;
-      color: var(--texto-principal);
-      transition: color 0.2s;
-    }
-
-    .nav-mobile a:hover {
-      color: var(--verde-salvia);
-    }
-
-    @media (min-width: 1100px) {
-      .hamburger { display: none; }
-      .nav-mobile { display: none !important; }
-    }
-
-    /* ===========================
-       SECCIÓN: HERO
-    =========================== */
-    #hero {
-      position: relative;
-      min-height: 100svh;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      text-align: center;
-      overflow: hidden;
-      background-color: var(--fondo-oscuro);
-    }
-
-    .hero-video {
-      position: absolute;
-      inset: 0;
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      opacity: 0.45;
-    }
-
-    /* Fallback si no hay video */
-    .hero-bg-fallback {
-      position: absolute;
-      inset: 0;
-      background: linear-gradient(160deg, #1C2B1E 0%, #2d4a30 50%, #7A8C72 100%);
-    }
-
-    /* Patrón SVG sutil */
-    .hero-bg-fallback::after {
-      content: '';
-      position: absolute;
-      inset: 0;
-      background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.03'%3E%3Cpath d='M30 0 Q35 15 30 30 Q25 15 30 0z M0 30 Q15 25 30 30 Q15 35 0 30z M60 30 Q45 25 30 30 Q45 35 60 30z M30 60 Q35 45 30 30 Q25 45 30 60z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
-    }
-
-    .hero-overlay {
-      position: absolute;
-      inset: 0;
-      background: linear-gradient(to bottom, rgba(28,43,30,0.4) 0%, rgba(28,43,30,0.55) 60%, rgba(28,43,30,0.7) 100%);
-    }
-
-    .hero-content {
-      position: relative;
-      z-index: 2;
-      max-width: 820px;
-      padding: 2rem 1.5rem;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 1.5rem;
-    }
-
-    .hero-logo {
-      height: 160px;
-      width: auto;
-      margin-bottom: 0.5rem;
-    }
-
-    .hero-logo-texto {
-      font-family: 'Playfair Display', serif;
-      font-size: 1.75rem;
-      font-weight: 700;
-      color: var(--blanco-calido);
-      letter-spacing: 0.05em;
-      line-height: 1;
-      margin-bottom: 0.5rem;
-    }
-
-    .hero-logo-texto span {
-      display: block;
-      font-size: 0.7rem;
-      font-family: 'Inter', sans-serif;
-      font-weight: 500;
-      letter-spacing: 0.2em;
-      text-transform: uppercase;
-      color: var(--beige-arena);
-      margin-top: 0.4rem;
-    }
-
-    .hero-badge {
-      display: inline-flex;
-      align-items: center;
-      gap: 0.4rem;
-      background-color: rgba(200,184,154,0.25);
-      border: 1px solid rgba(200,184,154,0.4);
-      color: var(--beige-arena);
-      font-size: 0.8rem;
-      font-weight: 500;
-      padding: 0.35rem 0.9rem;
-      border-radius: 999px;
-      letter-spacing: 0.05em;
-    }
-
-    .hero-headline {
-      font-family: 'Playfair Display', serif;
-      font-size: clamp(2.25rem, 6vw, 4rem);
-      font-weight: 700;
-      color: var(--blanco-calido);
-      line-height: 1.15;
-    }
-
-    .hero-subtitulo {
-      font-family: 'Inter', sans-serif;
-      font-size: clamp(1rem, 2vw, 1.2rem);
-      color: rgba(250,250,247,0.8);
-      max-width: 560px;
-      line-height: 1.65;
-    }
-
-    .hero-botones {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 1rem;
-      justify-content: center;
-      margin-top: 0.5rem;
-    }
-
-    /* Scroll indicator */
-    .scroll-indicator {
-      position: absolute;
-      bottom: 2rem;
-      left: 50%;
-      transform: translateX(-50%);
-      z-index: 2;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 0.4rem;
-      animation: bounce 2s infinite;
-    }
-
-    .scroll-indicator span {
-      width: 1px;
-      height: 48px;
-      background: linear-gradient(to bottom, transparent, rgba(250,250,247,0.5));
-    }
-
-    .scroll-indicator::after {
-      content: '';
-      width: 6px;
-      height: 6px;
-      border-radius: 50%;
-      background-color: rgba(250,250,247,0.6);
-    }
-
-    @keyframes bounce {
-      0%, 100% { transform: translateX(-50%) translateY(0); }
-      50% { transform: translateX(-50%) translateY(8px); }
-    }
-
-    /* ===========================
-       SECCIÓN: STATS
-    =========================== */
-    #stats {
-      background-color: var(--fondo-crema);
-      padding: 4rem 2rem;
-      border-bottom: 1px solid rgba(200,184,154,0.3);
-    }
-
-    .stats-grid {
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: center;
-      gap: 3rem 5rem;
-      max-width: 900px;
-      margin: 0 auto;
-      text-align: center;
-    }
-
-    .stat-item {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 0.25rem;
-    }
-
-    .stat-numero {
-      font-family: 'Playfair Display', serif;
-      font-size: clamp(3rem, 7vw, 5rem);
-      font-weight: 700;
-      color: var(--verde-salvia);
-      line-height: 1;
-    }
-
-    .stat-label {
-      font-family: 'Inter', sans-serif;
-      font-size: 0.9rem;
-      font-weight: 500;
-      color: var(--texto-secundario);
-      letter-spacing: 0.05em;
-      text-transform: uppercase;
-    }
-
-    /* ===========================
-       SECCIÓN: CABAÑAS
-    =========================== */
-    #cabanas {
-      padding: 5rem 2rem;
-      background-color: var(--blanco-calido);
-    }
-
-    .seccion-header {
-      text-align: center;
-      margin-bottom: 3.5rem;
-    }
-
-    .seccion-header .subtitulo-seccion {
-      margin: 1rem auto 0;
-    }
-
-    .cabanas-grid {
-      display: grid;
-      grid-template-columns: 1fr;
-      gap: 2rem;
-      max-width: 1100px;
-      margin: 0 auto;
-    }
-
-    @media (min-width: 768px) {
-      .cabanas-grid {
-        grid-template-columns: repeat(3, 1fr);
-      }
-    }
-
-    .card-cabana {
-      background-color: #fff;
-      border-radius: 12px;
-      overflow: hidden;
-      box-shadow: 0 2px 12px rgba(0,0,0,0.06);
-      transition: transform 0.3s ease, box-shadow 0.3s ease;
-    }
-
-    .card-cabana:hover {
-      transform: translateY(-6px);
-      box-shadow: 0 12px 40px rgba(122,140,114,0.25);
-    }
-
-    .card-imagen {
-      position: relative;
-      width: 100%;
-      padding-top: 68%;
-      overflow: hidden;
-      background: linear-gradient(135deg, var(--verde-salvia) 0%, var(--fondo-oscuro) 100%);
-    }
-
-    .card-imagen img {
-      position: absolute;
-      inset: 0;
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      transition: transform 0.4s ease;
-    }
-
-    .card-cabana:hover .card-imagen img {
-      transform: scale(1.04);
-    }
-
-    /* Placeholder cuando no hay foto */
-    .card-imagen-placeholder {
-      position: absolute;
-      inset: 0;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      gap: 0.75rem;
-      background: linear-gradient(145deg, #2d4a30 0%, #4a6741 50%, #7A8C72 100%);
-    }
-
-    .card-imagen-placeholder .placeholder-nombre {
-      font-family: 'Playfair Display', serif;
-      font-size: 1.6rem;
-      font-weight: 700;
-      color: rgba(250,250,247,0.9);
-      letter-spacing: 0.05em;
-    }
-
-    .card-imagen-placeholder .placeholder-sub {
-      font-size: 0.72rem;
-      color: rgba(200,184,154,0.8);
-      letter-spacing: 0.2em;
-      text-transform: uppercase;
-    }
-
-    .card-cuerpo {
-      padding: 1.5rem;
-      display: flex;
-      flex-direction: column;
-      gap: 1rem;
-    }
-
-    .card-nombre {
-      font-family: 'Playfair Display', serif;
-      font-size: 1.4rem;
-      font-weight: 700;
-      color: var(--texto-principal);
-    }
-
-    .card-capacidad {
-      font-size: 0.875rem;
-      color: var(--texto-secundario);
-      display: flex;
-      align-items: center;
-      gap: 0.4rem;
-    }
-
-    .card-amenities {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 0.5rem;
-    }
-
-    .amenity-tag {
-      background-color: var(--fondo-crema);
-      color: var(--texto-secundario);
-      font-size: 0.78rem;
-      padding: 0.3rem 0.7rem;
-      border-radius: 999px;
-      display: flex;
-      align-items: center;
-      gap: 0.3rem;
-    }
-
-    .card-btn {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      gap: 0.5rem;
-      padding: 0.75rem 1.25rem;
-      background-color: var(--verde-salvia);
-      color: var(--blanco-calido);
-      border-radius: 6px;
-      font-size: 0.875rem;
-      font-weight: 500;
-      transition: all 0.25s ease;
-      margin-top: 0.25rem;
-    }
-
-    .card-wa {
-      display: block;
-      text-align: center;
-      margin-top: .6rem;
-      font-size: .88rem;
-      color: var(--texto-secundario);
-    }
-
-    .card-btn:hover {
-      background-color: #67795f;
-      transform: translateY(-1px);
-    }
-
-    /* ===========================
-       SECCIÓN: AMENITIES
-    =========================== */
-    #amenities {
-      padding: 5rem 2rem;
-      background-color: var(--beige-claro);
-    }
-
-    .amenities-grid {
-      display: grid;
-      grid-template-columns: 1fr;
-      gap: 2rem;
-      max-width: 1000px;
-      margin: 3rem auto 0;
-    }
-
-    @media (min-width: 640px) {
-      .amenities-grid {
-        grid-template-columns: repeat(2, 1fr);
-      }
-    }
-
-    @media (min-width: 1024px) {
-      .amenities-grid {
-        grid-template-columns: repeat(3, 1fr);
-      }
-    }
-
-    .amenity-card {
-      background-color: #fff;
-      border-radius: 12px;
-      padding: 2rem 1.5rem;
-      text-align: center;
-      box-shadow: 0 2px 10px rgba(0,0,0,0.04);
-      transition: transform 0.3s ease, box-shadow 0.3s ease;
-    }
-
-    .amenity-card:hover {
-      transform: translateY(-4px);
-      box-shadow: 0 8px 30px rgba(122,140,114,0.15);
-    }
-
-    .amenity-icono {
-      font-size: 2.5rem;
-      margin-bottom: 1rem;
-      display: block;
-    }
-
-    .amenity-titulo {
-      font-family: 'Playfair Display', serif;
-      font-size: 1.15rem;
-      font-weight: 700;
-      color: var(--texto-principal);
-      margin-bottom: 0.5rem;
-    }
-
-    .amenity-desc {
-      font-size: 0.9rem;
-      color: var(--texto-secundario);
-      line-height: 1.6;
-    }
-
-    /* ===========================
-       SECCIÓN: GALERÍA
-    =========================== */
-    #galeria {
-      padding: 5rem 2rem;
-      background-color: var(--blanco-calido);
-    }
-
-    .galeria-grid {
-      display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: 0.75rem;
-      max-width: 1100px;
-      margin: 3rem auto 0;
-    }
-
-    @media (min-width: 768px) {
-      .galeria-grid {
-        grid-template-columns: repeat(3, 1fr);
-      }
-    }
-
-    .galeria-item {
-      position: relative;
-      padding-top: 100%;
-      overflow: hidden;
-      border-radius: 8px;
-      cursor: pointer;
-      background: linear-gradient(135deg, var(--verde-salvia) 0%, var(--beige-arena) 100%);
-    }
-
-    .galeria-item img {
-      position: absolute;
-      inset: 0;
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      transition: transform 0.4s ease;
-    }
-
-    .galeria-item:hover img {
-      transform: scale(1.05);
-    }
-
-    .galeria-placeholder {
-      position: absolute;
-      inset: 0;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      gap: 0.5rem;
-      color: rgba(255,255,255,0.7);
-      font-size: 0.8rem;
-      letter-spacing: 0.05em;
-    }
-
-    .galeria-overlay {
-      position: absolute;
-      inset: 0;
-      background-color: rgba(28,43,30,0);
-      transition: background-color 0.3s ease;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-
-    .galeria-item:hover .galeria-overlay {
-      background-color: rgba(28,43,30,0.25);
-    }
-
-    .galeria-leyenda {
-      text-align: center;
-      margin-top: 2rem;
-      font-family: 'Playfair Display', serif;
-      font-style: italic;
-      color: var(--texto-secundario);
-      font-size: 1rem;
-    }
-
-    /* Lightbox */
-    .lightbox {
-      display: none;
-      position: fixed;
-      inset: 0;
-      z-index: 9999;
-      background-color: rgba(0,0,0,0.92);
-      align-items: center;
-      justify-content: center;
-    }
-
-    .lightbox.open {
-      display: flex;
-    }
-
-    .lightbox-img {
-      max-width: 90vw;
-      max-height: 88vh;
-      object-fit: contain;
-      border-radius: 4px;
-      box-shadow: 0 20px 60px rgba(0,0,0,0.5);
-    }
-
-    .lightbox-cerrar {
-      position: absolute;
-      top: 1.5rem;
-      right: 1.5rem;
-      width: 44px;
-      height: 44px;
-      border: 2px solid rgba(255,255,255,0.4);
-      border-radius: 50%;
-      background: none;
-      color: #fff;
-      font-size: 1.25rem;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      transition: border-color 0.2s;
-    }
-
-    .lightbox-cerrar:hover {
-      border-color: #fff;
-    }
-
-    .lightbox-nav {
-      position: absolute;
-      top: 50%;
-      transform: translateY(-50%);
-      width: 48px;
-      height: 48px;
-      background: rgba(255,255,255,0.1);
-      border: 1px solid rgba(255,255,255,0.25);
-      border-radius: 50%;
-      color: #fff;
-      font-size: 1.25rem;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      transition: background 0.2s;
-    }
-
-    .lightbox-nav:hover {
-      background: rgba(255,255,255,0.2);
-    }
-
-    .lightbox-prev { left: 1.5rem; }
-    .lightbox-next { right: 1.5rem; }
-
-    /* ===========================
-       SECCIÓN: UBICACIÓN
-    =========================== */
-    #ubicacion {
-      padding: 5rem 2rem;
-      background-color: var(--fondo-oscuro);
-      color: var(--blanco-calido);
-    }
-
-    .ubicacion-inner {
-      max-width: 1000px;
-      margin: 0 auto;
-      display: grid;
-      grid-template-columns: 1fr;
-      gap: 3rem;
-    }
-
-    @media (min-width: 768px) {
-      .ubicacion-inner {
-        grid-template-columns: 1fr 1fr;
-        align-items: center;
-      }
-    }
-
-    .ubicacion-texto .subtitulo-seccion {
-      margin-top: 1rem;
-    }
-
-    .ubicacion-datos {
-      margin-top: 2rem;
-      display: flex;
-      flex-direction: column;
-      gap: 0.75rem;
-    }
-
-    .ubicacion-dato {
-      display: flex;
-      align-items: center;
-      gap: 0.6rem;
-      font-size: 0.9rem;
-      color: rgba(250,250,247,0.8);
-    }
-
-    .ubicacion-dato strong {
-      color: var(--blanco-calido);
-    }
-
-    .mapa-container {
-      border-radius: 12px;
-      overflow: hidden;
-      box-shadow: 0 10px 40px rgba(0,0,0,0.3);
-    }
-
-    .mapa-container iframe {
-      width: 100%;
-      height: 340px;
-      border: none;
-      display: block;
-    }
-
-    /* ===========================
-       SECCIÓN: POR QUÉ AROMAS
-    =========================== */
-    #por-que {
-      padding: 5rem 2rem;
-      background-color: var(--fondo-crema);
-    }
-
-    .porque-lista {
-      max-width: 780px;
-      margin: 3rem auto 0;
-      display: flex;
-      flex-direction: column;
-      gap: 2rem;
-    }
-
-    .porque-item {
-      display: flex;
-      align-items: flex-start;
-      gap: 1.5rem;
-      padding: 1.5rem 2rem;
-      background-color: var(--blanco-calido);
-      border-radius: 12px;
-      box-shadow: 0 2px 10px rgba(0,0,0,0.04);
-      transition: transform 0.3s ease, box-shadow 0.3s ease;
-    }
-
-    .porque-item:hover {
-      transform: translateX(4px);
-      box-shadow: 0 6px 24px rgba(122,140,114,0.15);
-    }
-
-    .porque-icono {
-      font-size: 2rem;
-      flex-shrink: 0;
-      margin-top: 0.1rem;
-    }
-
-    .porque-texto h3 {
-      font-family: 'Playfair Display', serif;
-      font-size: 1.15rem;
-      font-weight: 700;
-      color: var(--texto-principal);
-      margin-bottom: 0.35rem;
-    }
-
-    .porque-texto p {
-      font-size: 0.9rem;
-      color: var(--texto-secundario);
-      line-height: 1.65;
-    }
-
-    /* ===========================
-       SECCIÓN: CTA FINAL
-    =========================== */
-    #cta-final {
-      padding: 6rem 2rem;
-      background-color: var(--fondo-oscuro);
-      text-align: center;
-      position: relative;
-      overflow: hidden;
-    }
-
-    #cta-final::before {
-      content: '';
-      position: absolute;
-      inset: 0;
-      background-image: url("data:image/svg+xml,%3Csvg width='80' height='80' viewBox='0 0 80 80' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%237A8C72' fill-opacity='0.06'%3E%3Ccircle cx='40' cy='40' r='30'/%3E%3C/g%3E%3C/svg%3E");
-    }
-
-    .cta-final-inner {
-      position: relative;
-      z-index: 1;
-      max-width: 600px;
-      margin: 0 auto;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 1.5rem;
-    }
-
-    .cta-redes {
-      display: flex;
-      align-items: center;
-      gap: 1.5rem;
-      margin-top: 1rem;
-    }
-
-    .cta-red-link {
-      color: rgba(250,250,247,0.6);
-      transition: color 0.2s;
-      display: flex;
-      align-items: center;
-    }
-
-    .cta-red-link:hover {
-      color: var(--beige-arena);
-    }
-
-    /* ===========================
-       SECCIÓN: FOOTER
-    =========================== */
-    #footer {
-      background-color: var(--footer-oscuro);
-      color: rgba(250,250,247,0.65);
-      padding: 3.5rem 2rem 2rem;
-    }
-
-    .footer-inner {
-      max-width: 1100px;
-      margin: 0 auto;
-    }
-
-    .footer-top {
-      display: grid;
-      grid-template-columns: 1fr;
-      gap: 2.5rem;
-      padding-bottom: 2.5rem;
-      border-bottom: 1px solid rgba(255,255,255,0.08);
-    }
-
-    @media (min-width: 768px) {
-      .footer-top {
-        grid-template-columns: 1.5fr 1fr 1fr;
-      }
-    }
-
-    .footer-logo img {
-      height: 100px;
-      width: auto;
-      margin-bottom: 0.75rem;
-    }
-
-    .footer-logo-texto {
-      font-family: 'Playfair Display', serif;
-      font-size: 1.15rem;
-      color: var(--blanco-calido);
-      font-weight: 700;
-      margin-bottom: 0.25rem;
-    }
-
-    .footer-tagline {
-      font-size: 0.82rem;
-      color: rgba(250,250,247,0.5);
-      line-height: 1.5;
-    }
-
-    .footer-col h4 {
-      font-family: 'Inter', sans-serif;
-      font-size: 0.75rem;
-      font-weight: 500;
-      text-transform: uppercase;
-      letter-spacing: 0.12em;
-      color: rgba(250,250,247,0.4);
-      margin-bottom: 1rem;
-    }
-
-    .footer-links {
-      list-style: none;
-      display: flex;
-      flex-direction: column;
-      gap: 0.6rem;
-    }
-
-    .footer-links a {
-      font-size: 0.9rem;
-      color: rgba(250,250,247,0.65);
-      transition: color 0.2s;
-    }
-
-    .footer-links a:hover {
-      color: var(--beige-arena);
-    }
-
-    .footer-contacto-item {
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-      font-size: 0.875rem;
-      color: rgba(250,250,247,0.65);
-      margin-bottom: 0.6rem;
-    }
-
-    .footer-contacto-item a:hover {
-      color: var(--beige-arena);
-    }
-
-    .footer-bottom {
-      padding-top: 1.75rem;
-      text-align: center;
-      font-size: 0.78rem;
-      color: rgba(250,250,247,0.3);
-    }
-
-    /* ===========================
-       BOTÓN WHATSAPP FLOTANTE
-    =========================== */
-    .wa-flotante {
-      position: fixed;
-      bottom: 24px;
-      right: 24px;
-      z-index: 1000;
-      width: 58px;
-      height: 58px;
-      border-radius: 50%;
-      background-color: var(--whatsapp-verde);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      box-shadow: 0 4px 20px rgba(37,211,102,0.4);
-      animation: pulse-wa 2s ease-in-out infinite;
-      transition: transform 0.2s ease, box-shadow 0.2s ease;
-    }
-
-    body.menu-abierto .wa-flotante { opacity: 0; pointer-events: none; }
-    .wa-flotante:hover {
-      transform: scale(1.08);
-      box-shadow: 0 6px 28px rgba(37,211,102,0.55);
-      animation: none;
-    }
-
-    .wa-tooltip {
-      position: absolute;
-      right: 68px;
-      white-space: nowrap;
-      background-color: var(--texto-principal);
-      color: #fff;
-      font-size: 0.78rem;
-      font-weight: 500;
-      padding: 0.35rem 0.8rem;
-      border-radius: 6px;
-      opacity: 0;
-      pointer-events: none;
-      transition: opacity 0.2s ease;
-    }
-
-    .wa-tooltip::after {
-      content: '';
-      position: absolute;
-      left: 100%;
-      top: 50%;
-      transform: translateY(-50%);
-      border: 6px solid transparent;
-      border-left-color: var(--texto-principal);
-    }
-
-    .wa-flotante:hover .wa-tooltip {
-      opacity: 1;
-    }
-
-    @keyframes pulse-wa {
-      0%, 100% { transform: scale(1); }
-      50% { transform: scale(1.05); }
-    }
-
-    /* ===========================
-       SECCIÓN: REELS / TELÉFONO
-    =========================== */
-    #reels {
-      padding: 5rem 2rem;
-      background-color: var(--fondo-oscuro);
-      text-align: center;
-      overflow: hidden;
-    }
-
-    #reels .seccion-header {
-      margin-bottom: 3.5rem;
-    }
-
-    .reels-layout {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 3.5rem;
-      max-width: 1100px;
-      margin: 0 auto;
-    }
-
-    @media (min-width: 900px) {
-      .reels-layout {
-        flex-direction: row;
-        justify-content: center;
-        align-items: center;
-        gap: 5rem;
-      }
-
-      .reels-texto {
-        text-align: left;
-        max-width: 380px;
-      }
-    }
-
-    .reels-texto .titulo-seccion {
-      color: var(--blanco-calido);
-    }
-
-    .reels-texto .subtitulo-seccion {
-      color: rgba(250,250,247,0.7);
-      margin-top: 1rem;
-    }
-
-    .reels-texto .separador {
-      margin-top: 1rem;
-    }
-
-    .reels-bullets {
-      margin-top: 2rem;
-      display: flex;
-      flex-direction: column;
-      gap: 1rem;
-    }
-
-    .reels-bullet {
-      display: flex;
-      align-items: center;
-      gap: 0.75rem;
-      font-size: 0.9rem;
-      color: rgba(250,250,247,0.7);
-    }
-
-    .reels-bullet-dot {
-      width: 8px;
-      height: 8px;
-      border-radius: 50%;
-      background-color: var(--verde-salvia);
-      flex-shrink: 0;
-    }
-
-    /* Teléfono mockup */
-    .phone-mockup {
-      position: relative;
-      width: 280px;
-      flex-shrink: 0;
-    }
-
-    .phone-frame {
-      position: relative;
-      width: 280px;
-      height: 560px;
-      background: #0d0d0d;
-      border-radius: 44px;
-      box-shadow:
-        0 0 0 2px #2a2a2a,
-        0 0 0 4px #1a1a1a,
-        0 30px 80px rgba(0,0,0,0.7),
-        0 0 0 10px #111;
-      overflow: hidden;
-      z-index: 1;
-    }
-
-    /* Dynamic island */
-    .phone-island {
-      position: absolute;
-      top: 14px;
-      left: 50%;
-      transform: translateX(-50%);
-      width: 88px;
-      height: 26px;
-      background: #000;
-      border-radius: 20px;
-      z-index: 10;
-    }
-
-    /* Botones laterales del teléfono (decorativos) */
-    .phone-btn-vol {
-      position: absolute;
-      left: -3px;
-      top: 120px;
-      width: 3px;
-      height: 36px;
-      background: #222;
-      border-radius: 2px 0 0 2px;
-    }
-
-    .phone-btn-vol + .phone-btn-vol {
-      top: 170px;
-    }
-
-    .phone-btn-power {
-      position: absolute;
-      right: -3px;
-      top: 160px;
-      width: 3px;
-      height: 56px;
-      background: #222;
-      border-radius: 0 2px 2px 0;
-    }
-
-    /* Home bar */
-    .phone-home {
-      position: absolute;
-      bottom: 10px;
-      left: 50%;
-      transform: translateX(-50%);
-      width: 100px;
-      height: 4px;
-      background: rgba(255,255,255,0.25);
-      border-radius: 2px;
-      z-index: 10;
-    }
-
-    /* Slider de videos */
-    .phone-slider {
-      position: absolute;
-      inset: 0;
-      overflow: hidden;
-    }
-
-    .phone-track {
-      display: flex;
-      flex-direction: column;
-      height: 100%;
-      transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
-    }
-
-    .phone-slide {
-      min-height: 560px;
-      width: 280px;
-      position: relative;
-      flex-shrink: 0;
-      background: #111;
-    }
-
-    .phone-slide video {
-      position: absolute;
-      inset: 0;
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-    }
-
-    /* Overlay con info en cada reel */
-    .reel-overlay {
-      position: absolute;
-      inset: 0;
-      background: linear-gradient(to top, rgba(0,0,0,0.55) 0%, transparent 50%);
-      z-index: 2;
-      display: flex;
-      flex-direction: column;
-      justify-content: flex-end;
-      padding: 1.25rem 1rem 2.5rem;
-      pointer-events: none;
-    }
-
-    .reel-tag {
-      display: inline-flex;
-      align-items: center;
-      gap: 0.35rem;
-      background: rgba(122,140,114,0.8);
-      color: #fff;
-      font-size: 0.68rem;
-      font-weight: 500;
-      padding: 0.25rem 0.6rem;
-      border-radius: 999px;
-      width: fit-content;
-      margin-bottom: 0.5rem;
-      letter-spacing: 0.04em;
-      text-transform: uppercase;
-    }
-
-    .reel-titulo {
-      font-family: 'Playfair Display', serif;
-      font-size: 1rem;
-      color: #fff;
-      font-weight: 700;
-      line-height: 1.2;
-    }
-
-    /* Controles del slider */
-    .phone-controls {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 1rem;
-      margin-top: 1.5rem;
-    }
-
-    .phone-btn {
-      width: 40px;
-      height: 40px;
-      border-radius: 50%;
-      background: rgba(250,250,247,0.1);
-      border: 1px solid rgba(250,250,247,0.2);
-      color: var(--blanco-calido);
-      font-size: 1.1rem;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      transition: background 0.2s, border-color 0.2s;
-    }
-
-    .phone-btn:hover {
-      background: rgba(250,250,247,0.2);
-      border-color: rgba(250,250,247,0.4);
-    }
-
-    .phone-dots {
-      display: flex;
-      gap: 6px;
-    }
-
-    .phone-dot {
-      width: 6px;
-      height: 6px;
-      border-radius: 50%;
-      background: rgba(250,250,247,0.25);
-      transition: background 0.3s, transform 0.3s;
-      cursor: pointer;
-    }
-
-    .phone-dot.activo {
-      background: var(--verde-salvia);
-      transform: scale(1.3);
-    }
-
-    /* Brillo del teléfono (decorativo) */
-    .phone-shine {
-      position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
-      height: 40%;
-      background: linear-gradient(to bottom, rgba(255,255,255,0.04), transparent);
-      border-radius: 44px 44px 0 0;
-      pointer-events: none;
-      z-index: 5;
-    }
-
-    /* ===========================
-       UTILITIES
-    =========================== */
-    .text-center { text-align: center; }
-
-    .separador {
-      width: 48px;
-      height: 3px;
-      background-color: var(--verde-salvia);
-      margin: 1rem 0 0;
-      border-radius: 2px;
-    }
-
-    .separador.centrado {
-      margin: 1rem auto 0;
-    }
-
-    /* ===========================
-       CARD: PRECIO + BADGE
-    =========================== */
-    .card-precio {
-      font-family: 'Inter', sans-serif;
-      font-size: 0.82rem;
-      color: var(--verde-salvia);
-      font-weight: 600;
-      letter-spacing: 0.01em;
-      margin-top: -0.5rem;
-    }
-
-    .card-precio span {
-      color: var(--texto-secundario);
-      font-weight: 400;
-    }
-
-    .card-badge {
-      position: absolute;
-      top: 12px;
-      left: 12px;
-      z-index: 2;
-      background-color: var(--verde-salvia);
-      color: #fff;
-      font-size: 0.7rem;
-      font-weight: 600;
-      letter-spacing: 0.06em;
-      text-transform: uppercase;
-      padding: 0.28rem 0.7rem;
-      border-radius: 999px;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.18);
-    }
-
-    .card-badge.dorado {
-      background-color: #B8860B;
-    }
-
-    .card-badge.rosa {
-      background-color: #9C6B7A;
-    }
-
-    /* ===========================
-       SECCIÓN: TESTIMONIOS
-    =========================== */
-    #testimonios {
-      padding: 5rem 2rem;
-      background-color: var(--fondo-crema);
-    }
-
-    .testi-grid {
-      display: grid;
-      grid-template-columns: 1fr;
-      gap: 1.5rem;
-      max-width: 960px;
-      margin: 3rem auto 0;
-    }
-
-    @media (min-width: 640px) {
-      .testi-grid {
-        grid-template-columns: repeat(3, 1fr);
-      }
-    }
-
-    .testi-card {
-      background: #fff;
-      border-radius: 12px;
-      padding: 1.75rem 1.5rem;
-      box-shadow: 0 2px 16px rgba(0,0,0,0.06);
-      display: flex;
-      flex-direction: column;
-      gap: 1rem;
-      transition: transform 0.3s ease, box-shadow 0.3s ease;
-    }
-
-    .testi-card:hover {
-      transform: translateY(-4px);
-      box-shadow: 0 8px 30px rgba(122,140,114,0.18);
-    }
-
-    .testi-estrellas {
-      color: #C9A227;
-      font-size: 1rem;
-      letter-spacing: 0.1em;
-    }
-
-    .testi-texto {
-      font-size: 0.9rem;
-      color: var(--texto-principal);
-      line-height: 1.65;
-      font-style: italic;
-      flex: 1;
-    }
-
-    .testi-texto::before {
-      content: '"';
-      font-family: 'Playfair Display', serif;
-      font-size: 2rem;
-      color: var(--verde-salvia);
-      line-height: 0;
-      vertical-align: -0.5rem;
-      margin-right: 0.15rem;
-    }
-
-    .testi-autor {
-      display: flex;
-      flex-direction: column;
-      gap: 0.15rem;
-      padding-top: 0.75rem;
-      border-top: 1px solid var(--fondo-crema);
-    }
-
-    .testi-nombre {
-      font-weight: 600;
-      font-size: 0.875rem;
-      color: var(--texto-principal);
-    }
-
-    .testi-detalle {
-      font-size: 0.775rem;
-      color: var(--texto-secundario);
-    }
-    /* ===========================
-       HERO: TRUST SIGNAL
-    =========================== */
-    .hero-trust {
-      font-size: 0.82rem;
-      color: rgba(250,250,247,0.65);
-      letter-spacing: 0.03em;
-      margin-top: -0.5rem;
-    }
-
-    /* ===========================
-       CARD: DESCRIPCIÓN
-    =========================== */
-    .card-desc {
-      font-size: 0.85rem;
-      color: var(--texto-secundario);
-      line-height: 1.55;
-      margin-top: -0.5rem;
-    }
-
-    /* ===========================
-       SECCIÓN: FAQ
-    =========================== */
-    #faq {
-      padding: 5rem 2rem;
-      background-color: var(--blanco-calido);
-    }
-
-    .faq-lista {
-      max-width: 720px;
-      margin: 3rem auto 0;
-      display: flex;
-      flex-direction: column;
-      gap: 0;
-    }
-
-    .faq-item {
-      border-bottom: 1px solid rgba(200,184,154,0.4);
-    }
-
-    .faq-pregunta {
-      width: 100%;
-      background: none;
-      border: none;
-      padding: 1.25rem 0;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 1rem;
-      cursor: pointer;
-      text-align: left;
-      font-family: 'Inter', sans-serif;
-      font-size: 0.975rem;
-      font-weight: 600;
-      color: var(--texto-principal);
-      transition: color 0.2s;
-    }
-
-    .faq-pregunta:hover {
-      color: var(--verde-salvia);
-    }
-
-    .faq-icono {
-      flex-shrink: 0;
-      width: 22px;
-      height: 22px;
-      border-radius: 50%;
-      border: 1.5px solid var(--verde-salvia);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      color: var(--verde-salvia);
-      font-size: 1rem;
-      transition: transform 0.3s ease, background-color 0.3s ease;
-      line-height: 1;
-    }
-
-    .faq-item.abierto .faq-icono {
-      transform: rotate(45deg);
-      background-color: var(--verde-salvia);
-      color: #fff;
-    }
-
-    .faq-respuesta {
-      max-height: 0;
-      overflow: hidden;
-      transition: max-height 0.4s ease, padding 0.3s ease;
-    }
-
-    .faq-item.abierto .faq-respuesta {
-      max-height: 300px;
-    }
-
-    .faq-respuesta p {
-      font-size: 0.9rem;
-      color: var(--texto-secundario);
-      line-height: 1.7;
-      padding-bottom: 1.25rem;
-    }
-
-    .faq-respuesta a {
-      color: var(--verde-salvia);
-      font-weight: 500;
-      text-decoration: underline;
-      text-underline-offset: 3px;
-    }
-  </style>
-
-  <!-- SEO: canonical + schema -->
-  <link rel="canonical" href="https://aromasdecampo.vercel.app">
-  <script type="application/ld+json">
-  {
-    "@context": "https://schema.org",
-    "@type": "FAQPage",
-    "mainEntity": [
-      {
-        "@type": "Question",
-        "name": "¿Cuánto cuesta por noche en Aromas de Campo?",
-        "acceptedAnswer": {
-          "@type": "Answer",
-          "text": "Los precios arrancan desde $33.000 por noche para Olivia y Emma, y desde $35.000 para Sofía. Varían según la temporada."
-        }
-      },
-      {
-        "@type": "Question",
-        "name": "¿Qué incluye el precio de las cabañas?",
-        "acceptedAnswer": {
-          "@type": "Answer",
-          "text": "Se alquila solo el alojamiento: cabaña equipada, parrilla exclusiva, utensilios de cocina y acceso a la pileta del complejo. No incluye ropa de cama ni toallas."
-        }
-      },
-      {
-        "@type": "Question",
-        "name": "¿Aceptan mascotas en Aromas de Campo?",
-        "acceptedAnswer": {
-          "@type": "Answer",
-          "text": "No, no se aceptan mascotas."
-        }
-      },
-      {
-        "@type": "Question",
-        "name": "¿Cómo se confirma la reserva?",
-        "acceptedAnswer": {
-          "@type": "Answer",
-          "text": "Escribinos por WhatsApp, te confirmamos disponibilidad y te enviamos los datos para realizar la seña. El proceso es directo y sin intermediarios."
-        }
-      },
-      {
-        "@type": "Question",
-        "name": "¿Cuál es el horario de check-in y check-out?",
-        "acceptedAnswer": {
-          "@type": "Answer",
-          "text": "El check-in es a partir de las 14 hs y el check-out hasta las 11 hs."
-        }
-      }
-    ]
-  }
-  </script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Gloock&family=Newsreader:ital,opsz,wght@0,6..72,400;1,6..72,400;1,6..72,500&family=Figtree:wght@400;500;600;700&display=swap" rel="stylesheet">
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
     "@type": "LodgingBusiness",
     "name": "Aromas de Campo",
-    "description": "Cabañas de tronco en Colón, Entre Ríos. Pileta, parrilla, naturaleza pura y el río Uruguay a minutos.",
+    "description": "Cabañas de tronco en Colón, Entre Ríos, con pileta, parque y parrilla propia.",
     "url": "https://aromasdecampo.vercel.app",
+    "image": "https://aromasdecampo.vercel.app/fotos/hero-poster.jpg",
     "telephone": "+5491169495055",
-    "sameAs": [
-      "https://www.instagram.com/aromasdecampo22",
-      "https://www.facebook.com/aromasdecampo022"
-    ],
-    "address": {
-      "@type": "PostalAddress",
-      "streetAddress": "QR66+56",
-      "addressLocality": "Colón",
-      "addressRegion": "Entre Ríos",
-      "postalCode": "3082",
-      "addressCountry": "AR"
-    },
+    "sameAs": ["https://www.instagram.com/aromasdecampo22", "https://www.facebook.com/aromasdecampo022"],
+    "address": {"@type": "PostalAddress", "streetAddress": "QR66+56", "addressLocality": "Colón", "addressRegion": "Entre Ríos", "postalCode": "3082", "addressCountry": "AR"},
     "amenityFeature": [
       {"@type": "LocationFeatureSpecification", "name": "Pileta", "value": true},
-      {"@type": "LocationFeatureSpecification", "name": "WiFi gratuito", "value": true},
-      {"@type": "LocationFeatureSpecification", "name": "Parrilla privada", "value": true},
-      {"@type": "LocationFeatureSpecification", "name": "Estacionamiento", "value": true}
+      {"@type": "LocationFeatureSpecification", "name": "WiFi", "value": true},
+      {"@type": "LocationFeatureSpecification", "name": "Parrilla propia", "value": true}
     ],
-    "numberOfRooms": 2,
     "petsAllowed": false,
     "priceRange": "$$",
     "hasMap": "https://maps.google.com/maps?q=Aromas+de+campo,+Col%C3%B3n,+Entre+R%C3%ADos"
   }
   </script>
+  <style>
+    :root {
+      --papel: #F2EADB; --papel-2: #E9DEC9; --tinta: #221F1A; --tinta-2: #5C564B;
+      --monte: #24301F; --pasto: #5F6F3A; --madera: #8C5329; --sol: #D2662A; --sol-osc: #A9491A;
+      --linea: rgba(34,31,26,.16); --wa: #1FAF5A;
+      --display: 'Gloock', Georgia, serif; --serif: 'Newsreader', Georgia, serif; --ui: 'Figtree', system-ui, sans-serif;
+      --ancho: 1180px; --pad: clamp(1.1rem, 4vw, 2.5rem);
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; -webkit-text-size-adjust: 100%; }
+    body { font-family: var(--ui); background: var(--papel); color: var(--tinta); font-size: 17px; line-height: 1.55; overflow-x: hidden; }
+    /* grano de papel */
+    body::before { content: ''; position: fixed; inset: 0; pointer-events: none; z-index: 200; opacity: .35; mix-blend-mode: multiply;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .45 0 0 0 0 .38 0 0 0 0 .28 0 0 0 .22 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"); }
+    [hidden] { display: none !important; }
+    img { max-width: 100%; display: block; }
+    a { color: inherit; }
+    button { font: inherit; color: inherit; cursor: pointer; background: none; border: 0; }
+    :focus-visible { outline: 3px solid var(--sol); outline-offset: 3px; border-radius: 4px; }
+    .envoltura { max-width: var(--ancho); margin: 0 auto; padding: 0 var(--pad); }
+    .salto { position: absolute; left: -999px; } .salto:focus { left: 1rem; top: 1rem; z-index: 999; background: var(--papel); padding: .6rem 1rem; }
+
+    /* ---------- Botones ---------- */
+    .boton { display: inline-flex; align-items: center; gap: .55rem; font-weight: 600; font-size: 1rem; text-decoration: none; padding: .95rem 1.35rem;
+      border-radius: 999px; border: 1.5px solid currentColor; transition: transform .25s cubic-bezier(.2,.8,.2,1), background .25s, color .25s; }
+    .boton:active { transform: scale(.97); }
+    .boton-sol { background: var(--sol); border-color: var(--sol); color: #fff; }
+    .boton-sol:hover { background: var(--sol-osc); border-color: var(--sol-osc); }
+    .boton-tinta { background: var(--tinta); border-color: var(--tinta); color: var(--papel); }
+    .boton-tinta:hover { background: var(--monte); }
+    .boton-linea:hover { background: rgba(255,255,255,.12); }
+    .boton .flecha { transition: transform .25s; } .boton:hover .flecha { transform: translateX(4px); }
+
+    /* ---------- Barra ---------- */
+    .barra { position: fixed; inset: 0 0 auto 0; z-index: 60; color: #fff; transition: background .35s, color .35s, box-shadow .35s; padding-top: env(safe-area-inset-top); }
+    .barra .envoltura { display: flex; align-items: center; justify-content: space-between; height: 70px; gap: 1rem; }
+    .barra.solida { background: rgba(242,234,219,.94); color: var(--tinta); backdrop-filter: blur(10px); box-shadow: 0 1px 0 var(--linea); }
+    .marca { display: flex; align-items: center; gap: .65rem; text-decoration: none; }
+    .marca img { width: 42px; height: 42px; transition: filter .35s; }
+    .barra.solida .marca img { filter: invert(1) brightness(.25) sepia(.4); }
+    .marca span { font-family: var(--display); font-size: 1.25rem; letter-spacing: .01em; }
+    .menu-ancho { display: none; gap: 1.6rem; align-items: center; font-size: .95rem; font-weight: 500; }
+    .menu-ancho a { text-decoration: none; position: relative; }
+    .menu-ancho a:not(.boton)::after { content: ''; position: absolute; left: 0; right: 100%; bottom: -4px; height: 1.5px; background: currentColor; transition: right .3s; }
+    .menu-ancho a:not(.boton):hover::after { right: 0; }
+    .menu-ancho .boton { padding: .6rem 1.1rem; }
+    .abrir-menu { width: 46px; height: 46px; display: grid; place-items: center; border-radius: 50%; }
+    .abrir-menu span { display: block; width: 22px; height: 1.5px; background: currentColor; box-shadow: 0 -7px 0 currentColor, 0 7px 0 currentColor; }
+    @media (min-width: 1040px) { .menu-ancho { display: flex; } .abrir-menu { display: none; } }
+
+    .menu-movil { position: fixed; inset: 0; z-index: 80; background: var(--monte); color: var(--papel); display: flex; flex-direction: column;
+      padding: calc(1.2rem + env(safe-area-inset-top)) var(--pad) 2rem; clip-path: circle(0 at calc(100% - 40px) 40px); transition: clip-path .55s cubic-bezier(.7,0,.2,1); visibility: hidden; }
+    .menu-movil.abierto { clip-path: circle(150% at calc(100% - 40px) 40px); visibility: visible; }
+    .menu-movil .cerrar { align-self: flex-end; width: 46px; height: 46px; font-size: 1.8rem; line-height: 1; }
+    .menu-movil nav { display: grid; gap: .2rem; margin-top: 1.5rem; }
+    .menu-movil nav a { font-family: var(--display); font-size: clamp(2rem, 9vw, 2.8rem); text-decoration: none; line-height: 1.25; display: flex; gap: .8rem; align-items: baseline; }
+    .menu-movil nav a small { font-family: var(--ui); font-size: .8rem; opacity: .5; width: 1.6rem; }
+    .menu-movil .pie-menu { margin-top: auto; display: grid; gap: .8rem; }
+    .menu-movil .pie-menu .boton { justify-content: center; }
+
+    /* ---------- Portada ---------- */
+    .portada { position: relative; min-height: 100svh; display: flex; align-items: flex-end; color: #fff; overflow: hidden; background: var(--monte); }
+    .portada video, .portada .poster { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+    .portada::after { content: ''; position: absolute; inset: 0; background: linear-gradient(180deg, rgba(20,24,16,.5) 0%, rgba(20,24,16,0) 28%, rgba(20,24,16,.2) 50%, rgba(20,24,16,.86) 100%); }
+    .portada .envoltura { position: relative; z-index: 2; width: 100%; padding-bottom: clamp(2.2rem, 7vh, 4.5rem); }
+    .lugar { font-family: var(--serif); font-style: italic; font-size: 1.15rem; opacity: .9; display: flex; align-items: center; gap: .7rem; }
+    .lugar::before { content: ''; width: 34px; height: 1px; background: currentColor; }
+    .portada h1 { font-family: var(--display); font-weight: 400; font-size: clamp(2.7rem, 9.5vw, 6.6rem); line-height: .98; letter-spacing: -.015em; margin: .6rem 0 1.3rem; max-width: 13ch; }
+    .portada h1 em { font-family: var(--serif); font-style: italic; font-weight: 400; color: #F5C99C; }
+    .portada p.bajada { max-width: 34rem; font-size: 1.08rem; opacity: .92; }
+    .portada .acciones { display: flex; flex-wrap: wrap; gap: .7rem; margin-top: 1.6rem; }
+    .sello-google { margin-top: 1.4rem; display: inline-flex; align-items: center; gap: .6rem; font-size: .95rem; padding: .45rem .9rem .45rem .5rem; border-radius: 999px; background: rgba(255,255,255,.12); backdrop-filter: blur(6px); border: 1px solid rgba(255,255,255,.25); }
+    .sello-google b { font-family: var(--display); font-weight: 400; font-size: 1.15rem; }
+    .sello-google .estrellas { color: #F6B94A; letter-spacing: 1px; }
+    .sello-google[hidden] { display: none; }
+    /* matasellos giratorio */
+    .matasellos { position: absolute; z-index: 2; right: var(--pad); top: 110px; width: 148px; height: 148px; display: none; }
+    .matasellos svg { width: 100%; height: 100%; animation: girar 38s linear infinite; }
+    .matasellos img { position: absolute; inset: 34%; width: 32%; opacity: .95; }
+    @keyframes girar { to { transform: rotate(360deg); } }
+    @media (min-width: 760px) { .matasellos { display: block; } }
+
+    /* ---------- Ficha ---------- */
+    .ficha { border-bottom: 1px solid var(--linea); }
+    .ficha ul { list-style: none; display: grid; grid-template-columns: repeat(2, 1fr); }
+    .ficha li { padding: 1.3rem 1rem 1.3rem 0; border-top: 1px solid var(--linea); }
+    .ficha li:nth-child(odd) { border-right: 1px solid var(--linea); }
+    .ficha li:nth-child(even) { padding-left: 1rem; }
+    .ficha b { display: block; font-family: var(--display); font-weight: 400; font-size: 1.5rem; line-height: 1.1; }
+    .ficha span { font-size: .9rem; color: var(--tinta-2); }
+    @media (min-width: 860px) {
+      .ficha ul { grid-template-columns: repeat(4, 1fr); }
+      .ficha li { border-top: 0; padding: 1.8rem 1.2rem; border-right: 1px solid var(--linea); }
+      .ficha li:nth-child(even) { padding-left: 1.2rem; }
+      .ficha li:first-child { padding-left: 0; } .ficha li:last-child { border-right: 0; }
+    }
+
+    /* ---------- Secciones ---------- */
+    section { padding: clamp(4rem, 10vw, 7.5rem) 0; position: relative; }
+    .rotulo { display: flex; align-items: baseline; gap: .9rem; font-size: .82rem; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; color: var(--madera); margin-bottom: 1.1rem; }
+    .rotulo i { font-family: var(--serif); font-style: italic; font-weight: 400; font-size: 1.05rem; letter-spacing: 0; text-transform: none; color: var(--tinta-2); }
+    h2 { font-family: var(--display); font-weight: 400; font-size: clamp(2.2rem, 6.2vw, 4rem); line-height: 1.02; letter-spacing: -.01em; max-width: 16ch; }
+    h2 em { font-family: var(--serif); font-style: italic; color: var(--sol-osc); }
+    .intro { font-family: var(--serif); font-size: clamp(1.15rem, 2.4vw, 1.4rem); line-height: 1.45; color: var(--tinta-2); max-width: 36rem; margin-top: 1.1rem; }
+    .cabecera { display: grid; gap: 1rem; margin-bottom: clamp(2rem, 5vw, 3.5rem); }
+    @media (min-width: 900px) { .cabecera.lado { grid-template-columns: 1.1fr 1fr; align-items: end; } .cabecera.lado .intro { margin-top: 0; } }
+
+    /* ---------- Cabañas ---------- */
+    .cabanas { display: grid; gap: clamp(2rem, 5vw, 3rem); }
+    @media (min-width: 760px) { .cabanas { grid-template-columns: 1fr 1fr; } .cab.proxima { grid-column: 1 / -1; } }
+    @media (min-width: 1100px) { .cabanas { grid-template-columns: 1fr 1fr .8fr; } .cab.proxima { grid-column: auto; } }
+    .cab { display: flex; flex-direction: column; }
+    .carrusel { position: relative; aspect-ratio: 4 / 5; border-radius: 6px; overflow: hidden; background: var(--papel-2); }
+    .carrusel .pista { display: flex; height: 100%; overflow-x: auto; scroll-snap-type: x mandatory; scrollbar-width: none; }
+    .carrusel .pista::-webkit-scrollbar { display: none; }
+    .carrusel .pista img { flex: 0 0 100%; width: 100%; height: 100%; object-fit: cover; scroll-snap-align: start; cursor: zoom-in; }
+    .carrusel .cuenta { position: absolute; right: .7rem; bottom: .7rem; background: rgba(20,20,16,.6); color: #fff; font-size: .8rem; padding: .25rem .6rem; border-radius: 999px; backdrop-filter: blur(4px); }
+    .carrusel .flechas { position: absolute; inset: 50% .5rem auto; display: flex; justify-content: space-between; transform: translateY(-50%); pointer-events: none; }
+    .carrusel .flechas button { pointer-events: auto; width: 40px; height: 40px; border-radius: 50%; background: rgba(242,234,219,.92); color: var(--tinta); font-size: 1.1rem; opacity: 0; transition: opacity .25s; }
+    .carrusel:hover .flechas button { opacity: 1; }
+    @media (hover: none) { .carrusel .flechas { display: none; } }
+    .cab .nombre { display: flex; align-items: baseline; justify-content: space-between; gap: 1rem; margin-top: 1.1rem; }
+    .cab h3 { font-family: var(--display); font-weight: 400; font-size: 2.3rem; line-height: 1; }
+    .cab .precio { font-size: .95rem; color: var(--tinta-2); text-align: right; }
+    .cab .precio b { display: block; font-family: var(--display); font-weight: 400; font-size: 1.35rem; color: var(--tinta); }
+    .cab .libre { margin-top: .5rem; font-family: var(--serif); font-style: italic; color: var(--pasto); min-height: 1.5em; }
+    .cab .acciones { display: flex; gap: .6rem; margin-top: 1rem; flex-wrap: wrap; }
+    .cab .acciones .boton { padding: .75rem 1.1rem; font-size: .95rem; }
+    .cab.proxima .carrusel img { filter: sepia(.55) saturate(.7) brightness(.95); }
+    .cab.proxima .estampa { position: absolute; left: 50%; top: 50%; transform: translate(-50%,-50%) rotate(-9deg); border: 2.5px solid #fff; color: #fff; padding: .5rem 1.1rem;
+      font-family: var(--display); font-size: 1.7rem; letter-spacing: .02em; border-radius: 6px; background: rgba(140,83,41,.35); backdrop-filter: blur(2px); white-space: nowrap; }
+    .cab.proxima p { color: var(--tinta-2); margin-top: .5rem; font-size: .98rem; }
+    .equipamiento { margin-top: clamp(2rem, 5vw, 3rem); display: flex; flex-wrap: wrap; gap: .5rem 1.4rem; font-size: .95rem; color: var(--tinta-2); border-top: 1px solid var(--linea); padding-top: 1.2rem; }
+    .equipamiento b { color: var(--tinta); font-weight: 600; margin-right: .2rem; }
+    .esqueleto { background: linear-gradient(100deg, var(--papel-2) 30%, #F6F0E4 50%, var(--papel-2) 70%); background-size: 300% 100%; animation: brillo 1.4s ease-in-out infinite; }
+    @keyframes brillo { from { background-position: 100% 0; } to { background-position: 0 0; } }
+
+    /* ---------- Quedate más ---------- */
+    .estadia { background: var(--monte); color: var(--papel); overflow: hidden; }
+    .estadia .rotulo { color: #E8A46F; } .estadia .rotulo i, .estadia .intro { color: rgba(242,234,219,.75); }
+    .estadia h2 em { color: #F5C99C; }
+    .regla { margin-top: 2.5rem; display: grid; gap: 2rem; }
+    @media (min-width: 900px) { .regla { grid-template-columns: .9fr 1.1fr; gap: 4rem; align-items: start; } }
+    .contador { display: flex; align-items: baseline; gap: .8rem; }
+    .contador output { font-family: var(--display); font-size: clamp(5.5rem, 20vw, 9rem); line-height: .85; font-variant-numeric: tabular-nums; }
+    .contador span { font-family: var(--serif); font-style: italic; font-size: 1.6rem; }
+    .veredicto { font-family: var(--serif); font-size: 1.25rem; margin: .6rem 0 1.4rem; min-height: 3.2em; color: #F5C99C; }
+    input[type=range].noches { -webkit-appearance: none; appearance: none; width: 100%; height: 44px; background: transparent; }
+    input[type=range].noches::-webkit-slider-runnable-track { height: 2px; background: rgba(242,234,219,.35); }
+    input[type=range].noches::-moz-range-track { height: 2px; background: rgba(242,234,219,.35); }
+    input[type=range].noches::-webkit-slider-thumb { -webkit-appearance: none; width: 30px; height: 30px; margin-top: -14px; border-radius: 50%; background: var(--sol); border: 3px solid var(--papel); box-shadow: 0 2px 10px rgba(0,0,0,.3); }
+    input[type=range].noches::-moz-range-thumb { width: 26px; height: 26px; border-radius: 50%; background: var(--sol); border: 3px solid var(--papel); }
+    .marcas { display: flex; justify-content: space-between; font-size: .78rem; opacity: .6; margin-top: -.2rem; }
+    .franja { display: grid; grid-template-columns: repeat(3, 1fr); margin-top: 1rem; font-size: .8rem; text-align: center; }
+    .franja div { padding: .45rem .2rem; border-top: 3px solid rgba(242,234,219,.25); }
+    .franja div.ideal { border-color: var(--sol); color: #F5C99C; font-weight: 600; }
+    .estadia .acciones { margin-top: 1.8rem; display: flex; flex-wrap: wrap; gap: .7rem; }
+    .estadia .boton-linea { color: var(--papel); }
+    .plan { list-style: none; counter-reset: dia; border-top: 1px solid rgba(242,234,219,.2); }
+    .plan li { counter-increment: dia; display: grid; grid-template-columns: 4.2rem 1fr; gap: .8rem; padding: .85rem 0; border-bottom: 1px solid rgba(242,234,219,.2);
+      transition: opacity .4s, transform .4s; }
+    .plan li::before { content: 'Día ' counter(dia); font-size: .8rem; opacity: .6; padding-top: .25rem; }
+    .plan li b { font-weight: 600; display: block; }
+    .plan li small { opacity: .7; font-size: .9rem; }
+    .plan li.fuera { opacity: .22; }
+    .nota-descuento { display: inline-block; margin-top: 1rem; background: var(--sol); color: #fff; padding: .35rem .8rem; border-radius: 4px; font-weight: 600; font-size: .92rem; }
+
+    /* ---------- Fotos ---------- */
+    .filtros { display: flex; gap: .5rem; overflow-x: auto; padding-bottom: .4rem; margin-bottom: 1.6rem; scrollbar-width: none; }
+    .filtros::-webkit-scrollbar { display: none; }
+    .filtros button { flex: none; padding: .55rem 1rem; border-radius: 999px; border: 1.5px solid var(--linea); font-size: .93rem; font-weight: 500; transition: all .25s; }
+    .filtros button[aria-pressed=true] { background: var(--tinta); color: var(--papel); border-color: var(--tinta); }
+    .mosaico { columns: 2; column-gap: .6rem; }
+    @media (min-width: 900px) { .mosaico { columns: 3; column-gap: 1rem; } }
+    .mosaico figure { break-inside: avoid; margin-bottom: .7rem; position: relative; overflow: hidden; border-radius: 4px; cursor: zoom-in; background: var(--papel-2); }
+    @media (min-width: 900px) { .mosaico figure { margin-bottom: 1rem; } }
+    .mosaico img { width: 100%; height: auto; transition: transform .8s cubic-bezier(.2,.8,.2,1); }
+    .mosaico figure:hover img { transform: scale(1.04); }
+    .mosaico figcaption { position: absolute; inset: auto 0 0 0; padding: 1.6rem .8rem .6rem; color: #fff; font-size: .85rem; background: linear-gradient(transparent, rgba(0,0,0,.55)); opacity: 0; transition: opacity .3s; }
+    .mosaico figure:hover figcaption { opacity: 1; }
+    @media (hover: none) { .mosaico figcaption { opacity: 1; } }
+    .mosaico figure.entra { animation: entrar .6s cubic-bezier(.2,.8,.2,1) both; }
+    @keyframes entrar { from { opacity: 0; transform: translateY(14px); } }
+
+    /* ---------- Videos ---------- */
+    .videos { padding-top: 0; }
+    .tira { display: grid; grid-auto-flow: column; grid-auto-columns: minmax(200px, 62%); gap: .8rem; overflow-x: auto; scroll-snap-type: x mandatory; padding: 0 var(--pad) .5rem; scrollbar-width: none; }
+    .tira::-webkit-scrollbar { display: none; }
+    @media (min-width: 900px) { .tira { grid-auto-columns: 1fr; max-width: var(--ancho); margin: 0 auto; overflow: visible; } }
+    .tira .video { position: relative; aspect-ratio: 9 / 16; border-radius: 6px; overflow: hidden; background: #111; scroll-snap-align: center; }
+    .tira video { width: 100%; height: 100%; object-fit: cover; }
+    .tira .play { position: absolute; inset: 0; display: grid; place-items: center; color: #fff; transition: opacity .3s; }
+    .tira .play span { width: 62px; height: 62px; border-radius: 50%; border: 1.5px solid #fff; display: grid; place-items: center; background: rgba(0,0,0,.25); backdrop-filter: blur(3px); }
+    .tira .video.sonando .play { opacity: 0; }
+
+    /* ---------- Opiniones ---------- */
+    .opiniones { background: var(--papel-2); }
+    .nota-google { display: grid; gap: 1.5rem; align-items: end; margin-bottom: 2.5rem; }
+    @media (min-width: 900px) { .nota-google { grid-template-columns: auto 1fr; gap: 3rem; } }
+    .puntaje { font-family: var(--display); font-size: clamp(6rem, 22vw, 10rem); line-height: .8; }
+    .puntaje small { display: block; font-family: var(--ui); font-size: 1rem; margin-top: 1rem; line-height: 1.4; }
+    .puntaje .estrellas { color: #E39A2C; letter-spacing: 2px; font-size: 1.2rem; }
+    .resenas { display: grid; gap: 1rem; }
+    @media (min-width: 760px) { .resenas { grid-template-columns: repeat(2, 1fr); } }
+    @media (min-width: 1100px) { .resenas { grid-template-columns: repeat(3, 1fr); } }
+    .resena { background: var(--papel); padding: 1.4rem; border-radius: 4px; display: flex; flex-direction: column; gap: .8rem; position: relative; }
+    .resena .estrellas { color: #E39A2C; letter-spacing: 1px; }
+    .resena p { font-family: var(--serif); font-size: 1.12rem; line-height: 1.45; }
+    .resena .quien { margin-top: auto; font-size: .9rem; color: var(--tinta-2); display: flex; justify-content: space-between; gap: .5rem; align-items: center; }
+    .resena .quien b { color: var(--tinta); font-weight: 600; }
+    .resena .respuesta { font-family: var(--ui); font-size: .9rem; color: var(--tinta-2); border-left: 2px solid var(--madera); padding-left: .7rem; }
+    .resena .fuente { font-size: .75rem; border: 1px solid var(--linea); padding: .1rem .5rem; border-radius: 999px; white-space: nowrap; }
+    .opiniones .acciones { margin-top: 1.8rem; display: flex; flex-wrap: wrap; gap: .7rem; align-items: center; }
+    .opiniones .acciones a.chico { font-size: .9rem; color: var(--tinta-2); }
+
+    /* hoja deslizable (opiniones completas) */
+    .hoja { position: fixed; inset: 0; z-index: 240; display: flex; align-items: flex-end; justify-content: center; visibility: hidden; }
+    .hoja .fondo { position: absolute; inset: 0; background: rgba(20,20,14,.55); opacity: 0; transition: opacity .35s; }
+    .hoja .panel { position: relative; width: 100%; max-width: 760px; max-height: 88svh; background: var(--papel); border-radius: 18px 18px 0 0; display: flex; flex-direction: column;
+      transform: translateY(100%); transition: transform .45s cubic-bezier(.2,.8,.2,1); padding-bottom: env(safe-area-inset-bottom); }
+    .hoja.abierta { visibility: visible; } .hoja.abierta .fondo { opacity: 1; } .hoja.abierta .panel { transform: none; }
+    .hoja header { padding: .7rem 1.3rem 1rem; border-bottom: 1px solid var(--linea); display: flex; align-items: center; justify-content: space-between; gap: 1rem; }
+    .hoja header::before { content: ''; position: absolute; top: .45rem; left: 50%; width: 40px; height: 4px; border-radius: 4px; background: var(--linea); transform: translateX(-50%); }
+    .hoja header h3 { font-family: var(--display); font-weight: 400; font-size: 1.6rem; margin-top: .5rem; }
+    .hoja header button { width: 44px; height: 44px; font-size: 1.6rem; }
+    .hoja .lista { overflow-y: auto; padding: 1rem 1.3rem 1.5rem; display: grid; gap: .9rem; overscroll-behavior: contain; }
+    .hoja .lista .resena { background: #fff8ec; }
+    @media (min-width: 760px) { .hoja { align-items: center; } .hoja .panel { border-radius: 14px; transform: translateY(30px) scale(.98); opacity: 0; transition: transform .35s, opacity .35s; } .hoja.abierta .panel { opacity: 1; } }
+
+    /* ---------- Ubicación ---------- */
+    .ubicacion .grilla { display: grid; gap: 2rem; }
+    @media (min-width: 900px) { .ubicacion .grilla { grid-template-columns: 1fr 1.2fr; gap: 4rem; align-items: center; } }
+    .mapa { aspect-ratio: 4 / 3; border-radius: 6px; overflow: hidden; background: var(--papel-2); filter: sepia(.25) saturate(.85); }
+    .mapa iframe { width: 100%; height: 100%; border: 0; }
+    .datos { list-style: none; margin-top: 1.6rem; border-top: 1px solid var(--linea); }
+    .datos li { padding: .9rem 0; border-bottom: 1px solid var(--linea); display: flex; justify-content: space-between; gap: 1rem; }
+    .datos li span { color: var(--tinta-2); }
+
+    /* ---------- Preguntas ---------- */
+    .preguntas .grilla { display: grid; gap: 2rem; }
+    @media (min-width: 900px) { .preguntas .grilla { grid-template-columns: .8fr 1.2fr; gap: 4rem; } }
+    .faq-item { border-bottom: 1px solid var(--linea); }
+    .faq-pregunta { width: 100%; text-align: left; padding: 1.15rem 0; display: flex; justify-content: space-between; gap: 1rem; font-size: 1.08rem; font-weight: 500; }
+    .faq-icono { flex: none; width: 28px; height: 28px; border-radius: 50%; border: 1.5px solid var(--linea); display: grid; place-items: center; transition: transform .3s, background .3s; }
+    .faq-item.abierto .faq-icono { transform: rotate(45deg); background: var(--tinta); color: var(--papel); border-color: var(--tinta); }
+    .faq-respuesta { padding: 0 2.5rem 1.2rem 0; color: var(--tinta-2); }
+    .faq-respuesta:not([hidden]) { animation: entrar .35s ease both; }
+
+    /* ---------- Cierre ---------- */
+    .cierre { background: var(--sol); color: #fff; text-align: left; }
+    .cierre h2 { max-width: 18ch; } .cierre h2 em { color: var(--monte); }
+    .cierre p { font-family: var(--serif); font-size: 1.25rem; max-width: 32rem; margin-top: 1rem; opacity: .95; }
+    .cierre .acciones { display: flex; flex-wrap: wrap; gap: .7rem; margin-top: 2rem; }
+    .cierre .boton-tinta { background: var(--monte); border-color: var(--monte); }
+    pie, .pie { display: block; background: var(--monte); color: rgba(242,234,219,.8); padding: 3.5rem 0 calc(2rem + env(safe-area-inset-bottom)); font-size: .95rem; }
+    .pie .grilla { display: grid; gap: 2rem; }
+    @media (min-width: 760px) { .pie .grilla { grid-template-columns: 1.4fr 1fr 1fr; } }
+    .pie h4 { font-family: var(--display); font-weight: 400; font-size: 1.3rem; color: var(--papel); margin-bottom: .7rem; }
+    .pie a { text-decoration: none; display: block; padding: .2rem 0; } .pie a:hover { color: #fff; }
+    .pie .legal { border-top: 1px solid rgba(242,234,219,.15); margin-top: 2.5rem; padding-top: 1.2rem; font-size: .82rem; opacity: .7; }
+
+    /* WhatsApp flotante */
+    .wa { position: fixed; right: 1rem; bottom: calc(1rem + env(safe-area-inset-bottom)); z-index: 70; width: 58px; height: 58px; border-radius: 50%; background: var(--wa); display: grid; place-items: center;
+      box-shadow: 0 8px 24px rgba(0,0,0,.25); transition: transform .3s, opacity .3s; }
+    .wa:hover { transform: scale(1.06); }
+    body.menu-abierto .wa, body.hoja-abierta .wa { opacity: 0; pointer-events: none; }
+
+    /* Visor de fotos */
+    .visor { position: fixed; inset: 0; z-index: 250; background: #12120E; display: flex; flex-direction: column; visibility: hidden; opacity: 0; transition: opacity .3s; }
+    .visor.abierto { visibility: visible; opacity: 1; }
+    .visor .arriba { display: flex; justify-content: space-between; align-items: center; color: #fff; padding: calc(.6rem + env(safe-area-inset-top)) 1rem .6rem; font-size: .9rem; }
+    .visor .arriba button { width: 46px; height: 46px; color: #fff; font-size: 1.8rem; }
+    .visor .escena { flex: 1; display: flex; overflow-x: auto; scroll-snap-type: x mandatory; scrollbar-width: none; }
+    .visor .escena::-webkit-scrollbar { display: none; }
+    .visor .escena figure { flex: 0 0 100%; scroll-snap-align: center; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 0 .5rem; }
+    .visor .escena img { max-width: 100%; max-height: calc(100svh - 150px); object-fit: contain; border-radius: 3px; }
+    .visor .escena figcaption { color: rgba(255,255,255,.75); font-family: var(--serif); font-style: italic; margin-top: .7rem; text-align: center; }
+    .visor .lados { position: absolute; inset: 50% 1rem auto; display: none; justify-content: space-between; pointer-events: none; }
+    .visor .lados button { pointer-events: auto; width: 52px; height: 52px; border-radius: 50%; background: rgba(255,255,255,.12); color: #fff; font-size: 1.4rem; }
+    @media (hover: hover) { .visor .lados { display: flex; } }
+
+    /* Aparición */
+    .asoma { opacity: 0; transform: translateY(22px); transition: opacity .9s cubic-bezier(.2,.8,.2,1), transform .9s cubic-bezier(.2,.8,.2,1); }
+    .asoma.visto { opacity: 1; transform: none; }
+    .revela { clip-path: inset(0 0 100% 0); transition: clip-path 1.1s cubic-bezier(.7,0,.2,1); }
+    .revela.visto { clip-path: inset(0 0 0 0); }
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { animation: none !important; transition: none !important; scroll-behavior: auto !important; }
+      .asoma, .revela { opacity: 1; transform: none; clip-path: none; }
+    }
+  </style>
 </head>
-
 <body>
+<a class="salto" href="#cabanas">Ir al contenido</a>
 
-<!-- =====================================================
-     SECCIÓN: NAVBAR
-===================================================== -->
-<header>
-  <nav id="navbar" role="navigation" aria-label="Menú principal">
-    <!-- Logo -->
-    <a href="#" class="nav-logo" aria-label="Aromas de Campo — inicio">
-      <!-- Usar logo color en navbar -->
-      <img src="logo/aromas-blanco.png" alt="Aromas de Campo" onerror="this.style.display='none'; this.nextElementSibling.style.display='block'">
-      <div class="nav-logo-texto" style="display:none">
-        Aromas de Campo
-        <span>Cabañas de Troncos</span>
-      </div>
+<header class="barra" id="barra">
+  <div class="envoltura">
+    <a class="marca" href="#" aria-label="Aromas de Campo, inicio">
+      <img src="logo/aromas-blanco.png" alt="" width="42" height="42"><span>Aromas de Campo</span>
     </a>
-
-    <!-- Links desktop -->
-    <ul class="nav-links" aria-label="Navegación principal">
-      <li><a href="#cabanas">Cabañas</a></li>
-      <li><a href="#amenities">Amenities</a></li>
-      <li><a href="#reels">Videos</a></li>
-      <li><a href="#testimonios">Opiniones</a></li>
-      <li><a href="#faq">FAQ</a></li>
-      <li><a href="guia.html">Guía de Colón</a></li>
-      <li><a href="reservas.html">Precios y reservas</a></li>
-    </ul>
-
-    <!-- CTA desktop -->
-    <a href="https://wa.me/5491169495055?text=Hola!%20Quiero%20consultar%20disponibilidad%20en%20Aromas%20de%20Campo."
-       target="_blank" rel="noopener noreferrer"
-       class="btn btn-outline nav-cta" style="border-color:rgba(250,250,247,0.7);color:rgba(250,250,247,0.95)"
-       aria-label="Consultar disponibilidad por WhatsApp">
-      Consultar disponibilidad
-    </a>
-
-    <!-- Hamburger mobile -->
-    <button class="hamburger" id="hamburger" aria-label="Abrir menú" aria-expanded="false" aria-controls="nav-mobile">
-      <span></span>
-      <span></span>
-      <span></span>
-    </button>
-  </nav>
-
-  <!-- Menú mobile -->
-  <div class="nav-mobile" id="nav-mobile" role="dialog" aria-modal="true" aria-label="Menú de navegación">
-    <a href="#cabanas" onclick="cerrarMenu()">Cabañas</a>
-    <a href="#amenities" onclick="cerrarMenu()">Amenities</a>
-    <a href="#reels" onclick="cerrarMenu()">Videos</a>
-    <a href="#testimonios" onclick="cerrarMenu()">Opiniones</a>
-    <a href="#faq" onclick="cerrarMenu()">FAQ</a>
-    <a href="#ubicacion" onclick="cerrarMenu()">Ubicación</a>
-    <a href="guia.html">Guía de Colón</a>
-      <a href="reservas.html">Precios y reservas</a>
-    <a href="https://wa.me/5491169495055?text=Hola!%20Quiero%20consultar%20disponibilidad%20en%20Aromas%20de%20Campo."
-       target="_blank" rel="noopener noreferrer"
-       class="btn btn-primario" onclick="cerrarMenu()">
-      Consultar por WhatsApp
-    </a>
+    <nav class="menu-ancho" aria-label="Menú principal">
+      <a href="#cabanas">Cabañas</a>
+      <a href="#estadia">Estadías</a>
+      <a href="#fotos">Fotos</a>
+      <a href="#opiniones">Opiniones</a>
+      <a href="#preguntas">Preguntas</a>
+      <a href="guia.html">Guía de Colón</a>
+      <a class="boton boton-sol" href="reservas.html">Precios y fechas</a>
+    </nav>
+    <button class="abrir-menu" id="abrirMenu" aria-label="Abrir menú" aria-expanded="false" aria-controls="menuMovil"><span></span></button>
   </div>
 </header>
 
-<main>
-
-<!-- =====================================================
-     SECCIÓN: HERO
-===================================================== -->
-<section id="hero" aria-label="Portada principal">
-  <!-- Video de fondo: colocar archivo en videos/hero.mp4 -->
-  <video class="hero-video"
-         src="videos/hero.mp4"
-         poster="fotos/hero-poster.jpg"
-         autoplay muted loop playsinline
-         aria-hidden="true"
-         onerror="this.style.display='none'">
-  </video>
-
-  <!-- Fallback gradient si no hay video -->
-  <div class="hero-bg-fallback" aria-hidden="true"></div>
-  <div class="hero-overlay" aria-hidden="true"></div>
-
-  <div class="hero-content">
-    <!-- Logo blanco para hero -->
-    <img class="hero-logo"
-         src="logo/aromas-blanco.png"
-         alt="Aromas de Campo"
-         onerror="this.style.display='none'; this.nextElementSibling.style.display='block'">
-    <div class="hero-logo-texto" style="display:none">
-      Aromas de Campo
-      <span>· Cabañas de Troncos ·</span>
-    </div>
-
-    <span class="hero-badge fade-in">📍 Colón, Entre Ríos, Argentina</span>
-
-    <h1 class="hero-headline fade-in delay-1">
-      Desconectate del ruido.<br>Conectate con la naturaleza.
-    </h1>
-
-    <p class="hero-subtitulo fade-in delay-2">
-      Cabañas de tronco en Colón, Entre Ríos. Pileta, parrilla, naturaleza pura y el río a minutos.
-    </p>
-
-    <div class="hero-botones fade-in delay-3">
-      <a href="reservas.html" class="btn btn-primario">
-        Ver precios y reservar
-      </a>
-      <a href="#cabanas" class="btn btn-outline">
-        Ver cabañas
-      </a>
-    </div>
-
-    <p class="hero-trust fade-in delay-4">Reservá directo &nbsp;·&nbsp; Sin comisiones &nbsp;·&nbsp; Precios en pesos</p>
+<div class="menu-movil" id="menuMovil" role="dialog" aria-modal="true" aria-label="Menú">
+  <button class="cerrar" id="cerrarMenu" aria-label="Cerrar menú">×</button>
+  <nav>
+    <a href="#cabanas"><small>01</small>Cabañas</a>
+    <a href="#estadia"><small>02</small>Estadías</a>
+    <a href="#fotos"><small>03</small>Fotos</a>
+    <a href="#opiniones"><small>04</small>Opiniones</a>
+    <a href="#ubicacion"><small>05</small>Cómo llegar</a>
+    <a href="#preguntas"><small>06</small>Preguntas</a>
+    <a href="guia.html"><small>→</small>Guía de Colón</a>
+  </nav>
+  <div class="pie-menu">
+    <a class="boton boton-sol" href="reservas.html">Ver precios y fechas libres</a>
+    <a class="boton boton-linea" href="https://wa.me/5491169495055?text=Hola!%20Quiero%20consultar%20por%20las%20caba%C3%B1as." target="_blank" rel="noopener">Escribir por WhatsApp</a>
   </div>
-
-  <!-- Scroll indicator -->
-  <div class="scroll-indicator" aria-hidden="true">
-    <span></span>
-  </div>
-</section>
-
-<!-- =====================================================
-     SECCIÓN: STATS
-===================================================== -->
-<section id="stats" aria-label="Datos del complejo">
-  <div class="stats-grid">
-    <div class="stat-item fade-in">
-      <span class="stat-numero" data-target="2" data-cabanas>0</span>
-      <span class="stat-label">Cabañas disponibles</span>
-    </div>
-    <div class="stat-item fade-in delay-2">
-      <span class="stat-numero" data-target="4">0</span>
-      <span class="stat-label">Personas por cabaña</span>
-    </div>
-    <div class="stat-item fade-in delay-3">
-      <span class="stat-numero" data-target="2">0</span>
-      <span class="stat-label">Habitaciones por cabaña</span>
-    </div>
-    <div class="stat-item fade-in delay-4">
-      <span class="stat-numero" data-target="365">0</span>
-      <span class="stat-label">Días al año abiertos</span>
-    </div>
-  </div>
-</section>
-
-<!-- =====================================================
-     SECCIÓN: CABAÑAS
-===================================================== -->
-<section id="cabanas" aria-label="Nuestras cabañas">
-  <div class="seccion-header fade-in">
-    <h2 class="titulo-seccion">Nuestras Cabañas</h2>
-    <div class="separador centrado"></div>
-    <p class="subtitulo-seccion">Tres cabañas de tronco auténticas, pensadas para descansar de verdad en medio de la naturaleza entrerriana.</p>
-  </div>
-
-  <div class="cabanas-grid">
-
-    <!-- Cabaña 1 — Sofía -->
-    <article class="card-cabana slide-up delay-1">
-      <div class="card-imagen">
-        <span class="card-badge">Destacada</span>
-        <!-- Imagen: colocar foto en fotos/cabana-1.jpg -->
-        <img src="fotos/cabana-1.jpg" alt="Cabaña Sofía — Aromas de Campo" loading="lazy"
-             onerror="this.style.display='none'; this.nextElementSibling.style.display='flex'">
-        <div class="card-imagen-placeholder" style="display:none">
-          <span class="placeholder-nombre">Sofía</span>
-          <span class="placeholder-sub">Aromas de Campo</span>
-        </div>
-      </div>
-      <div class="card-cuerpo">
-        <h3 class="card-nombre">Sofía</h3>
-        <p class="card-precio" data-cabana="sofia">desde $35.000 <span>/ noche</span></p>
-        <p class="card-desc">La más amplia del complejo. Deck propio, luz natural y ese silencio de campo que se siente desde que entrás.</p>
-        <p class="card-capacidad">👥 Hasta 4 personas</p>
-        <div class="card-amenities">
-          <span class="amenity-tag">🛏️ 2 habitaciones</span>
-          <span class="amenity-tag">🚿 Baño privado</span>
-          <span class="amenity-tag">🔥 Parrilla</span>
-          <span class="amenity-tag">📶 WiFi</span>
-          <span class="amenity-tag">☀️ Deck propio</span>
-        </div>
-        <a href="reservas.html?cabana=sofia" class="card-btn" aria-label="Ver precios y disponibilidad de la cabaña Sofía">
-          Ver precios y disponibilidad
-        </a>
-        <a href="https://wa.me/5491169495055?text=Hola!%20Me%20interesa%20la%20Caba%C3%B1a%20Sof%C3%ADa."
-           target="_blank" rel="noopener noreferrer" class="card-wa"
-           aria-label="Consultar cabaña Sofía por WhatsApp">o consultá por WhatsApp</a>
-      </div>
-    </article>
-
-    <!-- Cabaña 2 — Olivia -->
-    <article class="card-cabana slide-up delay-2">
-      <div class="card-imagen">
-        <span class="card-badge dorado">⭐ Más elegida</span>
-        <!-- Imagen: colocar foto en fotos/cabana-2.jpg -->
-        <img src="fotos/cabana-2.jpg" alt="Cabaña Olivia — Aromas de Campo" loading="lazy"
-             onerror="this.style.display='none'; this.nextElementSibling.style.display='flex'">
-        <div class="card-imagen-placeholder" style="display:none">
-          <span class="placeholder-nombre">Olivia</span>
-          <span class="placeholder-sub">Aromas de Campo</span>
-        </div>
-      </div>
-      <div class="card-cuerpo">
-        <h3 class="card-nombre">Olivia</h3>
-        <p class="card-precio" data-cabana="olivia">desde $33.000 <span>/ noche</span></p>
-        <p class="card-desc">La preferida de las familias. Cómoda, práctica y con todo lo que necesitás para que los chicos disfruten al máximo.</p>
-        <p class="card-capacidad">👥 Hasta 4 personas</p>
-        <div class="card-amenities">
-          <span class="amenity-tag">🛏️ 2 habitaciones</span>
-          <span class="amenity-tag">🚿 Baño privado</span>
-          <span class="amenity-tag">🔥 Parrilla</span>
-          <span class="amenity-tag">📶 WiFi</span>
-          <span class="amenity-tag">👨‍👩‍👧 Ideal familias</span>
-        </div>
-        <a href="reservas.html?cabana=olivia" class="card-btn" aria-label="Ver precios y disponibilidad de la cabaña Olivia">
-          Ver precios y disponibilidad
-        </a>
-        <a href="https://wa.me/5491169495055?text=Hola!%20Me%20interesa%20la%20Caba%C3%B1a%20Olivia."
-           target="_blank" rel="noopener noreferrer" class="card-wa"
-           aria-label="Consultar cabaña Olivia por WhatsApp">o consultá por WhatsApp</a>
-      </div>
-    </article>
-
-    <!-- Cabaña 3 — Emma -->
-    <article class="card-cabana slide-up delay-3">
-      <div class="card-imagen">
-        <span class="card-badge rosa">💑 Ideal parejas</span>
-        <!-- Imagen: colocar foto en fotos/cabana-3.jpg -->
-        <img src="fotos/cabana-3.jpg" alt="Cabaña Emma — Aromas de Campo" loading="lazy"
-             onerror="this.style.display='none'; this.nextElementSibling.style.display='flex'">
-        <div class="card-imagen-placeholder" style="display:none">
-          <span class="placeholder-nombre">Emma</span>
-          <span class="placeholder-sub">Aromas de Campo</span>
-        </div>
-      </div>
-      <div class="card-cuerpo">
-        <h3 class="card-nombre">Emma</h3>
-        <p class="card-precio" data-cabana="emma">desde $33.000 <span>/ noche</span></p>
-        <p class="card-desc">Con vista al jardín y rodeada de verde. La opción ideal para una escapada en pareja con calma, fogón y estrellado.</p>
-        <p class="card-capacidad">👥 Hasta 4 personas</p>
-        <div class="card-amenities">
-          <span class="amenity-tag">🛏️ 2 habitaciones</span>
-          <span class="amenity-tag">🚿 Baño privado</span>
-          <span class="amenity-tag">🔥 Parrilla</span>
-          <span class="amenity-tag">📶 WiFi</span>
-          <span class="amenity-tag">🌿 Vista al jardín</span>
-        </div>
-        <a href="reservas.html?cabana=emma" class="card-btn" aria-label="Ver precios y disponibilidad de la cabaña Emma">
-          Ver precios y disponibilidad
-        </a>
-        <a href="https://wa.me/5491169495055?text=Hola!%20Me%20interesa%20la%20Caba%C3%B1a%20Emma."
-           target="_blank" rel="noopener noreferrer" class="card-wa"
-           aria-label="Consultar cabaña Emma por WhatsApp">o consultá por WhatsApp</a>
-      </div>
-    </article>
-
-  </div>
-</section>
-
-<!-- =====================================================
-     SECCIÓN: AMENITIES
-===================================================== -->
-<section id="amenities" aria-label="Amenities del complejo">
-  <div class="seccion-header fade-in">
-    <h2 class="titulo-seccion">Todo lo que necesitás para<br>descansar de verdad</h2>
-    <div class="separador centrado"></div>
-  </div>
-
-  <div class="amenities-grid">
-    <div class="amenity-card fade-in delay-1">
-      <span class="amenity-icono" aria-hidden="true">🏊</span>
-      <h3 class="amenity-titulo">Pileta</h3>
-      <p class="amenity-desc">Refrescate rodeado de verde. La pileta es el corazón del complejo en verano.</p>
-    </div>
-    <div class="amenity-card fade-in delay-2">
-      <span class="amenity-icono" aria-hidden="true">🔥</span>
-      <h3 class="amenity-titulo">Parrilla y fogón</h3>
-      <p class="amenity-desc">Asado bajo las estrellas entrerrianas. Cada cabaña tiene su parrilla exclusiva.</p>
-    </div>
-    <div class="amenity-card fade-in delay-3">
-      <span class="amenity-icono" aria-hidden="true">🌳</span>
-      <h3 class="amenity-titulo">Jardín y naturaleza</h3>
-      <p class="amenity-desc">Árboles, pájaros y silencio real. El campo que esperabas encontrar.</p>
-    </div>
-    <div class="amenity-card fade-in delay-1">
-      <span class="amenity-icono" aria-hidden="true">🌊</span>
-      <h3 class="amenity-titulo">Río y termas cerca</h3>
-      <p class="amenity-desc">A minutos del río Uruguay y las termas de Colón. Dos de los mejores atractivos de Entre Ríos.</p>
-    </div>
-    <div class="amenity-card fade-in delay-2">
-      <span class="amenity-icono" aria-hidden="true">📶</span>
-      <h3 class="amenity-titulo">WiFi y confort</h3>
-      <p class="amenity-desc">TV y cocina equipada. Traé tu ropa de cama y toallas.</p>
-    </div>
-    <div class="amenity-card fade-in delay-3">
-      <span class="amenity-icono" aria-hidden="true">🌅</span>
-      <h3 class="amenity-titulo">Tranquilidad total</h3>
-      <p class="amenity-desc">Lejos del ruido, cerca de todo. El equilibrio perfecto para una escapada de verdad.</p>
-    </div>
-  </div>
-</section>
-
-<!-- =====================================================
-     SECCIÓN: REELS / TELÉFONO
-===================================================== -->
-<section id="reels" aria-label="Videos del complejo">
-  <div class="reels-layout">
-
-    <!-- Texto lateral -->
-    <div class="reels-texto fade-in">
-      <h2 class="titulo-seccion">Miralo antes<br>de venir</h2>
-      <div class="separador"></div>
-      <p class="subtitulo-seccion">
-        Así se vive en Aromas de Campo. Videos reales, sin filtros. Porque el lugar habla solo.
-      </p>
-      <div class="reels-bullets">
-        <div class="reels-bullet">
-          <span class="reels-bullet-dot"></span>
-          <span>Cabañas de tronco auténticas, filmadas en el lugar</span>
-        </div>
-        <div class="reels-bullet">
-          <span class="reels-bullet-dot"></span>
-          <span>Pileta, parrilla, jardín y atardeceres entrerrianos</span>
-        </div>
-        <div class="reels-bullet">
-          <span class="reels-bullet-dot"></span>
-          <span>Colón, el río Uruguay y las termas a minutos</span>
-        </div>
-        <div class="reels-bullet">
-          <span class="reels-bullet-dot"></span>
-          <span>Seguinos en Instagram <a href="https://instagram.com/aromasdecampo22" target="_blank" rel="noopener noreferrer" style="color:var(--beige-arena)">@aromasdecampo22</a></span>
-        </div>
-      </div>
-    </div>
-
-    <!-- Teléfono -->
-    <div class="phone-mockup fade-in delay-2">
-      <!-- Botones decorativos -->
-      <div class="phone-btn-vol" aria-hidden="true"></div>
-      <div class="phone-btn-vol" aria-hidden="true"></div>
-      <div class="phone-btn-power" aria-hidden="true"></div>
-
-      <div class="phone-frame">
-        <div class="phone-island" aria-hidden="true"></div>
-        <div class="phone-shine" aria-hidden="true"></div>
-
-        <div class="phone-slider">
-          <div class="phone-track" id="phoneTrack">
-
-            <!-- Reel 1: Video principal cabañas -->
-            <!-- Archivo: videos/reel-1.mp4 (copiar desde: "Video Cabañas.mp4") -->
-            <div class="phone-slide">
-              <video src="videos/reel-1.mp4"
-                     muted playsinline loop preload="none"
-                     aria-label="Video: Cabañas Aromas de Campo"></video>
-              <div class="reel-overlay">
-                <span class="reel-tag">🏡 Cabañas</span>
-                <p class="reel-titulo">Así son nuestras cabañas de tronco</p>
-              </div>
-            </div>
-
-            <!-- Reel 2 -->
-            <!-- Archivo: videos/reel-2.mp4 (copiar desde: "WhatsApp Video 2026-03-03 at 23.51.31.mp4") -->
-            <div class="phone-slide">
-              <video src="videos/reel-2.mp4"
-                     muted playsinline loop preload="none"
-                     aria-label="Video: Ambiente Aromas de Campo"></video>
-              <div class="reel-overlay">
-                <span class="reel-tag">🌿 Naturaleza</span>
-                <p class="reel-titulo">Verde, tranquilidad y aire puro</p>
-              </div>
-            </div>
-
-            <!-- Reel 3 -->
-            <!-- Archivo: videos/reel-3.mp4 (copiar desde: "WhatsApp Video 2025-11-17 at 20.47.03.mp4") -->
-            <div class="phone-slide">
-              <video src="videos/reel-3.mp4"
-                     muted playsinline loop preload="none"
-                     aria-label="Video: Pileta y amenities"></video>
-              <div class="reel-overlay">
-                <span class="reel-tag">🏊 Pileta</span>
-                <p class="reel-titulo">Refrescate rodeado de campo</p>
-              </div>
-            </div>
-
-            <!-- Reel 4 -->
-            <!-- Archivo: videos/reel-4.mp4 (copiar desde: "07-03.mp4") -->
-            <div class="phone-slide">
-              <video src="videos/reel-4.mp4"
-                     muted playsinline loop preload="none"
-                     aria-label="Video: Colón y alrededores"></video>
-              <div class="reel-overlay">
-                <span class="reel-tag">📍 Colón</span>
-                <p class="reel-titulo">El río Uruguay, a minutos de acá</p>
-              </div>
-            </div>
-
-          </div><!-- /phone-track -->
-        </div><!-- /phone-slider -->
-
-        <div class="phone-home" aria-hidden="true"></div>
-      </div><!-- /phone-frame -->
-
-      <!-- Controles debajo del teléfono -->
-      <div class="phone-controls">
-        <button class="phone-btn" id="reelPrev" aria-label="Video anterior">&#8593;</button>
-        <div class="phone-dots" id="reelDots" role="tablist" aria-label="Seleccionar video">
-          <span class="phone-dot activo" role="tab" aria-selected="true" tabindex="0" aria-label="Video 1"></span>
-          <span class="phone-dot" role="tab" aria-selected="false" tabindex="0" aria-label="Video 2"></span>
-          <span class="phone-dot" role="tab" aria-selected="false" tabindex="0" aria-label="Video 3"></span>
-          <span class="phone-dot" role="tab" aria-selected="false" tabindex="0" aria-label="Video 4"></span>
-        </div>
-        <button class="phone-btn" id="reelNext" aria-label="Siguiente video">&#8595;</button>
-      </div>
-    </div><!-- /phone-mockup -->
-
-  </div>
-</section>
-
-<!-- =====================================================
-     SECCIÓN: GALERÍA
-===================================================== -->
-<section id="galeria" aria-label="Galería de fotos">
-  <div class="seccion-header fade-in">
-    <h2 class="titulo-seccion">El lugar habla solo</h2>
-    <div class="separador centrado"></div>
-  </div>
-
-  <div class="galeria-grid" id="galeriaGrid">
-
-    <!-- Las imágenes van en fotos/galeria-1.jpg … fotos/galeria-6.jpg -->
-
-    <div class="galeria-item fade-in delay-1" data-index="0" role="button" tabindex="0" aria-label="Ver foto 1 en tamaño completo">
-      <img src="fotos/galeria-1.jpg" alt="Aromas de Campo — foto 1" loading="lazy"
-           onerror="this.style.display='none'; this.nextElementSibling.style.display='flex'">
-      <div class="galeria-placeholder" style="display:none">
-        <svg width="32" height="32" fill="none" viewBox="0 0 24 24" aria-hidden="true"><path d="M21 15l-5-5L5 21" stroke="rgba(255,255,255,0.5)" stroke-width="1.5"/><circle cx="8.5" cy="8.5" r="2.5" stroke="rgba(255,255,255,0.5)" stroke-width="1.5"/><rect x="3" y="3" width="18" height="18" rx="2" stroke="rgba(255,255,255,0.5)" stroke-width="1.5"/></svg>
-        <span>Foto próximamente</span>
-      </div>
-      <div class="galeria-overlay" aria-hidden="true"></div>
-    </div>
-
-    <div class="galeria-item fade-in delay-2" data-index="1" role="button" tabindex="0" aria-label="Ver foto 2 en tamaño completo">
-      <img src="fotos/galeria-2.jpg" alt="Aromas de Campo — foto 2" loading="lazy"
-           onerror="this.style.display='none'; this.nextElementSibling.style.display='flex'">
-      <div class="galeria-placeholder" style="display:none">
-        <svg width="32" height="32" fill="none" viewBox="0 0 24 24" aria-hidden="true"><path d="M21 15l-5-5L5 21" stroke="rgba(255,255,255,0.5)" stroke-width="1.5"/><circle cx="8.5" cy="8.5" r="2.5" stroke="rgba(255,255,255,0.5)" stroke-width="1.5"/><rect x="3" y="3" width="18" height="18" rx="2" stroke="rgba(255,255,255,0.5)" stroke-width="1.5"/></svg>
-        <span>Foto próximamente</span>
-      </div>
-      <div class="galeria-overlay" aria-hidden="true"></div>
-    </div>
-
-    <div class="galeria-item fade-in delay-3" data-index="2" role="button" tabindex="0" aria-label="Ver foto 3 en tamaño completo">
-      <img src="fotos/galeria-3.jpg" alt="Aromas de Campo — foto 3" loading="lazy"
-           onerror="this.style.display='none'; this.nextElementSibling.style.display='flex'">
-      <div class="galeria-placeholder" style="display:none">
-        <svg width="32" height="32" fill="none" viewBox="0 0 24 24" aria-hidden="true"><path d="M21 15l-5-5L5 21" stroke="rgba(255,255,255,0.5)" stroke-width="1.5"/><circle cx="8.5" cy="8.5" r="2.5" stroke="rgba(255,255,255,0.5)" stroke-width="1.5"/><rect x="3" y="3" width="18" height="18" rx="2" stroke="rgba(255,255,255,0.5)" stroke-width="1.5"/></svg>
-        <span>Foto próximamente</span>
-      </div>
-      <div class="galeria-overlay" aria-hidden="true"></div>
-    </div>
-
-    <div class="galeria-item fade-in delay-1" data-index="3" role="button" tabindex="0" aria-label="Ver foto 4 en tamaño completo">
-      <img src="fotos/galeria-4.jpg" alt="Aromas de Campo — foto 4" loading="lazy"
-           onerror="this.style.display='none'; this.nextElementSibling.style.display='flex'">
-      <div class="galeria-placeholder" style="display:none">
-        <svg width="32" height="32" fill="none" viewBox="0 0 24 24" aria-hidden="true"><path d="M21 15l-5-5L5 21" stroke="rgba(255,255,255,0.5)" stroke-width="1.5"/><circle cx="8.5" cy="8.5" r="2.5" stroke="rgba(255,255,255,0.5)" stroke-width="1.5"/><rect x="3" y="3" width="18" height="18" rx="2" stroke="rgba(255,255,255,0.5)" stroke-width="1.5"/></svg>
-        <span>Foto próximamente</span>
-      </div>
-      <div class="galeria-overlay" aria-hidden="true"></div>
-    </div>
-
-    <div class="galeria-item fade-in delay-2" data-index="4" role="button" tabindex="0" aria-label="Ver foto 5 en tamaño completo">
-      <img src="fotos/galeria-5.jpg" alt="Aromas de Campo — foto 5" loading="lazy"
-           onerror="this.style.display='none'; this.nextElementSibling.style.display='flex'">
-      <div class="galeria-placeholder" style="display:none">
-        <svg width="32" height="32" fill="none" viewBox="0 0 24 24" aria-hidden="true"><path d="M21 15l-5-5L5 21" stroke="rgba(255,255,255,0.5)" stroke-width="1.5"/><circle cx="8.5" cy="8.5" r="2.5" stroke="rgba(255,255,255,0.5)" stroke-width="1.5"/><rect x="3" y="3" width="18" height="18" rx="2" stroke="rgba(255,255,255,0.5)" stroke-width="1.5"/></svg>
-        <span>Foto próximamente</span>
-      </div>
-      <div class="galeria-overlay" aria-hidden="true"></div>
-    </div>
-
-    <div class="galeria-item fade-in delay-3" data-index="5" role="button" tabindex="0" aria-label="Ver foto 6 en tamaño completo">
-      <img src="fotos/galeria-6.jpg" alt="Aromas de Campo — foto 6" loading="lazy"
-           onerror="this.style.display='none'; this.nextElementSibling.style.display='flex'">
-      <div class="galeria-placeholder" style="display:none">
-        <svg width="32" height="32" fill="none" viewBox="0 0 24 24" aria-hidden="true"><path d="M21 15l-5-5L5 21" stroke="rgba(255,255,255,0.5)" stroke-width="1.5"/><circle cx="8.5" cy="8.5" r="2.5" stroke="rgba(255,255,255,0.5)" stroke-width="1.5"/><rect x="3" y="3" width="18" height="18" rx="2" stroke="rgba(255,255,255,0.5)" stroke-width="1.5"/></svg>
-        <span>Foto próximamente</span>
-      </div>
-      <div class="galeria-overlay" aria-hidden="true"></div>
-    </div>
-
-  </div>
-
-  <p class="galeria-leyenda fade-in">"Las fotos son reales — el lugar todavía las supera."</p>
-</section>
-
-<!-- Lightbox -->
-<div class="lightbox" id="lightbox" role="dialog" aria-modal="true" aria-label="Vista ampliada de foto">
-  <button class="lightbox-cerrar" id="lightboxCerrar" aria-label="Cerrar">&times;</button>
-  <button class="lightbox-nav lightbox-prev" id="lightboxPrev" aria-label="Foto anterior">&#8249;</button>
-  <img class="lightbox-img" id="lightboxImg" src="" alt="Foto ampliada — Aromas de Campo">
-  <button class="lightbox-nav lightbox-next" id="lightboxNext" aria-label="Siguiente foto">&#8250;</button>
 </div>
 
-<!-- =====================================================
-     SECCIÓN: UBICACIÓN
-===================================================== -->
-<section id="ubicacion" aria-label="Ubicación del complejo">
-  <div class="ubicacion-inner">
-    <div class="ubicacion-texto fade-in">
-      <h2 class="titulo-seccion claro">Estamos en<br>Colón, Entre Ríos</h2>
-      <div class="separador"></div>
-      <p class="subtitulo-seccion claro">
-        A 350 km de Buenos Aires. A minutos de las termas, el río Uruguay y el centro de Colón.
-      </p>
-      <div class="ubicacion-datos">
-        <div class="ubicacion-dato">
-          <span aria-hidden="true">📍</span>
-          <span><strong>Colón, Entre Ríos</strong> · QR66+56, 3082</span>
+<main>
+<section class="portada" aria-label="Portada" style="padding:0">
+  <img class="poster" src="fotos/hero-poster.jpg" alt="" fetchpriority="high">
+  <video autoplay muted loop playsinline preload="metadata" poster="fotos/hero-poster.jpg" aria-hidden="true">
+    <source src="videos/hero.mp4" type="video/mp4">
+  </video>
+  <div class="matasellos" aria-hidden="true">
+    <svg viewBox="0 0 200 200">
+      <defs><path id="circ" d="M100,100 m-78,0 a78,78 0 1,1 156,0 a78,78 0 1,1 -156,0"/></defs>
+      <circle cx="100" cy="100" r="96" fill="none" stroke="#fff" stroke-opacity=".55" stroke-width="1.2"/>
+      <circle cx="100" cy="100" r="62" fill="none" stroke="#fff" stroke-opacity=".35" stroke-width="1"/>
+      <text fill="#fff" font-family="Figtree, sans-serif" font-size="13.5" font-weight="600" letter-spacing="4.2"><textPath href="#circ">AROMAS DE CAMPO · COLÓN · ENTRE RÍOS · </textPath></text>
+    </svg>
+    <img src="logo/aromas-blanco.png" alt="">
+  </div>
+  <div class="envoltura">
+    <p class="lugar">Colón, Entre Ríos</p>
+    <h1>Cabañas de tronco, <em>sin apuro.</em></h1>
+    <p class="bajada">Pileta, parque y parrilla propia a unos kilómetros del río Uruguay. Mirá los precios en pesos y las fechas libres, y reservá directo con nosotros.</p>
+    <div class="acciones">
+      <a class="boton boton-sol" href="reservas.html">Ver precios y fechas <span class="flecha">→</span></a>
+      <a class="boton boton-linea" href="#cabanas">Conocer las cabañas</a>
+    </div>
+    <button class="sello-google" id="selloGoogle" hidden aria-haspopup="dialog"><span class="estrellas">★★★★★</span><b id="selloNota">5,0</b><span id="selloTexto">opiniones en Google</span></button>
+  </div>
+</section>
+
+<div class="ficha">
+  <div class="envoltura">
+    <ul>
+      <li><b>Hasta 4</b><span>personas por cabaña</span></li>
+      <li><b>2 habitaciones</b><span>baño y cocina equipada</span></li>
+      <li><b>Pileta y parque</b><span>compartidos del complejo</span></li>
+      <li><b>Parrilla propia</b><span>en cada cabaña</span></li>
+    </ul>
+  </div>
+</div>
+
+<section id="cabanas" aria-labelledby="t-cabanas">
+  <div class="envoltura">
+    <div class="cabecera lado">
+      <div>
+        <p class="rotulo">01 <i>las cabañas</i></p>
+        <h2 id="t-cabanas" class="asoma">Tres cabañas <em>gemelas.</em></h2>
+      </div>
+      <p class="intro asoma">Sofía, Olivia y Emma son iguales: mismo tamaño, misma distribución, la misma comodidad. Hoy se alquilan Sofía y Olivia; Emma abre más adelante.</p>
+    </div>
+    <div class="cabanas" id="listaCabanas">
+      <article class="cab"><div class="carrusel esqueleto"></div><div class="nombre"><h3 class="esqueleto" style="width:40%;height:2.2rem;border-radius:4px"></h3></div></article>
+      <article class="cab"><div class="carrusel esqueleto"></div><div class="nombre"><h3 class="esqueleto" style="width:40%;height:2.2rem;border-radius:4px"></h3></div></article>
+    </div>
+    <p class="equipamiento" id="equipamiento"><b>Cada cabaña:</b> 2 habitaciones · baño privado · cocina equipada · parrilla propia · WiFi · pileta del complejo</p>
+    <p class="equipamiento" style="margin-top:0;border:0;padding-top:.4rem"><b>Para tener en cuenta:</b> alquilamos solo el alojamiento, así que traé ropa de cama y toallas. No se aceptan mascotas.</p>
+  </div>
+</section>
+
+<section class="estadia" id="estadia" aria-labelledby="t-estadia">
+  <div class="envoltura">
+    <p class="rotulo">02 <i>cuánto quedarse</i></p>
+    <h2 id="t-estadia" class="asoma">Colón no se conoce <em>en un fin de semana.</em></h2>
+    <p class="intro asoma">El mínimo es de 2 noches (3 en temporada alta), pero lo que recomendamos es de 4 noches a dos semanas. Mové la barra y mirá lo que entra.</p>
+    <div class="regla">
+      <div>
+        <div class="contador"><output id="nNoches" for="barraNoches">7</output><span id="nNochesTxt">noches</span></div>
+        <p class="veredicto" id="veredicto"></p>
+        <label for="barraNoches" class="salto">Cantidad de noches</label>
+        <input class="noches" id="barraNoches" type="range" min="2" max="14" value="7" step="1">
+        <div class="marcas" aria-hidden="true"><span>2</span><span>4</span><span>7</span><span>10</span><span>14</span></div>
+        <div class="franja" aria-hidden="true"><div>Escapada</div><div class="ideal">Lo ideal</div><div>Vacaciones</div></div>
+        <span class="nota-descuento" id="notaDescuento" hidden></span>
+        <div class="acciones">
+          <a class="boton boton-sol" id="irNoches" href="reservas.html?noches=7">Buscar 7 noches libres <span class="flecha">→</span></a>
+          <a class="boton boton-linea" href="guia.html">Guía de Colón</a>
         </div>
-        <div class="ubicacion-dato">
-          <span aria-hidden="true">🚗</span>
-          <span>350 km desde Buenos Aires · 4 hs en auto</span>
-        </div>
-        <div class="ubicacion-dato">
-          <span aria-hidden="true">♨️</span>
-          <span>Termas de Colón a 5 minutos</span>
-        </div>
-        <div class="ubicacion-dato">
-          <span aria-hidden="true">🌊</span>
-          <span>Río Uruguay a 10 minutos</span>
-        </div>
       </div>
-    </div>
-
-    <div class="mapa-container fade-in delay-2">
-      <!-- Mapa: Colón, Entre Ríos, Argentina -->
-      <iframe
-        src="https://maps.google.com/maps?q=Aromas+de+campo,+Col%C3%B3n,+Entre+R%C3%ADos&z=12&output=embed"
-        title="Mapa de Aromas de Campo en Colón, Entre Ríos"
-        loading="lazy"
-        referrerpolicy="no-referrer-when-downgrade"
-        allowfullscreen>
-      </iframe>
+      <ol class="plan" id="plan" aria-label="Qué se puede hacer según los días"></ol>
     </div>
   </div>
 </section>
 
-<!-- =====================================================
-     SECCIÓN: POR QUÉ AROMAS DE CAMPO
-===================================================== -->
-<section id="por-que" aria-label="Por qué elegirnos">
-  <div class="seccion-header fade-in">
-    <h2 class="titulo-seccion">¿Por qué Aromas de Campo?</h2>
-    <div class="separador centrado"></div>
+<section id="fotos" aria-labelledby="t-fotos">
+  <div class="envoltura">
+    <div class="cabecera lado">
+      <div>
+        <p class="rotulo">03 <i>fotos</i></p>
+        <h2 id="t-fotos" class="asoma">Así se ve <em>de cerca.</em></h2>
+      </div>
+      <p class="intro asoma">Fotos de las cabañas, la pileta y el parque, sin filtros de catálogo. Tocá cualquiera para verla grande.</p>
+    </div>
+    <div class="filtros" id="filtros" role="group" aria-label="Filtrar fotos"></div>
+    <div class="mosaico" id="mosaico"></div>
   </div>
+</section>
 
-  <div class="porque-lista">
-    <div class="porque-item fade-in delay-1">
-      <span class="porque-icono" aria-hidden="true">🏡</span>
-      <div class="porque-texto">
-        <h3>Cabañas de tronco auténticas</h3>
-        <p>No prefabricadas. Construcción real con madera, pensada para durar y para que se note la diferencia cuando entrás.</p>
-      </div>
+<section class="videos" aria-label="Videos">
+  <div class="envoltura"><p class="rotulo">En movimiento <i>tocá para reproducir</i></p></div>
+  <div class="tira">
+    <div class="video"><video src="videos/reel-1.mp4" muted loop playsinline preload="none" poster="fotos/cabana-1.jpg" aria-label="Video de las cabañas"></video><button class="play" aria-label="Reproducir video de las cabañas"><span>▶</span></button></div>
+    <div class="video"><video src="videos/reel-2.mp4" muted loop playsinline preload="none" poster="fotos/galeria-4.jpg" aria-label="Video del complejo"></video><button class="play" aria-label="Reproducir video del complejo"><span>▶</span></button></div>
+    <div class="video"><video src="videos/reel-3.mp4" muted loop playsinline preload="none" poster="fotos/galeria-1.jpg" aria-label="Video de la pileta"></video><button class="play" aria-label="Reproducir video de la pileta"><span>▶</span></button></div>
+    <div class="video"><video src="videos/reel-4.mp4" muted loop playsinline preload="none" poster="fotos/cabana-3.jpg" aria-label="Video del parque"></video><button class="play" aria-label="Reproducir video del parque"><span>▶</span></button></div>
+  </div>
+</section>
+
+<section class="opiniones" id="opiniones" aria-labelledby="t-opiniones">
+  <div class="envoltura">
+    <p class="rotulo">04 <i>lo que dicen</i></p>
+    <div class="nota-google">
+      <div class="puntaje" id="puntaje">5,0<small><span class="estrellas">★★★★★</span><br><span id="puntajeTxt">en Google</span></small></div>
+      <h2 id="t-opiniones" class="asoma">Lo cuentan <em>los que vinieron.</em></h2>
     </div>
-    <div class="porque-item fade-in delay-2">
-      <span class="porque-icono" aria-hidden="true">👨‍👩‍👧</span>
-      <div class="porque-texto">
-        <h3>Atención familiar</h3>
-        <p>Los dueños son los anfitriones. El trato es personal, directo y sin intermediarios. Eso se siente desde el primer mensaje.</p>
-      </div>
-    </div>
-    <div class="porque-item fade-in delay-3">
-      <span class="porque-icono" aria-hidden="true">📍</span>
-      <div class="porque-texto">
-        <h3>Ubicación inmejorable</h3>
-        <p>En el corazón de Colón, a minutos de todo. Las termas, el río, el centro, los parques. Nada queda lejos.</p>
-      </div>
-    </div>
-    <div class="porque-item fade-in delay-4">
-      <span class="porque-icono" aria-hidden="true">⭐</span>
-      <div class="porque-texto">
-        <h3>Huéspedes que vuelven</h3>
-        <p>La mejor referencia es quien ya estuvo. Muchos de nuestros huéspedes vuelven año a año. Eso lo dice todo.</p>
-      </div>
+    <div class="resenas" id="resenas"></div>
+    <div class="acciones">
+      <button class="boton boton-tinta" id="verOpiniones" aria-haspopup="dialog">Leer todas las opiniones</button>
+      <a class="chico" id="linkGoogle" target="_blank" rel="noopener" href="#">o verlas en Google ↗</a>
     </div>
   </div>
 </section>
 
-<!-- =====================================================
-     SECCIÓN: TESTIMONIOS
-===================================================== -->
-<section id="testimonios" aria-label="Opiniones de huéspedes" hidden>
-  <div class="seccion-header fade-in visible">
-    <h2 class="titulo-seccion">Lo que dicen<br>los que ya vinieron</h2>
-    <div class="separador centrado"></div>
-    <p class="subtitulo-seccion" id="resumen-resenas" style="margin:1rem auto 0"></p>
-  </div>
-  <div class="testi-grid" id="testi-grid"></div>
-</section>
-
-<!-- =====================================================
-     SECCIÓN: FAQ
-===================================================== -->
-<section id="faq" aria-label="Preguntas frecuentes">
-  <div class="seccion-header fade-in">
-    <h2 class="titulo-seccion">Preguntas frecuentes</h2>
-    <div class="separador centrado"></div>
-    <p class="subtitulo-seccion" style="margin:1rem auto 0">Todo lo que necesitás saber antes de reservar. Si no encontrás tu respuesta, escribinos.</p>
-  </div>
-
-  <div class="faq-lista">
-
-    <div class="faq-item">
-      <button class="faq-pregunta" aria-expanded="false">
-        ¿Cuánto cuesta por noche?
-        <span class="faq-icono" aria-hidden="true">+</span>
-      </button>
-      <div class="faq-respuesta" hidden>
-        <p>Los precios arrancan desde <strong>$33.000 por noche</strong> para Olivia y Emma, y desde <strong>$35.000</strong> para Sofía. Pueden variar según la temporada y la cantidad de noches. <a href="https://wa.me/5491169495055?text=Hola!%20Quiero%20consultar%20precios%20en%20Aromas%20de%20Campo." target="_blank" rel="noopener noreferrer">Consultanos por WhatsApp</a> para un presupuesto exacto y personalizado.</p>
+<section class="ubicacion" id="ubicacion" aria-labelledby="t-ubic">
+  <div class="envoltura grilla">
+    <div>
+      <p class="rotulo">05 <i>cómo llegar</i></p>
+      <h2 id="t-ubic" class="asoma">En Colón, <em>Entre Ríos.</em></h2>
+      <ul class="datos">
+        <li>Desde Buenos Aires <span>unos 320 km en auto</span></li>
+        <li>Parque Nacional El Palmar <span>a unos 50 km</span></li>
+        <li>Villa Elisa <span>a unos 30 minutos</span></li>
+        <li>Entrada / salida <span id="horarios">consultá en Preguntas</span></li>
+      </ul>
+      <div style="margin-top:1.6rem;display:flex;gap:.7rem;flex-wrap:wrap">
+        <a class="boton boton-tinta" href="https://maps.google.com/?q=Aromas+de+campo,+Col%C3%B3n,+Entre+R%C3%ADos" target="_blank" rel="noopener">Abrir en el mapa ↗</a>
+        <a class="boton" href="guia.html">Qué hacer en Colón</a>
       </div>
     </div>
-
-    <div class="faq-item">
-      <button class="faq-pregunta" aria-expanded="false">
-        ¿Qué incluye el precio?
-        <span class="faq-icono" aria-hidden="true">+</span>
-      </button>
-      <div class="faq-respuesta" hidden>
-        <p>Se alquila <strong>solo el alojamiento</strong>: cabaña equipada, <strong>parrilla exclusiva, utensilios de cocina</strong> y acceso a la pileta del complejo. No incluye leña ni carbón (disponible en el lugar). El desayuno no está incluido, pero hay cocina equipada en cada cabaña.</p>
-      </div>
-    </div>
-
-    <div class="faq-item">
-      <button class="faq-pregunta" aria-expanded="false">
-        ¿Aceptan mascotas?
-        <span class="faq-icono" aria-hidden="true">+</span>
-      </button>
-      <div class="faq-respuesta" hidden>
-        <p>No, <strong>no se aceptan mascotas</strong>.</p>
-      </div>
-    </div>
-
-    <div class="faq-item">
-      <button class="faq-pregunta" aria-expanded="false">
-        ¿Cómo se confirma la reserva?
-        <span class="faq-icono" aria-hidden="true">+</span>
-      </button>
-      <div class="faq-respuesta" hidden>
-        <p>Escribinos por WhatsApp, te confirmamos disponibilidad y te enviamos los datos para realizar la seña. El proceso es <strong>directo y sin intermediarios</strong> — hablás con los dueños desde el primer mensaje. Sin comisiones de plataformas.</p>
-      </div>
-    </div>
-
-    <div class="faq-item">
-      <button class="faq-pregunta" aria-expanded="false">
-        ¿Con cuánta anticipación debo reservar?
-        <span class="faq-icono" aria-hidden="true">+</span>
-      </button>
-      <div class="faq-respuesta" hidden>
-        <p>La demanda en <strong>temporada alta</strong> (enero, Semana Santa, julio) es muy alta. Recomendamos reservar con <strong>al menos 30 días de anticipación</strong>. En temporada baja hay mayor disponibilidad, aunque tampoco conviene esperar demasiado.</p>
-      </div>
-    </div>
-
-    <div class="faq-item">
-      <button class="faq-pregunta" aria-expanded="false">
-        ¿Cuál es el horario de check-in y check-out?
-        <span class="faq-icono" aria-hidden="true">+</span>
-      </button>
-      <div class="faq-respuesta" hidden>
-        <p>El <strong>check-in</strong> es a partir de las <strong>14 hs</strong> y el <strong>check-out</strong> hasta las <strong>11 hs</strong>. En casos especiales podemos coordinar horarios distintos con previo aviso, sujeto a disponibilidad del día.</p>
-      </div>
-    </div>
-
+    <div class="mapa revela"><iframe src="https://maps.google.com/maps?q=Aromas+de+campo,+Col%C3%B3n,+Entre+R%C3%ADos&z=12&output=embed" title="Mapa de Aromas de Campo en Colón, Entre Ríos" loading="lazy" referrerpolicy="no-referrer-when-downgrade" allowfullscreen></iframe></div>
   </div>
 </section>
 
-<!-- =====================================================
-     SECCIÓN: CTA FINAL
-===================================================== -->
-<section id="cta-final" aria-label="Llamada a la acción — reservar">
-  <div class="cta-final-inner">
-    <h2 class="titulo-seccion claro fade-in">¿Cuándo es tu próxima escapada?</h2>
-    <p class="subtitulo-seccion claro fade-in delay-1">
-      Mirá las fechas libres y el precio exacto, o escribinos y te respondemos al toque.
-    </p>
-    <a href="reservas.html" class="btn btn-primario fade-in delay-2" style="margin:0 .5rem 1rem">Ver fechas y precios</a>
-
-    <a href="https://wa.me/5491169495055?text=Hola!%20Quiero%20consultar%20disponibilidad%20en%20Aromas%20de%20Campo."
-       target="_blank" rel="noopener noreferrer"
-       class="btn btn-whatsapp fade-in delay-2"
-       aria-label="Reservar por WhatsApp">
-      <!-- SVG WhatsApp inline -->
-      <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-        <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51a12.8 12.8 0 00-.57-.01c-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
-      </svg>
-      Reservar por WhatsApp
-    </a>
-
-    <!-- Redes sociales -->
-    <div class="cta-redes fade-in delay-3">
-      <a href="https://instagram.com/aromasdecampo22"
-         target="_blank" rel="noopener noreferrer"
-         class="cta-red-link"
-         aria-label="Instagram de Aromas de Campo">
-        <!-- SVG Instagram inline -->
-        <svg width="28" height="28" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-          <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/>
-        </svg>
-      </a>
-      <a href="https://facebook.com/aromasdecampo022"
-         target="_blank" rel="noopener noreferrer"
-         class="cta-red-link"
-         aria-label="Facebook de Aromas de Campo">
-        <!-- SVG Facebook inline -->
-        <svg width="28" height="28" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-          <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
-        </svg>
-      </a>
+<section class="preguntas" id="preguntas" aria-labelledby="t-faq" style="padding-top:0">
+  <div class="envoltura grilla">
+    <div>
+      <p class="rotulo">06 <i>preguntas</i></p>
+      <h2 id="t-faq" class="asoma">Antes de <em>reservar.</em></h2>
+      <p class="intro">Si te queda una duda, escribinos por WhatsApp y te contesta Rubén.</p>
+    </div>
+    <div class="faq-lista" id="faqLista">
+      <div class="esqueleto" style="height:3.2rem;margin-bottom:.6rem;border-radius:4px"></div>
+      <div class="esqueleto" style="height:3.2rem;margin-bottom:.6rem;border-radius:4px"></div>
+      <div class="esqueleto" style="height:3.2rem;border-radius:4px"></div>
     </div>
   </div>
 </section>
 
+<section class="cierre" aria-labelledby="t-cierre">
+  <div class="envoltura">
+    <h2 id="t-cierre">¿Cuántas noches <em>te quedás?</em></h2>
+    <p>Elegí las fechas y mirá el precio total al instante. La reserva queda firme con la seña.</p>
+    <div class="acciones">
+      <a class="boton boton-tinta" href="reservas.html">Ver precios y fechas <span class="flecha">→</span></a>
+      <a class="boton boton-linea" href="https://wa.me/5491169495055?text=Hola!%20Quiero%20consultar%20por%20las%20caba%C3%B1as." target="_blank" rel="noopener">Escribir por WhatsApp</a>
+    </div>
+  </div>
+</section>
 </main>
 
-<!-- =====================================================
-     SECCIÓN: FOOTER
-===================================================== -->
-<footer id="footer">
-  <div class="footer-inner">
-    <div class="footer-top">
-      <!-- Columna 1: Logo y tagline -->
+<footer class="pie">
+  <div class="envoltura">
+    <div class="grilla">
       <div>
-        <!-- Logo blanco para footer -->
-        <div class="footer-logo">
-          <img src="logo/aromas-blanco.png" alt="Aromas de Campo"
-               onerror="this.style.display='none'; this.nextElementSibling.style.display='block'">
-          <div class="footer-logo-texto" style="display:none">Aromas de Campo</div>
-        </div>
-        <p class="footer-tagline">Cabañas de tronco en Colón, Entre Ríos.<br>Naturaleza, tranquilidad y atención familiar.</p>
+        <h4>Aromas de Campo</h4>
+        <p>Cabañas de tronco en Colón, Entre Ríos.<br>Atención directa de la familia.</p>
       </div>
-
-      <!-- Columna 2: Links -->
-      <div class="footer-col">
-        <h4>Navegación</h4>
-        <ul class="footer-links">
-          <li><a href="#cabanas">Cabañas</a></li>
-          <li><a href="#amenities">Amenities</a></li>
-          <li><a href="#testimonios">Opiniones</a></li>
-          <li><a href="#ubicacion">Ubicación</a></li>
-          <li><a href="reservas.html">Precios y reservas</a></li>
-        </ul>
-      </div>
-
-      <!-- Columna 3: Contacto -->
-      <div class="footer-col">
+      <div>
         <h4>Contacto</h4>
-        <div class="footer-contacto-item">
-          <span aria-hidden="true">📱</span>
-          <a href="https://wa.me/5491169495055?text=Hola!%20Quiero%20consultar%20disponibilidad%20en%20Aromas%20de%20Campo."
-             target="_blank" rel="noopener noreferrer">
-            +54 9 11 6949-5055
-          </a>
-        </div>
-        <div class="footer-contacto-item">
-          <span aria-hidden="true">📸</span>
-          <a href="https://instagram.com/aromasdecampo22" target="_blank" rel="noopener noreferrer">
-            @aromasdecampo22
-          </a>
-        </div>
-        <div class="footer-contacto-item">
-          <span aria-hidden="true">👍</span>
-          <a href="https://facebook.com/aromasdecampo022" target="_blank" rel="noopener noreferrer">
-            aromasdecampo022
-          </a>
-        </div>
-        <div class="footer-contacto-item">
-          <span aria-hidden="true">📍</span>
-          <span>Colón, Entre Ríos, Argentina</span>
-        </div>
+        <a href="https://wa.me/5491169495055" target="_blank" rel="noopener">WhatsApp +54 9 11 6949-5055</a>
+        <a href="https://instagram.com/aromasdecampo22" target="_blank" rel="noopener">Instagram @aromasdecampo22</a>
+        <a href="https://facebook.com/aromasdecampo022" target="_blank" rel="noopener">Facebook</a>
+      </div>
+      <div>
+        <h4>Para tu viaje</h4>
+        <a href="reservas.html">Precios y fechas</a>
+        <a href="guia.html">Guía de Colón</a>
+        <a href="#preguntas">Preguntas frecuentes</a>
       </div>
     </div>
-
-    <div class="footer-bottom">
-      <p>© 2025 Aromas de Campo — Colón, Entre Ríos. Todos los derechos reservados.</p>
-    </div>
+    <p class="legal">© <span id="anio">2026</span> Aromas de Campo · Colón, Entre Ríos</p>
   </div>
 </footer>
 
-<!-- =====================================================
-     BOTÓN WHATSAPP FLOTANTE
-===================================================== -->
-<a href="https://wa.me/5491169495055?text=Hola!%20Quiero%20consultar%20disponibilidad."
-   target="_blank" rel="noopener noreferrer"
-   class="wa-flotante"
-   aria-label="Contactar por WhatsApp">
-  <span class="wa-tooltip">Consultanos</span>
-  <!-- SVG WhatsApp inline -->
-  <svg width="28" height="28" viewBox="0 0 24 24" fill="#ffffff" aria-hidden="true">
-    <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51a12.8 12.8 0 00-.57-.01c-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
-  </svg>
+<a class="wa" href="https://wa.me/5491169495055?text=Hola!%20Quiero%20consultar%20por%20las%20caba%C3%B1as." target="_blank" rel="noopener" aria-label="Escribir por WhatsApp">
+  <svg width="30" height="30" viewBox="0 0 24 24" fill="#fff" aria-hidden="true"><path d="M17.47 14.38c-.3-.15-1.76-.87-2.03-.97-.27-.1-.47-.15-.67.15-.2.3-.77.97-.94 1.16-.17.2-.35.22-.64.08-.3-.15-1.26-.46-2.4-1.48-.88-.79-1.48-1.76-1.65-2.06-.17-.3-.02-.46.13-.6.13-.13.3-.35.45-.52.15-.17.2-.3.3-.5.1-.2.05-.37-.03-.52-.07-.15-.67-1.61-.92-2.2-.24-.58-.49-.5-.67-.51h-.57c-.2 0-.52.07-.79.37-.27.3-1.04 1.02-1.04 2.48s1.07 2.88 1.21 3.07c.15.2 2.1 3.2 5.08 4.49.71.31 1.26.49 1.7.63.71.22 1.36.19 1.87.12.57-.09 1.76-.72 2.01-1.41.25-.7.25-1.29.17-1.41-.07-.13-.27-.2-.57-.35M12.05 21.79h-.01a9.87 9.87 0 0 1-5.03-1.38l-.36-.21-3.74.98 1-3.65-.24-.37a9.86 9.86 0 0 1-1.51-5.26c0-5.45 4.44-9.88 9.89-9.88 2.64 0 5.12 1.03 6.99 2.9a9.82 9.82 0 0 1 2.89 6.99c0 5.45-4.44 9.88-9.88 9.88m8.41-18.3A11.81 11.81 0 0 0 12.05 0C5.5 0 .16 5.34.16 11.89c0 2.1.55 4.14 1.59 5.95L.06 24l6.3-1.65a11.88 11.88 0 0 0 5.68 1.45h.01c6.55 0 11.89-5.34 11.89-11.89 0-3.18-1.24-6.16-3.48-8.41"/></svg>
 </a>
 
-<!-- =====================================================
-     JAVASCRIPT
-===================================================== -->
-<script>
-  // ---- Phone Reels ----
-  (function() {
-    const track = document.getElementById('phoneTrack');
-    if (!track) return;
+<div class="hoja" id="hoja" role="dialog" aria-modal="true" aria-labelledby="hojaTitulo">
+  <div class="fondo" data-cerrar></div>
+  <div class="panel">
+    <header><h3 id="hojaTitulo">Opiniones</h3><button data-cerrar aria-label="Cerrar">×</button></header>
+    <div class="lista" id="hojaLista"></div>
+  </div>
+</div>
 
-    const slides = track.querySelectorAll('.phone-slide');
-    const dots = document.querySelectorAll('#reelDots .phone-dot');
-    const btnPrev = document.getElementById('reelPrev');
-    const btnNext = document.getElementById('reelNext');
-    const total = slides.length;
-    let actual = 0;
+<div class="visor" id="visor" role="dialog" aria-modal="true" aria-label="Fotos">
+  <div class="arriba"><span id="visorCuenta"></span><button id="visorCerrar" aria-label="Cerrar">×</button></div>
+  <div class="escena" id="visorEscena"></div>
+  <div class="lados"><button id="visorAnt" aria-label="Foto anterior">←</button><button id="visorSig" aria-label="Foto siguiente">→</button></div>
+</div>
 
-    function irA(idx) {
-      // Pausar video anterior
-      const videoAnterior = slides[actual].querySelector('video');
-      if (videoAnterior) videoAnterior.pause();
-
-      actual = (idx + total) % total;
-      track.style.transform = 'translateY(-' + (actual * 560) + 'px)';
-
-      // Actualizar dots
-      dots.forEach(function(d, i) {
-        d.classList.toggle('activo', i === actual);
-        d.setAttribute('aria-selected', i === actual);
-      });
-
-      // Reproducir video actual
-      const videoActual = slides[actual].querySelector('video');
-      if (videoActual) {
-        videoActual.load();
-        videoActual.play().catch(function() {});
-      }
-    }
-
-    btnNext.addEventListener('click', function() { irA(actual + 1); });
-    btnPrev.addEventListener('click', function() { irA(actual - 1); });
-
-    dots.forEach(function(dot, i) {
-      dot.addEventListener('click', function() { irA(i); });
-      dot.addEventListener('keydown', function(e) {
-        if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); irA(i); }
-      });
-    });
-
-    // Touch swipe vertical en el teléfono
-    const phoneFrame = track.closest('.phone-frame');
-    if (phoneFrame) {
-      let touchStartY = 0;
-      phoneFrame.addEventListener('touchstart', function(e) {
-        touchStartY = e.touches[0].clientY;
-      }, { passive: true });
-      phoneFrame.addEventListener('touchend', function(e) {
-        const diff = touchStartY - e.changedTouches[0].clientY;
-        if (Math.abs(diff) > 40) {
-          irA(diff > 0 ? actual + 1 : actual - 1);
-        }
-      }, { passive: true });
-    }
-
-    // Auto-avance cada 6 segundos
-    let intervaloReels = setInterval(function() { irA(actual + 1); }, 6000);
-
-    // Pausar auto-avance cuando se interactúa
-    [btnNext, btnPrev].forEach(function(btn) {
-      btn.addEventListener('click', function() {
-        clearInterval(intervaloReels);
-        intervaloReels = setInterval(function() { irA(actual + 1); }, 6000);
-      });
-    });
-
-    // Reproducir primer video cuando la sección entra al viewport
-    const seccionReels = document.getElementById('reels');
-    if (seccionReels) {
-      const obsReels = new IntersectionObserver(function(entries) {
-        if (entries[0].isIntersecting) {
-          const v = slides[0].querySelector('video');
-          if (v) v.play().catch(function() {});
-          obsReels.disconnect();
-        }
-      }, { threshold: 0.3 });
-      obsReels.observe(seccionReels);
-    }
-  })();
-
-  // ---- Navbar scroll ----
-  const navbar = document.getElementById('navbar');
-  window.addEventListener('scroll', function() {
-    if (window.scrollY > 60) {
-      navbar.classList.add('scrolled');
-    } else {
-      navbar.classList.remove('scrolled');
-    }
-  }, { passive: true });
-
-  // ---- Hamburger menu ----
-  const hamburger = document.getElementById('hamburger');
-  const navMobile = document.getElementById('nav-mobile');
-
-  hamburger.addEventListener('click', function() {
-    const estaAbierto = hamburger.classList.contains('open');
-    hamburger.classList.toggle('open');
-    navMobile.classList.toggle('open');
-    document.body.classList.toggle('menu-abierto', !estaAbierto);
-    hamburger.setAttribute('aria-expanded', !estaAbierto);
-    document.body.style.overflow = estaAbierto ? '' : 'hidden';
-  });
-
-  function cerrarMenu() {
-    hamburger.classList.remove('open');
-    navMobile.classList.remove('open');
-    document.body.classList.remove('menu-abierto');
-    hamburger.setAttribute('aria-expanded', 'false');
-    document.body.style.overflow = '';
-  }
-
-  // Cerrar menú con ESC
-  document.addEventListener('keydown', function(e) {
-    if (e.key === 'Escape') {
-      cerrarMenu();
-      cerrarLightbox();
-    }
-  });
-
-  // ---- Scroll reveal con IntersectionObserver ----
-  const elementosAnimados = document.querySelectorAll('.fade-in, .slide-up');
-
-  const observadorScroll = new IntersectionObserver(function(entries) {
-    entries.forEach(function(entry) {
-      if (entry.isIntersecting) {
-        entry.target.classList.add('visible');
-        observadorScroll.unobserve(entry.target);
-      }
-    });
-  }, { threshold: 0.15 });
-
-  elementosAnimados.forEach(function(el) {
-    observadorScroll.observe(el);
-  });
-
-  // ---- Counter JS animado ----
-  const contadores = document.querySelectorAll('.stat-numero[data-target]');
-
-  const observadorCounter = new IntersectionObserver(function(entries) {
-    entries.forEach(function(entry) {
-      if (entry.isIntersecting) {
-        const el = entry.target;
-        const objetivo = parseInt(el.getAttribute('data-target'));
-        const prefijo = el.getAttribute('data-prefix') || '';
-        const duracion = 1400;
-        const inicio = performance.now();
-
-        function actualizar(tiempoActual) {
-          const transcurrido = tiempoActual - inicio;
-          const progreso = Math.min(transcurrido / duracion, 1);
-          // Easing ease-out
-          const ease = 1 - Math.pow(1 - progreso, 3);
-          const valorActual = Math.floor(ease * objetivo);
-          el.textContent = prefijo + valorActual;
-          if (progreso < 1) {
-            requestAnimationFrame(actualizar);
-          } else {
-            el.textContent = prefijo + objetivo;
-          }
-        }
-
-        requestAnimationFrame(actualizar);
-        observadorCounter.unobserve(el);
-      }
-    });
-  }, { threshold: 0.5 });
-
-  contadores.forEach(function(el) {
-    observadorCounter.observe(el);
-  });
-
-  // ---- Lightbox ----
-  const galeriaItems = document.querySelectorAll('.galeria-item');
-  const lightbox = document.getElementById('lightbox');
-  const lightboxImg = document.getElementById('lightboxImg');
-  const lightboxCerrar = document.getElementById('lightboxCerrar');
-  const lightboxPrev = document.getElementById('lightboxPrev');
-  const lightboxNext = document.getElementById('lightboxNext');
-
-  // Recolectar solo los src de imágenes que existen
-  const srcsGaleria = [];
-  galeriaItems.forEach(function(item) {
-    const img = item.querySelector('img');
-    if (img) srcsGaleria.push(img.src);
-  });
-
-  let indiceActual = 0;
-
-  function abrirLightbox(indice) {
-    indiceActual = indice;
-    lightboxImg.src = srcsGaleria[indice];
-    lightboxImg.alt = 'Aromas de Campo — foto ' + (indice + 1);
-    lightbox.classList.add('open');
-    document.body.style.overflow = 'hidden';
-  }
-
-  function cerrarLightbox() {
-    lightbox.classList.remove('open');
-    lightboxImg.src = '';
-    document.body.style.overflow = '';
-  }
-
-  function irPrev() {
-    indiceActual = (indiceActual - 1 + srcsGaleria.length) % srcsGaleria.length;
-    lightboxImg.src = srcsGaleria[indiceActual];
-  }
-
-  function irNext() {
-    indiceActual = (indiceActual + 1) % srcsGaleria.length;
-    lightboxImg.src = srcsGaleria[indiceActual];
-  }
-
-  galeriaItems.forEach(function(item) {
-    item.addEventListener('click', function() {
-      const idx = parseInt(item.getAttribute('data-index'));
-      if (srcsGaleria[idx]) abrirLightbox(idx);
-    });
-    item.addEventListener('keydown', function(e) {
-      if (e.key === 'Enter' || e.key === ' ') {
-        e.preventDefault();
-        const idx = parseInt(item.getAttribute('data-index'));
-        if (srcsGaleria[idx]) abrirLightbox(idx);
-      }
-    });
-  });
-
-  lightboxCerrar.addEventListener('click', cerrarLightbox);
-  lightboxPrev.addEventListener('click', irPrev);
-  lightboxNext.addEventListener('click', irNext);
-
-  // Cerrar al hacer click fuera de la imagen
-  lightbox.addEventListener('click', function(e) {
-    if (e.target === lightbox) cerrarLightbox();
-  });
-
-  // Navegación con flechas del teclado
-  document.addEventListener('keydown', function(e) {
-    if (!lightbox.classList.contains('open')) return;
-    if (e.key === 'ArrowLeft') irPrev();
-    if (e.key === 'ArrowRight') irNext();
-  });
-
-  // ---- FAQ Accordion (delegado: también funciona con preguntas cargadas desde el panel) ----
-  document.addEventListener('click', function(e) {
-    const btn = e.target.closest && e.target.closest('.faq-pregunta');
-    if (!btn) return;
-    const item = btn.closest('.faq-item');
-    const respuesta = item.querySelector('.faq-respuesta');
-    const estaAbierto = item.classList.contains('abierto');
-    document.querySelectorAll('.faq-item').forEach(function(i) {
-      i.classList.remove('abierto');
-      i.querySelector('.faq-pregunta').setAttribute('aria-expanded', 'false');
-      i.querySelector('.faq-respuesta').hidden = true;
-    });
-    if (!estaAbierto) {
-      item.classList.add('abierto');
-      btn.setAttribute('aria-expanded', 'true');
-      respuesta.hidden = false;
-      if (window.Aromas) Aromas.track('pregunta', btn.childNodes[0].textContent.trim().slice(0, 120));
-    }
-  });
-</script>
-
-<!-- Sistema de reservas: precios reales, preguntas editables desde el panel y estadísticas -->
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="js/aromas.js"></script>
 <script>
 (function () {
-  if (!window.db) return;
   var A = window.Aromas, db = window.db;
+  var $ = function (s) { return document.querySelector(s); };
+  document.getElementById('anio').textContent = new Date().getFullYear();
+
+  /* ---- barra y menú ---- */
+  var barra = $('#barra');
+  function pintarBarra() { barra.classList.toggle('solida', window.scrollY > window.innerHeight * 0.6); }
+  window.addEventListener('scroll', pintarBarra, { passive: true }); pintarBarra();
+  var menu = $('#menuMovil'), abrir = $('#abrirMenu');
+  function menuAbierto(si) {
+    menu.classList.toggle('abierto', si); document.body.classList.toggle('menu-abierto', si);
+    abrir.setAttribute('aria-expanded', si); document.body.style.overflow = si ? 'hidden' : '';
+    if (si) setTimeout(function () { $('#cerrarMenu').focus(); }, 300);
+  }
+  abrir.addEventListener('click', function () { menuAbierto(true); });
+  $('#cerrarMenu').addEventListener('click', function () { menuAbierto(false); });
+  menu.addEventListener('click', function (e) { if (e.target.closest('a')) menuAbierto(false); });
+
+  /* ---- aparición al bajar ---- */
+  var mirar = new IntersectionObserver(function (es) {
+    es.forEach(function (e) { if (e.isIntersecting) { e.target.classList.add('visto'); mirar.unobserve(e.target); } });
+  }, { threshold: .15, rootMargin: '0px 0px -40px 0px' });
+  function observar(root) { (root || document).querySelectorAll('.asoma:not(.visto), .revela:not(.visto)').forEach(function (el) { mirar.observe(el); }); }
+  observar();
+
+  /* ---- video de portada: no en datos móviles lentos ---- */
+  var vid = document.querySelector('.portada video');
+  if (navigator.connection && navigator.connection.saveData) vid.remove();
+  else vid.addEventListener('playing', function () { $('.portada .poster').style.opacity = 0; });
+
+  /* ---- videos: tocar para reproducir ---- */
+  document.querySelectorAll('.tira .video').forEach(function (v) {
+    var video = v.querySelector('video');
+    v.querySelector('.play').addEventListener('click', function () {
+      document.querySelectorAll('.tira video').forEach(function (o) { if (o !== video) { o.pause(); o.parentNode.classList.remove('sonando'); } });
+      if (video.paused) { video.play().catch(function () {}); v.classList.add('sonando'); A && A.track && A.track('video', video.getAttribute('src')); }
+    });
+    video.addEventListener('click', function () { video.pause(); v.classList.remove('sonando'); });
+  });
+
+  /* ---- quedate más ---- */
+  var PLAN = [
+    ['Llegar y bajar un cambio', 'Pileta, parque y la primera parrilla.'],
+    ['Termas de Colón', 'Piletas termales para pasar el día.'],
+    ['Playas del río Uruguay', 'Cinco playas a lo largo de la costa de Colón.'],
+    ['Parque Nacional El Palmar', 'Palmeras yatay, a unos 50 km.'],
+    ['Pueblo Liebig', 'Casas inglesas y el viejo frigorífico.'],
+    ['Villa Elisa', 'Termas y otro pueblo para conocer, a unos 30 minutos.'],
+    ['Palacio San José', 'La residencia de Urquiza.'],
+    ['Molino Forclaz', 'Molino harinero de los colonos suizos.'],
+    ['Bodega y calle 12 de Abril', 'Vinos de la zona y artesanos en el centro.'],
+    ['Parque Quirós y la costanera', 'Caminatas y atardeceres sobre el río.'],
+    ['Repetir lo que más te gustó', 'Siempre hay uno que pide volver a las termas.'],
+    ['No hacer nada', 'También vale: reposera, libro y parrilla.'],
+    ['Otra tarde de río', 'Kayak, pesca o mate en la playa.'],
+    ['Último día tranquilo', 'Sin correr para volver.']
+  ];
+  var plan = $('#plan');
+  plan.innerHTML = PLAN.map(function (p) { return '<li><div><b>' + p[0] + '</b><small>' + p[1] + '</small></div></li>'; }).join('');
+  var barraN = $('#barraNoches'), descuento = { pct: 0 };
+  function veredicto(n) {
+    if (n <= 3) return 'Una escapada: alcanza para descansar y conocer una o dos cosas.';
+    if (n <= 7) return 'Lo ideal. Te da tiempo para las termas, el río y El Palmar sin correr.';
+    if (n <= 10) return 'Vacaciones de verdad: conocés toda la zona y te sobran días de pileta.';
+    return 'Dos semanas: vivís Colón como uno más del pueblo.';
+  }
+  function moverNoches() {
+    var n = +barraN.value;
+    $('#nNoches').textContent = n; $('#nNochesTxt').textContent = n === 1 ? 'noche' : 'noches';
+    $('#veredicto').textContent = veredicto(n);
+    $('#irNoches').firstChild.textContent = 'Buscar ' + n + ' noches libres ';
+    $('#irNoches').href = 'reservas.html?noches=' + n;
+    plan.querySelectorAll('li').forEach(function (li, i) { li.classList.toggle('fuera', i >= n); });
+    var nota = $('#notaDescuento');
+    nota.hidden = !(descuento.pct > 0 && n >= 7);
+    if (!nota.hidden) nota.textContent = 'Con 7 noches o más: ' + descuento.pct + '% de descuento';
+    barraN.setAttribute('aria-valuetext', n + ' noches');
+  }
+  barraN.addEventListener('input', moverNoches); moverNoches();
+  barraN.addEventListener('change', function () { A && A.track && A.track('noches', barraN.value); });
+
+  /* ---- visor de fotos ---- */
+  var visor = $('#visor'), escena = $('#visorEscena'), fotosVisor = [], ultimoFoco = null;
+  function abrirVisor(lista, i) {
+    fotosVisor = lista; ultimoFoco = document.activeElement;
+    escena.innerHTML = lista.map(function (f) {
+      return '<figure><img src="' + A.esc(A.foto(f.ruta)) + '" alt="' + A.esc(f.descripcion || 'Foto de Aromas de Campo') + '" loading="lazy">' +
+        (f.descripcion ? '<figcaption>' + A.esc(f.descripcion) + '</figcaption>' : '') + '</figure>';
+    }).join('');
+    visor.classList.add('abierto'); document.body.style.overflow = 'hidden';
+    requestAnimationFrame(function () { escena.scrollLeft = i * escena.clientWidth; contarVisor(); });
+    $('#visorCerrar').focus();
+  }
+  function contarVisor() { var i = Math.round(escena.scrollLeft / escena.clientWidth); $('#visorCuenta').textContent = (i + 1) + ' de ' + fotosVisor.length; }
+  escena.addEventListener('scroll', function () { window.requestAnimationFrame(contarVisor); }, { passive: true });
+  function cerrarVisor() { visor.classList.remove('abierto'); document.body.style.overflow = ''; if (ultimoFoco) ultimoFoco.focus(); }
+  $('#visorCerrar').addEventListener('click', cerrarVisor);
+  $('#visorAnt').addEventListener('click', function () { escena.scrollBy({ left: -escena.clientWidth, behavior: 'smooth' }); });
+  $('#visorSig').addEventListener('click', function () { escena.scrollBy({ left: escena.clientWidth, behavior: 'smooth' }); });
+  document.addEventListener('keydown', function (e) {
+    if (e.key === 'Escape') { cerrarVisor(); cerrarHoja(); menuAbierto(false); }
+    if (visor.classList.contains('abierto') && e.key === 'ArrowRight') $('#visorSig').click();
+    if (visor.classList.contains('abierto') && e.key === 'ArrowLeft') $('#visorAnt').click();
+  });
+
+  /* ---- hoja de opiniones ---- */
+  var hoja = $('#hoja');
+  function abrirHoja() { hoja.classList.add('abierta'); document.body.classList.add('hoja-abierta'); document.body.style.overflow = 'hidden'; hoja.querySelector('header button').focus(); A && A.track && A.track('opiniones', 'abrir'); }
+  function cerrarHoja() { if (!hoja.classList.contains('abierta')) return; hoja.classList.remove('abierta'); document.body.classList.remove('hoja-abierta'); document.body.style.overflow = ''; }
+  hoja.addEventListener('click', function (e) { if (e.target.closest('[data-cerrar]')) cerrarHoja(); });
+  $('#verOpiniones').addEventListener('click', abrirHoja);
+  $('#selloGoogle').addEventListener('click', abrirHoja);
+
+  /* ---- preguntas ---- */
+  document.addEventListener('click', function (e) {
+    var btn = e.target.closest && e.target.closest('.faq-pregunta'); if (!btn) return;
+    var item = btn.closest('.faq-item'), abierto = item.classList.contains('abierto');
+    document.querySelectorAll('.faq-item').forEach(function (i) { i.classList.remove('abierto'); i.querySelector('.faq-pregunta').setAttribute('aria-expanded', 'false'); i.querySelector('.faq-respuesta').hidden = true; });
+    if (!abierto) { item.classList.add('abierto'); btn.setAttribute('aria-expanded', 'true'); item.querySelector('.faq-respuesta').hidden = false; A && A.track && A.track('pregunta', btn.textContent.trim().slice(0, 120)); }
+  });
+
+  if (!db) return;
   A.track('visita', 'inicio');
   A.escucharWhatsApp();
   var hoy = A.hoy();
+  var LUGARES = { exterior: 'Exterior', interior: 'Interior', pileta: 'Pileta', parque: 'Parque', alrededores: 'Colón' };
+
   Promise.all([
-    db.from('cabanas').select('id,slug,nombre,precio_base').eq('activa', true),
+    db.from('cabanas').select('id,slug,nombre,precio_base,orden,activa').order('orden'),
     db.rpc('calendario_publico', { p_desde: hoy, p_hasta: A.sumar(hoy, 180) }),
     db.from('preguntas').select('pregunta,respuesta').eq('visible', true).order('orden'),
-    db.from('ajustes').select('aviso,google_puntaje,google_cantidad,google_url').single(),
-    db.from('resenas').select('nombre,ciudad,estrellas,texto,respuesta,cabana_id').eq('aprobada', true).order('creada', { ascending: false })
+    db.from('ajustes').select('aviso,google_puntaje,google_cantidad,google_url,descuento_semana_pct,checkin,checkout').single(),
+    db.from('resenas').select('nombre,ciudad,estrellas,texto,respuesta,fuente,creada').eq('aprobada', true).order('creada', { ascending: false }),
+    db.from('fotos').select('id,cabana_id,ruta,miniatura,lugar,descripcion,portada,orden').order('portada', { ascending: false }).order('orden')
   ]).then(function (r) {
-    var cabs = r[0].data || [], cal = r[1].data || [], faq = r[2].data || [], aj = r[3].data, res = r[4].data || [];
-    // "desde $X / noche" con el precio libre más bajo de los próximos 6 meses
-    var minimo = {};
-    cal.forEach(function (d) { if (d.libre) minimo[d.cabana_id] = Math.min(minimo[d.cabana_id] || Infinity, d.precio); });
-    cabs.forEach(function (c) {
-      var el = document.querySelector('.card-precio[data-cabana="' + c.slug + '"]');
+    var cabs = r[0].data || [], cal = r[1].data || [], faq = r[2].data || [], aj = r[3].data || {}, res = r[4].data || [], fotos = r[5].data || [];
+
+    /* cabañas */
+    var minimo = {}, proxLibre = {};
+    cal.forEach(function (d) {
+      if (!d.libre) return;
+      minimo[d.cabana_id] = Math.min(minimo[d.cabana_id] || Infinity, d.precio);
+      if (!proxLibre[d.cabana_id] || d.fecha < proxLibre[d.cabana_id]) proxLibre[d.cabana_id] = d.fecha;
+    });
+    var proximas = cabs.filter(function (c) { return c.activa === false; });
+    cabs = cabs.filter(function (c) { return c.activa !== false; });
+    function tarjetaProxima(nombre, foto) {
+      return '<article class="cab proxima asoma"><div class="carrusel"><div class="pista"><img src="' + A.esc(foto) + '" alt="Cabaña ' + A.esc(nombre) + ', próximamente" loading="lazy"></div><span class="estampa">Próximamente</span></div>' +
+        '<div class="nombre"><h3>' + A.esc(nombre) + '</h3></div><p>La tercera gemela. Todavía no se alquila; cuando abra, la vas a ver acá con sus fechas.</p></article>';
+    }
+    var html = cabs.map(function (c) {
+      var propias = fotos.filter(function (f) { return f.cabana_id === c.id; });
+      var lista = propias.concat(fotos.filter(function (f) { return f.cabana_id === null && f.lugar === 'interior'; }));
+      if (!lista.length) lista = [{ ruta: 'fotos/cabana-1.jpg', descripcion: 'Cabaña ' + c.nombre }];
       var p = minimo[c.id] || c.precio_base;
-      if (el && p) el.innerHTML = 'desde ' + A.pesos(p) + ' <span>/ noche</span>';
+      var libre = proxLibre[c.id];
+      var cuandoLibre = !libre ? 'Consultá fechas por WhatsApp' : (libre === hoy ? 'Libre desde hoy' : 'Próxima noche libre: ' + A.lindo(libre));
+      return '<article class="cab asoma" data-cab="' + c.id + '">' +
+        '<div class="carrusel"><div class="pista">' + lista.map(function (f, i) {
+          return '<img src="' + A.esc(A.foto(f.miniatura || f.ruta)) + '" alt="' + A.esc((f.descripcion || 'Foto') + ' · Cabaña ' + c.nombre) + '" ' + (i ? 'loading="lazy"' : '') + ' data-i="' + i + '">';
+        }).join('') + '</div>' + (lista.length > 1 ? '<span class="cuenta">1 / ' + lista.length + '</span><div class="flechas"><button aria-label="Foto anterior">←</button><button aria-label="Foto siguiente">→</button></div>' : '') + '</div>' +
+        '<div class="nombre"><h3>' + A.esc(c.nombre) + '</h3><p class="precio">desde<b>' + A.pesos(p) + '</b>por noche</p></div>' +
+        '<p class="libre">' + cuandoLibre + '</p>' +
+        '<div class="acciones"><a class="boton boton-tinta" href="reservas.html?cabana=' + encodeURIComponent(c.slug) + '">Ver fechas y precio</a>' +
+        '<a class="boton" href="https://wa.me/5491169495055?text=' + encodeURIComponent('Hola! Quiero consultar por la cabaña ' + c.nombre + '.') + '" target="_blank" rel="noopener">WhatsApp</a></div></article>';
+    }).join('');
+    proximas.forEach(function (c) { var f = fotos.find(function (x) { return x.cabana_id === c.id; }); html += tarjetaProxima(c.nombre, f ? A.foto(f.ruta) : 'fotos/cabana-3.jpg'); });
+    if (!proximas.length && !cabs.some(function (c) { return c.slug === 'emma'; })) html += tarjetaProxima('Emma', 'fotos/cabana-3.jpg');
+    var lc = $('#listaCabanas'); lc.innerHTML = html; observar(lc);
+    lc.querySelectorAll('.cab[data-cab]').forEach(function (art) {
+      var id = +art.dataset.cab, pista = art.querySelector('.pista'), cuenta = art.querySelector('.cuenta');
+      var propias = fotos.filter(function (f) { return f.cabana_id === id; }).concat(fotos.filter(function (f) { return f.cabana_id === null && f.lugar === 'interior'; }));
+      pista.addEventListener('scroll', function () { if (cuenta) cuenta.textContent = (Math.round(pista.scrollLeft / pista.clientWidth) + 1) + ' / ' + pista.children.length; }, { passive: true });
+      pista.addEventListener('click', function (e) { var img = e.target.closest('img'); if (img && propias.length) abrirVisor(propias, +img.dataset.i); });
+      var fl = art.querySelectorAll('.flechas button');
+      if (fl.length) { fl[0].onclick = function () { pista.scrollBy({ left: -pista.clientWidth, behavior: 'smooth' }); }; fl[1].onclick = function () { pista.scrollBy({ left: pista.clientWidth, behavior: 'smooth' }); }; }
     });
-    // preguntas frecuentes desde el panel
-    var lista = document.querySelector('.faq-lista');
-    if (lista && faq.length) {
-      lista.innerHTML = faq.map(function (p) {
-        return '<div class="faq-item"><button class="faq-pregunta" aria-expanded="false">' + A.esc(p.pregunta) +
-          '<span class="faq-icono" aria-hidden="true">+</span></button><div class="faq-respuesta" hidden><p style="white-space:pre-line">' +
-          A.esc(p.respuesta) + '</p></div></div>';
+
+    /* fotos */
+    var filtrosEl = $('#filtros'), mosaico = $('#mosaico');
+    var lugares = ['todas'].concat(Object.keys(LUGARES).filter(function (l) { return fotos.some(function (f) { return f.lugar === l; }); }));
+    var nombres = {}; cabs.forEach(function (c) { nombres[c.id] = c.nombre; });
+    filtrosEl.innerHTML = lugares.map(function (l, i) { return '<button aria-pressed="' + (i === 0) + '" data-l="' + l + '">' + (l === 'todas' ? 'Todas (' + fotos.length + ')' : LUGARES[l]) + '</button>'; }).join('');
+    function pintarFotos(l) {
+      var lista = l === 'todas' ? fotos : fotos.filter(function (f) { return f.lugar === l; });
+      mosaico.innerHTML = lista.map(function (f, i) {
+        var pie = [f.descripcion, nombres[f.cabana_id] ? 'Cabaña ' + nombres[f.cabana_id] : ''].filter(Boolean).join(' · ');
+        return '<figure class="entra" style="animation-delay:' + Math.min(i * 50, 500) + 'ms" data-i="' + i + '" tabindex="0" role="button" aria-label="Ver foto: ' + A.esc(pie || 'foto') + '">' +
+          '<img src="' + A.esc(A.foto(f.miniatura || f.ruta)) + '" alt="' + A.esc(pie || 'Foto de Aromas de Campo') + '" loading="lazy">' + (pie ? '<figcaption>' + A.esc(pie) + '</figcaption>' : '') + '</figure>';
       }).join('');
+      mosaico.onclick = function (e) { var fig = e.target.closest('figure'); if (fig) abrirVisor(lista, +fig.dataset.i); };
+      mosaico.onkeydown = function (e) { var fig = e.target.closest('figure'); if (fig && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); abrirVisor(lista, +fig.dataset.i); } };
     }
-    // solo las cabañas que se alquilan hoy
-    var activas = cabs.map(function (c) { return c.slug; });
-    document.querySelectorAll('.card-precio[data-cabana]').forEach(function (el) {
-      if (activas.indexOf(el.dataset.cabana) < 0) { var card = el.closest('.card-cabana'); if (card) card.style.display = 'none'; }
+    filtrosEl.addEventListener('click', function (e) {
+      var b = e.target.closest('button'); if (!b) return;
+      filtrosEl.querySelectorAll('button').forEach(function (x) { x.setAttribute('aria-pressed', x === b); });
+      pintarFotos(b.dataset.l);
     });
-    var statCab = document.querySelector('.stat-numero[data-cabanas]');
-    if (statCab && cabs.length) { statCab.dataset.target = String(cabs.length); if (statCab.textContent !== '0') statCab.textContent = String(cabs.length); }
-    // puntaje real de Google
-    if (aj && aj.google_puntaje && aj.google_cantidad) {
-      var g = document.createElement('a');
-      g.href = aj.google_url || '#'; g.target = '_blank'; g.rel = 'noopener';
-      g.className = 'hero-trust fade-in visible';
-      g.style.cssText = 'display:inline-block;margin-top:.5rem;color:inherit;text-decoration:none;opacity:.95';
-      g.textContent = '★ ' + Number(aj.google_puntaje).toFixed(1).replace('.', ',') + ' en Google · ' + aj.google_cantidad + ' opiniones';
-      var trust = document.querySelector('p.hero-trust'); if (trust) trust.insertAdjacentElement('afterend', g);
-      if (!res.length) {
-        document.getElementById('resumen-resenas').innerHTML = '★ ' + Number(aj.google_puntaje).toFixed(1).replace('.', ',') + ' de promedio en Google, con ' + aj.google_cantidad + ' opiniones de huéspedes reales.';
-        document.getElementById('testi-grid').innerHTML = '<p style="grid-column:1/-1;text-align:center"><a class="btn btn-primario" target="_blank" rel="noopener" href="' + A.esc(aj.google_url || '#') + '">Leer las opiniones en Google</a></p>';
-        document.getElementById('testimonios').hidden = false;
-      }
+    pintarFotos('todas');
+
+    /* estadías: descuento real si Rubén lo carga */
+    descuento.pct = +aj.descuento_semana_pct || 0; moverNoches();
+
+    /* opiniones */
+    var nota = aj.google_puntaje ? Number(aj.google_puntaje).toFixed(1).replace('.', ',') : null;
+    if (nota) {
+      $('#puntaje').firstChild.textContent = nota;
+      $('#puntajeTxt').textContent = aj.google_cantidad + ' opiniones en Google';
+      $('#selloNota').textContent = nota; $('#selloTexto').textContent = aj.google_cantidad + ' opiniones en Google';
+      $('#selloGoogle').hidden = false;
     }
-    // reseñas reales aprobadas en el panel
+    var lg = $('#linkGoogle'); if (aj.google_url) lg.href = aj.google_url; else lg.remove();
+    var FUENTES = { google: 'Google', web: 'Web', booking: 'Booking', airbnb: 'Airbnb', whatsapp: 'WhatsApp', otra: '' };
+    function tarjeta(x) {
+      return '<article class="resena"><div class="estrellas" aria-label="' + x.estrellas + ' de 5 estrellas">' + '★★★★★'.slice(0, x.estrellas) + '<span style="opacity:.25">' + '★★★★★'.slice(x.estrellas) + '</span></div>' +
+        '<p>' + A.esc(x.texto) + '</p>' + (x.respuesta ? '<p class="respuesta">Respuesta de Aromas: ' + A.esc(x.respuesta) + '</p>' : '') +
+        '<div class="quien"><span><b>' + A.esc(x.nombre) + '</b>' + (x.ciudad ? ' · ' + A.esc(x.ciudad) : '') + '</span>' + (FUENTES[x.fuente] ? '<span class="fuente">' + FUENTES[x.fuente] + '</span>' : '') + '</div></article>';
+    }
     if (res.length) {
-      var nombreCab = function (id) { var c = cabs.find(function (k) { return k.id === id; }); return c ? 'Cabaña ' + c.nombre : ''; };
-      var prom = res.reduce(function (a, x) { return a + x.estrellas; }, 0) / res.length;
-      document.getElementById('resumen-resenas').textContent = (aj && aj.google_puntaje ? '★ ' + Number(aj.google_puntaje).toFixed(1).replace('.', ',') + ' en Google (' + aj.google_cantidad + ' opiniones) · ' : '') + '★ ' + prom.toFixed(1).replace('.', ',') + ' en nuestra web (' + res.length + ')';
-      document.getElementById('testi-grid').innerHTML = res.slice(0, 6).map(function (x, i) {
-        return '<div class="testi-card fade-in visible" style="animation-delay:' + (i * 80) + 'ms"><div class="testi-estrellas" aria-label="' + x.estrellas + ' estrellas">' +
-          '★★★★★'.slice(0, x.estrellas) + '<span style="opacity:.3">' + '★★★★★'.slice(x.estrellas) + '</span></div><p class="testi-texto">' + A.esc(x.texto) + '</p>' +
-          (x.respuesta ? '<p class="testi-texto" style="font-size:.88rem;opacity:.85;border-left:3px solid #7A8C72;padding-left:.6rem">💬 ' + A.esc(x.respuesta) + '</p>' : '') +
-          '<div class="testi-autor"><span class="testi-nombre">' + A.esc(x.nombre) + '</span><span class="testi-detalle">' +
-          A.esc([x.ciudad, nombreCab(x.cabana_id)].filter(Boolean).join(' · ')) + '</span></div></div>';
-      }).join('');
-      document.getElementById('testimonios').hidden = false;
+      $('#resenas').innerHTML = res.slice(0, 3).map(tarjeta).join('');
+      $('#hojaLista').innerHTML = res.map(tarjeta).join('');
+      $('#hojaTitulo').textContent = res.length + (res.length === 1 ? ' opinión' : ' opiniones');
+    } else {
+      $('#resenas').innerHTML = '';
+      $('#verOpiniones').remove();
+      $('#selloGoogle').addEventListener('click', function (e) { e.stopImmediatePropagation(); if (aj.google_url) window.open(aj.google_url, '_blank', 'noopener'); }, true);
+      if (aj.google_url) { lg.textContent = 'Leer las opiniones en Google ↗'; lg.className = 'boton boton-tinta'; }
     }
-    // aviso opcional arriba de todo
-    if (aj && aj.aviso) {
-      var b = document.createElement('div');
-      b.textContent = aj.aviso;
-      b.style.cssText = 'background:#1C2B1E;color:#fff;text-align:center;padding:.55rem 1rem;font-size:.95rem;position:relative;z-index:1001';
-      document.body.insertBefore(b, document.body.firstChild);
+
+    /* preguntas */
+    var lista = $('#faqLista');
+    lista.innerHTML = faq.map(function (p) {
+      return '<div class="faq-item"><button class="faq-pregunta" aria-expanded="false">' + A.esc(p.pregunta) + '<span class="faq-icono" aria-hidden="true">+</span></button>' +
+        '<div class="faq-respuesta" hidden><p style="white-space:pre-line">' + A.esc(p.respuesta) + '</p></div></div>';
+    }).join('');
+    if (aj.checkin && aj.checkout) $('#horarios').textContent = 'entrada ' + String(aj.checkin).slice(0, 5) + ' · salida ' + String(aj.checkout).slice(0, 5);
+
+    if (aj.aviso) {
+      var b = document.createElement('p'); b.textContent = aj.aviso;
+      b.style.cssText = 'display:inline-block;background:var(--sol);color:#fff;padding:.45rem .9rem;border-radius:4px;font-weight:600;margin-bottom:1rem;max-width:34rem';
+      var env = document.querySelector('.portada .envoltura'); env.insertBefore(b, env.firstChild);
     }
-  }).catch(function () {});
+  }).catch(function (e) { console.warn(e); });
 })();
 </script>
-
 </body>
 </html>

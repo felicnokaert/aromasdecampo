@@ -9,20 +9,22 @@
   <meta property="og:description" content="Cabañas de tronco en Colón, Entre Ríos. Elegí fechas, mirá el precio y reservá directo.">
   <meta property="og:image" content="fotos/hero-poster.jpg">
   <link rel="icon" type="image/png" href="logo/favicon-dark.png">
-  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Gloock&family=Newsreader:ital@1&family=Figtree:wght@400;500;600;700&display=swap" rel="stylesheet">
   <style>
     :root {
-      --verde: #7A8C72; --verde-osc: #5E6F57; --beige: #C8B89A; --crema: #F5EFE4;
-      --oscuro: #1C2B1E; --blanco: #FAFAF7; --texto: #1E1E1E; --texto2: #6B6B6B;
+      --verde: #3A4A2F; --verde-osc: #24301F; --beige: #C8B89A; --crema: #F2EADB;
+      --oscuro: #24301F; --blanco: #FFFCF6; --texto: #221F1A; --texto2: #5C564B; --sol: #D2662A;
       --wa: #25D366; --beige-claro: #F0EBE1; --borde: #E2D9C8;
       --bajo: #DCEBD5; --bajo-t: #2F5A27; --alto: #F6E1CC; --alto-t: #8A4B12;
       --radio: 14px;
     }
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-    body { font-family: 'Inter', sans-serif; background: var(--crema); color: var(--texto); line-height: 1.55; }
+    body { font-family: 'Figtree', system-ui, sans-serif; background: var(--crema); color: var(--texto); line-height: 1.55; }
     a { color: inherit; }
     button { font: inherit; cursor: pointer; }
-    h1, h2, h3 { font-family: 'Playfair Display', serif; font-weight: 700; line-height: 1.2; }
+    .pista-noches { background: var(--oscuro); color: var(--crema); padding: .8rem 1rem; border-radius: 10px; margin: 0 0 1rem; border-left: 4px solid var(--sol); }
+    .btn, button.reservar, .boton { border-radius: 999px; }
+    h1, h2, h3 { font-family: 'Gloock', Georgia, serif; font-weight: 400; line-height: 1.2; }
 
     /* Barra superior */
     .top { position: sticky; top: 0; z-index: 50; background: rgba(250,250,247,.96); backdrop-filter: blur(8px);
@@ -74,7 +76,7 @@
     .cal-nav .ayuda { color: var(--texto2); font-size: .9rem; text-align: center; flex: 1; padding: 0 .5rem; }
     .meses { display: grid; grid-template-columns: 1fr 1fr; gap: 1.4rem; }
     @media (max-width: 700px) { .meses { grid-template-columns: 1fr; } .mes:nth-child(2) { display: none; } }
-    .mes h3 { font-family: 'Inter', sans-serif; font-size: 1rem; text-transform: capitalize; text-align: center; margin-bottom: .5rem; }
+    .mes h3 { font-family: 'Figtree', system-ui, sans-serif; font-size: 1rem; text-transform: capitalize; text-align: center; margin-bottom: .5rem; }
     .dias { display: grid; grid-template-columns: repeat(7, 1fr); gap: 3px; }
     .dsem { font-size: .72rem; color: var(--texto2); text-align: center; padding: .2rem 0; text-transform: uppercase; }
     .dia { aspect-ratio: 1 / 1.05; border: none; border-radius: 9px; background: #fff; display: flex; flex-direction: column;
@@ -309,6 +311,12 @@
     cal.data.forEach(d => { (estado.dias[d.cabana_id] ||= {})[d.fecha] = d; });
 
     const pedida = new URLSearchParams(location.search).get('cabana');
+    const nochesBuscadas = Number(new URLSearchParams(location.search).get('noches')) || 0;
+    if (nochesBuscadas >= 2) setTimeout(() => {
+      const h = document.querySelector('main') || document.body, n = document.createElement('p');
+      n.className = 'pista-noches'; n.innerHTML = `Buscás <b>${nochesBuscadas} noches</b>: tocá el día que llegás y después el día ${nochesBuscadas} noches más adelante.`;
+      h.insertBefore(n, h.firstChild);
+    }, 0);
     const elegida = estado.cabanas.find(x => x.slug === pedida) || estado.cabanas[0];
     estado.cab = elegida ? elegida.id : null;
     const h = A.fecha(hoy); estado.mesBase = new Date(h.getFullYear(), h.getMonth(), 1);
@@ -527,7 +535,7 @@
     const aj = estado.ajustes || {};
     $('info-cab').innerHTML = `<h3 style="font-size:1.3rem">Cabaña ${A.esc(c.nombre)}</h3>
       <p style="color:var(--texto2);margin-top:.3rem">${A.esc(c.descripcion || '')}</p>
-      <p style="margin-top:.6rem">👥 Hasta <strong>${c.capacidad} personas</strong> · 🛏️ ${c.habitaciones} habitaciones · 🌙 mínimo ${c.minimo_noches} noches (3 en temporada alta)
+      <p style="margin-top:.6rem">Hasta <strong>${c.capacidad} personas</strong> · ${c.habitaciones} habitaciones · mínimo ${c.minimo_noches} noches (3 en temporada alta). Lo ideal: de 4 noches a dos semanas
         ${aj.checkin ? ` · 🕑 Entrada ${A.esc(aj.checkin)} · salida ${A.esc(aj.checkout)}` : ''}</p>
       <div class="equip">${(c.equipamiento || []).map(e => `<span>${A.esc(e)}</span>`).join('')}</div>`;
   }

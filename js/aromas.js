@@ -32,6 +32,8 @@ window.AROMAS_CONFIG = {
     hoy: () => A.iso(new Date()),
     lindo: s => { const d = A.fecha(s); return DIAS[d.getDay()] + ' ' + d.getDate() + ' de ' + MESES[d.getMonth()]; },
     corto: s => { const d = A.fecha(s); return d.getDate() + '/' + (d.getMonth() + 1); },
+    // Fotos: las del sitio ("fotos/...") o las subidas desde el panel (bucket "fotos")
+    foto: r => !r ? '' : (/^(https?:|fotos\/|logo\/)/.test(r) ? r : cfg.url + '/storage/v1/object/public/fotos/' + r),
     esc: s => String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c])),
 
     // De dónde viene la visita: ?utm_source=instagram o el sitio que la mandó
