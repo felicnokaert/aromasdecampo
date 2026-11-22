@@ -3,1184 +3,524 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Reservar — Aromas de Campo</title>
-  <meta name="description" content="Consultá disponibilidad y reservá tu cabaña en Aromas de Campo, Colón, Entre Ríos.">
-  <link rel="icon" type="image/png" href="logo/favicon-dark.png" media="(prefers-color-scheme: light)">
-  <link rel="icon" type="image/png" href="logo/favicon.png" media="(prefers-color-scheme: dark)">
+  <title>Disponibilidad y precios — Aromas de Campo, Colón</title>
+  <meta name="description" content="Mirá la disponibilidad y el precio de cada noche en las cabañas de tronco de Aromas de Campo, en Colón, Entre Ríos. Reservá directo, sin comisiones.">
+  <meta property="og:title" content="Disponibilidad y precios — Aromas de Campo">
+  <meta property="og:description" content="Cabañas de tronco en Colón, Entre Ríos. Elegí fechas, mirá el precio y reservá directo.">
+  <meta property="og:image" content="fotos/hero-poster.jpg">
   <link rel="icon" type="image/png" href="logo/favicon-dark.png">
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
-
-  <!-- Supabase -->
-  <script>
-    window.SUPABASE_URL      = 'https://XXXXXXXX.supabase.co';
-    window.SUPABASE_ANON_KEY = 'eyJ...';
-    // ⚠️ Reemplazá estos valores con los de tu proyecto Supabase:
-    // Dashboard → Settings → API → Project URL y anon public key
-  </script>
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="js/supabase-client.js"></script>
-
   <style>
     :root {
-      --verde-salvia:    #7A8C72;
-      --beige-arena:     #C8B89A;
-      --fondo-crema:     #F5EFE4;
-      --fondo-oscuro:    #1C2B1E;
-      --blanco-calido:   #FAFAF7;
-      --texto-principal: #1E1E1E;
-      --texto-secundario:#6B6B6B;
-      --whatsapp-verde:  #25D366;
-      --footer-oscuro:   #111A12;
-      --beige-claro:     #F0EBE1;
-      --rojo-ocupado:    #C0392B;
-      --amarillo-pend:   #E6A817;
-      --gris-bloq:       #95A5A6;
+      --verde: #7A8C72; --verde-osc: #5E6F57; --beige: #C8B89A; --crema: #F5EFE4;
+      --oscuro: #1C2B1E; --blanco: #FAFAF7; --texto: #1E1E1E; --texto2: #6B6B6B;
+      --wa: #25D366; --beige-claro: #F0EBE1; --borde: #E2D9C8;
+      --bajo: #DCEBD5; --bajo-t: #2F5A27; --alto: #F6E1CC; --alto-t: #8A4B12;
+      --radio: 14px;
     }
-
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-    html { scroll-behavior: smooth; }
-    body {
-      font-family: 'Inter', sans-serif;
-      background: var(--fondo-crema);
-      color: var(--texto-principal);
-      line-height: 1.6;
-    }
+    body { font-family: 'Inter', sans-serif; background: var(--crema); color: var(--texto); line-height: 1.55; }
+    a { color: inherit; }
+    button { font: inherit; cursor: pointer; }
+    h1, h2, h3 { font-family: 'Playfair Display', serif; font-weight: 700; line-height: 1.2; }
 
-    /* ---- NAVBAR (igual al index) ---- */
-    #navbar {
-      position: sticky; top: 0; z-index: 900;
-      padding: 0.75rem 2rem;
-      display: flex; align-items: center; justify-content: space-between;
-      background-color: rgba(180,152,112,0.95);
-      backdrop-filter: blur(8px);
-      box-shadow: 0 2px 20px rgba(0,0,0,0.1);
-    }
-    .nav-logo { display: flex; align-items: center; gap: 0.75rem; text-decoration: none; }
-    .nav-logo img { height: 56px; width: auto; }
-    .nav-volver {
-      font-size: 0.875rem; font-weight: 500;
-      color: rgba(250,250,247,0.9); text-decoration: none;
-      display: flex; align-items: center; gap: 0.4rem;
-      transition: color 0.2s;
-    }
-    .nav-volver:hover { color: #fff; }
+    /* Barra superior */
+    .top { position: sticky; top: 0; z-index: 50; background: rgba(250,250,247,.96); backdrop-filter: blur(8px);
+           border-bottom: 1px solid var(--borde); }
+    .top-in { max-width: 1120px; margin: 0 auto; padding: .7rem 1.2rem; display: flex; align-items: center; justify-content: space-between; gap: 1rem; }
+    .top img { height: 46px; width: auto; }
+    .top-links { display: flex; gap: .6rem; align-items: center; }
+    .top-links a { text-decoration: none; font-size: .92rem; color: var(--texto2); }
+    .btn-wa { background: var(--wa); color: #fff !important; padding: .55rem .95rem; border-radius: 999px; font-weight: 600; font-size: .9rem; display: inline-flex; gap: .4rem; align-items: center; text-decoration: none; }
+    .aviso { background: var(--oscuro); color: #fff; text-align: center; padding: .6rem 1rem; font-size: .95rem; }
+    .aviso:empty { display: none; }
 
-    /* ---- HERO RESERVAS ---- */
-    #hero-reservas {
-      background: var(--fondo-oscuro);
-      padding: 3.5rem 2rem 3rem;
-      text-align: center;
-    }
-    .hero-res-titulo {
-      font-family: 'Playfair Display', serif;
-      font-size: clamp(1.75rem, 4vw, 2.75rem);
-      color: var(--blanco-calido);
-      margin-bottom: 0.75rem;
-    }
-    .hero-res-sub {
-      color: rgba(250,250,247,0.7);
-      font-size: 1rem;
-      max-width: 480px;
-      margin: 0 auto;
-    }
+    main { max-width: 1120px; margin: 0 auto; padding: 1.6rem 1.2rem 4rem; }
+    .cabecera h1 { font-size: clamp(1.8rem, 4vw, 2.6rem); }
+    .cabecera p { color: var(--texto2); margin-top: .4rem; max-width: 640px; }
+    .paso { font-size: .78rem; letter-spacing: .12em; text-transform: uppercase; color: var(--verde-osc); font-weight: 600; margin: 2rem 0 .7rem; }
 
-    /* ---- BOOKING WIDGET ---- */
-    #booking-widget {
-      max-width: 860px;
-      margin: -2rem auto 4rem;
-      padding: 0 1.5rem;
-    }
+    /* Cabañas */
+    .cabanas { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 1rem; }
+    .cab { background: var(--blanco); border: 2px solid transparent; border-radius: var(--radio); overflow: hidden; text-align: left;
+           box-shadow: 0 2px 10px rgba(60,50,30,.07); transition: border-color .2s, transform .2s; padding: 0; }
+    .cab:hover { transform: translateY(-2px); }
+    .cab.activa { border-color: var(--verde); box-shadow: 0 6px 22px rgba(122,140,114,.28); }
+    .cab-img { aspect-ratio: 16/10; background: linear-gradient(135deg, var(--verde), var(--oscuro)); position: relative; }
+    .cab-img img { width: 100%; height: 100%; object-fit: cover; display: block; }
+    .cab-tag { position: absolute; top: .6rem; left: .6rem; background: rgba(28,43,30,.85); color: #fff; font-size: .75rem; padding: .25rem .6rem; border-radius: 999px; }
+    .cab-check { position: absolute; top: .6rem; right: .6rem; width: 30px; height: 30px; border-radius: 50%; background: var(--verde); color: #fff;
+                 display: none; align-items: center; justify-content: center; font-weight: 700; }
+    .cab.activa .cab-check { display: flex; }
+    .cab-txt { padding: .9rem 1rem 1.1rem; }
+    .cab-txt h3 { font-size: 1.3rem; }
+    .cab-txt .meta { color: var(--texto2); font-size: .9rem; }
+    .cab-txt .desde { margin-top: .35rem; font-weight: 600; }
+    .cab-txt .desde span { font-weight: 400; color: var(--texto2); font-size: .85rem; }
 
-    /* Steps indicator */
-    .steps-bar {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 0;
-      margin-bottom: 2rem;
-      background: #fff;
-      border-radius: 12px 12px 0 0;
-      overflow: hidden;
-      box-shadow: 0 2px 12px rgba(0,0,0,0.07);
-    }
-    .step-tab {
-      flex: 1;
-      padding: 1rem;
-      text-align: center;
-      font-size: 0.8rem;
-      font-weight: 600;
-      color: var(--texto-secundario);
-      background: #fff;
-      border-bottom: 3px solid transparent;
-      transition: all 0.25s;
-      letter-spacing: 0.05em;
-      text-transform: uppercase;
-    }
-    .step-tab.activo {
-      color: var(--verde-salvia);
-      border-bottom-color: var(--verde-salvia);
-    }
-    .step-tab.completado {
-      color: var(--verde-salvia);
-    }
+    /* Layout calendario + resumen */
+    .grilla { display: grid; grid-template-columns: 1fr 360px; gap: 1.4rem; align-items: start; }
+    @media (max-width: 900px) { .grilla { grid-template-columns: 1fr; } }
+    .panel { background: var(--blanco); border-radius: var(--radio); box-shadow: 0 2px 12px rgba(60,50,30,.07); padding: 1.2rem; }
 
-    /* Panel de cada step */
-    .step-panel {
-      display: none;
-      background: #fff;
-      border-radius: 0 0 12px 12px;
-      box-shadow: 0 4px 24px rgba(0,0,0,0.08);
-      padding: 2rem;
-    }
-    .step-panel.activo { display: block; }
+    /* Calendario */
+    .cal-nav { display: flex; align-items: center; justify-content: space-between; margin-bottom: .8rem; }
+    .cal-nav button { background: var(--beige-claro); border: none; width: 42px; height: 42px; border-radius: 50%; font-size: 1.2rem; }
+    .cal-nav button:disabled { opacity: .35; cursor: default; }
+    .cal-nav .ayuda { color: var(--texto2); font-size: .9rem; text-align: center; flex: 1; padding: 0 .5rem; }
+    .meses { display: grid; grid-template-columns: 1fr 1fr; gap: 1.4rem; }
+    @media (max-width: 700px) { .meses { grid-template-columns: 1fr; } .mes:nth-child(2) { display: none; } }
+    .mes h3 { font-family: 'Inter', sans-serif; font-size: 1rem; text-transform: capitalize; text-align: center; margin-bottom: .5rem; }
+    .dias { display: grid; grid-template-columns: repeat(7, 1fr); gap: 3px; }
+    .dsem { font-size: .72rem; color: var(--texto2); text-align: center; padding: .2rem 0; text-transform: uppercase; }
+    .dia { aspect-ratio: 1 / 1.05; border: none; border-radius: 9px; background: #fff; display: flex; flex-direction: column;
+           align-items: center; justify-content: center; position: relative; font-size: .95rem; min-height: 44px; border: 1px solid #EFE8DA; }
+    .dia small { font-size: .64rem; color: var(--texto2); margin-top: 1px; }
+    .dia.bajo { background: var(--bajo); } .dia.bajo small { color: var(--bajo-t); font-weight: 600; }
+    .dia.alto { background: var(--alto); } .dia.alto small { color: var(--alto-t); font-weight: 600; }
+    .dia.ocupado { background: #EEE; color: #B5B5B5; text-decoration: line-through; cursor: not-allowed; border-color: #EEE; }
+    .dia.ocupado small { visibility: hidden; }
+    .dia.pasado, .dia.vacio { background: transparent; border-color: transparent; color: #CCC; cursor: default; }
+    .dia.vacio { visibility: hidden; }
+    .dia.salida-ok { background: #fff; color: var(--texto); text-decoration: none; cursor: pointer; }
+    .dia.en-rango { background: #E3E9DF; }
+    .dia.sel { background: var(--verde) !important; color: #fff; border-color: var(--verde); }
+    .dia.sel small { color: #fff !important; }
+    .dia .pocas { position: absolute; top: 2px; right: 3px; width: 7px; height: 7px; border-radius: 50%; background: #D9822B; }
+    .leyenda { display: flex; flex-wrap: wrap; gap: .9rem; margin-top: 1rem; font-size: .82rem; color: var(--texto2); }
+    .leyenda span::before { content: ''; display: inline-block; width: 13px; height: 13px; border-radius: 4px; vertical-align: -2px; margin-right: .35rem; background: #fff; border: 1px solid #E5DCCB; }
+    .leyenda .l-bajo::before { background: var(--bajo); border-color: var(--bajo); }
+    .leyenda .l-alto::before { background: var(--alto); border-color: var(--alto); }
+    .leyenda .l-ocu::before { background: #EEE; }
+    .leyenda .l-pocas::before { width: 8px; height: 8px; border-radius: 50%; background: #D9822B; border: none; vertical-align: 1px; }
+    .cargando { text-align: center; color: var(--texto2); padding: 2rem 0; }
 
-    /* ---- STEP 1: CABAÑA + FECHAS ---- */
-    .cabanas-selector {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-      gap: 1rem;
-      margin-bottom: 2rem;
-    }
-    .cabana-card-sel {
-      border: 2px solid #e8e8e8;
-      border-radius: 10px;
-      overflow: hidden;
-      cursor: pointer;
-      transition: border-color 0.2s, box-shadow 0.2s;
-    }
-    .cabana-card-sel:hover { border-color: var(--verde-salvia); }
-    .cabana-card-sel.seleccionada {
-      border-color: var(--verde-salvia);
-      box-shadow: 0 0 0 3px rgba(122,140,114,0.2);
-    }
-    .cabana-card-sel img {
-      width: 100%; height: 130px; object-fit: cover;
-      background: linear-gradient(135deg, var(--verde-salvia), var(--fondo-oscuro));
-    }
-    .cabana-card-info { padding: 0.875rem; }
-    .cabana-card-nombre {
-      font-family: 'Playfair Display', serif;
-      font-size: 1.1rem; font-weight: 700;
-      margin-bottom: 0.2rem;
-    }
-    .cabana-card-precio {
-      font-size: 0.8rem; color: var(--texto-secundario);
-    }
-    .cabana-card-precio strong {
-      font-size: 1rem; color: var(--verde-salvia);
-    }
-    .cabana-check-icon {
-      display: none;
-      position: absolute; top: 8px; right: 8px;
-      background: var(--verde-salvia);
-      color: #fff; width: 24px; height: 24px;
-      border-radius: 50%; font-size: 13px;
-      align-items: center; justify-content: center;
-    }
-    .cabana-card-sel { position: relative; }
-    .cabana-card-sel.seleccionada .cabana-check-icon { display: flex; }
+    /* Resumen y formulario */
+    .resumen h2 { font-size: 1.35rem; margin-bottom: .6rem; }
+    .vacio-msg { color: var(--texto2); }
+    .linea { display: flex; justify-content: space-between; padding: .45rem 0; border-bottom: 1px dashed var(--borde); font-size: .97rem; }
+    .linea.total { font-weight: 700; font-size: 1.12rem; border-bottom: none; }
+    .linea.sena { color: var(--verde-osc); font-weight: 600; border-bottom: none; padding-top: 0; }
+    .error { background: #FBEAEA; color: #8A1F1F; padding: .7rem .8rem; border-radius: 10px; font-size: .93rem; margin: .7rem 0; }
+    form { margin-top: 1rem; display: grid; gap: .75rem; }
+    label { font-size: .88rem; font-weight: 500; display: grid; gap: .3rem; }
+    input, select, textarea { font: inherit; padding: .75rem .8rem; border: 1px solid var(--borde); border-radius: 10px; background: #fff; width: 100%; font-size: 1rem; }
+    input:focus, select:focus, textarea:focus { outline: 2px solid var(--verde); border-color: var(--verde); }
+    .fila2 { display: grid; grid-template-columns: 1fr 1fr; gap: .6rem; }
+    .check { display: flex; gap: .55rem; align-items: center; font-weight: 400; }
+    .check input { width: 20px; height: 20px; }
+    .btn { background: var(--verde); color: #fff; border: none; padding: 1rem; border-radius: 12px; font-weight: 600; font-size: 1.05rem; width: 100%; }
+    .btn:hover { background: var(--verde-osc); }
+    .btn:disabled { opacity: .55; cursor: wait; }
+    .nota { font-size: .82rem; color: var(--texto2); text-align: center; }
 
-    .fechas-row {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 1rem;
-      margin-bottom: 1.5rem;
-    }
-    @media (max-width: 480px) { .fechas-row { grid-template-columns: 1fr; } }
+    /* Éxito */
+    .exito { text-align: center; }
+    .exito .ok { width: 64px; height: 64px; border-radius: 50%; background: var(--verde); color: #fff; font-size: 2rem; display: flex; align-items: center; justify-content: center; margin: 0 auto .8rem; }
+    .codigo { display: inline-block; background: var(--beige-claro); padding: .3rem .8rem; border-radius: 8px; font-weight: 700; letter-spacing: .1em; }
+    .datos-pago { text-align: left; background: var(--beige-claro); border-radius: 12px; padding: 1rem; margin: 1rem 0; }
+    .datos-pago div { display: flex; justify-content: space-between; align-items: center; gap: .5rem; padding: .35rem 0; }
+    .copiar { background: #fff; border: 1px solid var(--borde); border-radius: 8px; padding: .3rem .6rem; font-size: .82rem; }
 
-    .campo-grupo { display: flex; flex-direction: column; gap: 0.4rem; }
-    .campo-grupo label {
-      font-size: 0.8rem; font-weight: 600;
-      text-transform: uppercase; letter-spacing: 0.06em;
-      color: var(--texto-secundario);
-    }
-    .campo-grupo input, .campo-grupo select, .campo-grupo textarea {
-      padding: 0.75rem 1rem;
-      border: 2px solid #e8e8e8;
-      border-radius: 8px;
-      font-family: 'Inter', sans-serif;
-      font-size: 0.9rem;
-      color: var(--texto-principal);
-      transition: border-color 0.2s;
-      background: #fff;
-      width: 100%;
-    }
-    .campo-grupo input:focus, .campo-grupo select:focus, .campo-grupo textarea:focus {
-      outline: none;
-      border-color: var(--verde-salvia);
-    }
-    .campo-grupo textarea { resize: vertical; min-height: 100px; }
+    /* Info de la cabaña */
+    .info-cab { margin-top: 1.4rem; }
+    .equip { display: flex; flex-wrap: wrap; gap: .45rem; margin-top: .6rem; }
+    .equip span { background: var(--beige-claro); padding: .35rem .7rem; border-radius: 999px; font-size: .86rem; }
 
-    /* ---- STEP 2: CALENDARIO ---- */
-    .calendario-wrapper {
-      margin-bottom: 1.5rem;
-    }
-    .cal-nav {
-      display: flex; align-items: center; justify-content: space-between;
-      margin-bottom: 1rem;
-    }
-    .cal-mes-titulo {
-      font-family: 'Playfair Display', serif;
-      font-size: 1.2rem; font-weight: 700;
-      text-transform: capitalize;
-    }
-    .cal-btn-nav {
-      width: 36px; height: 36px;
-      border: 2px solid #e8e8e8;
-      border-radius: 50%; background: #fff;
-      cursor: pointer; font-size: 1rem;
-      display: flex; align-items: center; justify-content: center;
-      transition: border-color 0.2s, background 0.2s;
-    }
-    .cal-btn-nav:hover { border-color: var(--verde-salvia); background: var(--fondo-crema); }
+    /* FAQ */
+    .faq { max-width: 760px; }
+    .faq details { background: var(--blanco); border-radius: 12px; margin-bottom: .6rem; box-shadow: 0 1px 6px rgba(60,50,30,.05); }
+    .faq summary { padding: 1rem 1.1rem; font-weight: 600; cursor: pointer; list-style: none; display: flex; justify-content: space-between; gap: 1rem; }
+    .faq summary::after { content: '+'; color: var(--verde); font-size: 1.3rem; line-height: 1; }
+    .faq details[open] summary::after { content: '−'; }
+    .faq details p { padding: 0 1.1rem 1.1rem; color: #444; white-space: pre-line; }
+    .no-encontras { margin-top: 1rem; color: var(--texto2); }
 
-    .cal-grid {
-      display: grid;
-      grid-template-columns: repeat(7, 1fr);
-      gap: 3px;
-    }
-    .cal-dia-nombre {
-      text-align: center;
-      font-size: 0.7rem; font-weight: 600;
-      color: var(--texto-secundario);
-      padding: 0.4rem 0;
-      text-transform: uppercase; letter-spacing: 0.05em;
-    }
-    .cal-dia {
-      aspect-ratio: 1;
-      display: flex; align-items: center; justify-content: center;
-      border-radius: 6px;
-      font-size: 0.8rem; font-weight: 500;
-      cursor: pointer;
-      transition: background 0.15s, color 0.15s;
-      border: 2px solid transparent;
-      position: relative;
-    }
-    .cal-dia.vacio { cursor: default; }
-    .cal-dia.pasado {
-      color: #ccc;
-      cursor: not-allowed;
-    }
-    .cal-dia.libre:hover {
-      background: rgba(122,140,114,0.15);
-      border-color: var(--verde-salvia);
-    }
-    .cal-dia.ocupado {
-      background: rgba(192,57,43,0.08);
-      color: var(--rojo-ocupado);
-      cursor: not-allowed;
-      text-decoration: line-through;
-    }
-    .cal-dia.bloqueado {
-      background: rgba(149,165,166,0.15);
-      color: var(--gris-bloq);
-      cursor: not-allowed;
-    }
-    .cal-dia.checkin-sel {
-      background: var(--verde-salvia) !important;
-      color: #fff !important;
-      border-color: var(--verde-salvia) !important;
-    }
-    .cal-dia.checkout-sel {
-      background: var(--fondo-oscuro) !important;
-      color: #fff !important;
-      border-color: var(--fondo-oscuro) !important;
-    }
-    .cal-dia.en-rango {
-      background: rgba(122,140,114,0.12);
-      border-color: rgba(122,140,114,0.2);
-    }
+    /* ===== Movimiento ===== */
+    @keyframes subir { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: none; } }
+    @keyframes deDer { from { opacity: 0; transform: translateX(28px); } to { opacity: 1; transform: none; } }
+    @keyframes deIzq { from { opacity: 0; transform: translateX(-28px); } to { opacity: 1; transform: none; } }
+    @keyframes pop { 0% { transform: scale(.82); } 60% { transform: scale(1.08); } 100% { transform: scale(1); } }
+    @keyframes brillo { 0% { background-position: -460px 0; } 100% { background-position: 460px 0; } }
+    @keyframes rebote { 0%, 80%, 100% { transform: scale(.55); opacity: .45; } 40% { transform: scale(1); opacity: 1; } }
+    @keyframes trazo { to { stroke-dashoffset: 0; } }
+    @keyframes anillo { 0% { transform: scale(.6); opacity: .7; } 100% { transform: scale(1.7); opacity: 0; } }
+    .primera .cab { animation: subir .6s cubic-bezier(.2,.75,.2,1) both; animation-delay: calc(var(--i, 0) * 90ms); }
+    .meses.der { animation: deDer .38s cubic-bezier(.2,.75,.2,1) both; }
+    .meses.izq { animation: deIzq .38s cubic-bezier(.2,.75,.2,1) both; }
+    .meses.entra, .entra { animation: subir .5s cubic-bezier(.2,.75,.2,1) both; }
+    .dia { transition: transform .16s ease, background-color .2s, color .2s, box-shadow .2s; }
+    .dia:not([disabled]):not(.sel):hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(60,50,30,.12); }
+    .dia.sel { animation: pop .32s cubic-bezier(.2,.75,.2,1); box-shadow: 0 4px 14px rgba(94,111,87,.4); }
+    .cab, .btn, .btn-wa, .copiar { transition: transform .15s ease, box-shadow .25s, background-color .2s, border-color .2s; }
+    .btn:active, .btn-wa:active, .cab:active, .copiar:active, .cal-nav button:active { transform: scale(.97); }
+    .btn-wa:hover { box-shadow: 0 6px 18px rgba(37,211,102,.35); }
+    .resumen > * { animation: subir .42s cubic-bezier(.2,.75,.2,1) both; }
+    .resumen > *:nth-child(2) { animation-delay: .04s; } .resumen > *:nth-child(3) { animation-delay: .08s; }
+    .resumen > *:nth-child(4) { animation-delay: .12s; } .resumen > *:nth-child(n+5) { animation-delay: .16s; }
+    .resumen { scroll-margin-top: 90px; }
+    .faq details { transition: box-shadow .25s; } .faq details[open] { box-shadow: 0 6px 18px rgba(60,50,30,.09); }
+    .faq details[open] p { animation: subir .35s ease both; }
+    .wa-flot { transition: transform .2s; } .wa-flot:hover { transform: scale(1.08); }
 
-    /* Leyenda */
-    .cal-leyenda {
-      display: flex; flex-wrap: wrap; gap: 1rem;
-      margin-top: 1rem; font-size: 0.78rem; color: var(--texto-secundario);
-    }
-    .leyenda-item { display: flex; align-items: center; gap: 0.4rem; }
-    .leyenda-dot {
-      width: 12px; height: 12px; border-radius: 3px;
-    }
-    .dot-libre    { background: rgba(122,140,114,0.3); border: 2px solid var(--verde-salvia); }
-    .dot-ocupado  { background: rgba(192,57,43,0.15); }
-    .dot-bloq     { background: rgba(149,165,166,0.3); }
-    .dot-sel      { background: var(--verde-salvia); }
+    /* Esqueletos de carga (en vez de "Cargando…") */
+    .sk { background: linear-gradient(90deg, #EDE5D6 0%, #F8F3EA 45%, #EDE5D6 90%); background-size: 920px 100%; animation: brillo 1.4s linear infinite; border-radius: 10px; }
+    .sk-cab { border-radius: var(--radio); overflow: hidden; background: var(--blanco); box-shadow: 0 2px 10px rgba(60,50,30,.07); }
+    .sk-cab .sk:first-child { aspect-ratio: 16/10; border-radius: 0; }
+    .sk-linea { height: 14px; margin: .7rem 1rem 0; } .sk-linea.corta { width: 45%; margin-bottom: 1.1rem; }
+    .sk-dias { display: grid; grid-template-columns: repeat(7, 1fr); gap: 3px; }
+    .sk-dias .sk { aspect-ratio: 1 / 1.05; min-height: 44px; border-radius: 9px; }
+    .puntos { display: flex; gap: 7px; justify-content: center; align-items: center; padding: 2.2rem 0; }
+    .puntos i { width: 11px; height: 11px; border-radius: 50%; background: var(--verde); animation: rebote 1.1s infinite ease-in-out; }
+    .puntos i:nth-child(2) { animation-delay: .15s; background: var(--beige); } .puntos i:nth-child(3) { animation-delay: .3s; }
+    .puntos-txt { text-align: center; color: var(--texto2); font-size: .9rem; margin-top: -1.4rem; padding-bottom: 1.4rem; }
 
-    /* Badge alta demanda */
-    .badge-demanda {
-      display: none;
-      align-items: center; gap: 0.5rem;
-      background: rgba(230,168,23,0.12);
-      border: 1px solid rgba(230,168,23,0.4);
-      color: #a07009;
-      padding: 0.5rem 1rem;
-      border-radius: 8px;
-      font-size: 0.85rem; font-weight: 500;
-      margin-bottom: 1rem;
-    }
-    .badge-demanda.visible { display: flex; }
+    /* Tilde animado al reservar */
+    .tilde { position: relative; width: 76px; height: 76px; margin: 0 auto .8rem; }
+    .tilde::before { content: ''; position: absolute; inset: 0; border-radius: 50%; background: var(--verde); animation: anillo 1s .35s ease-out both; }
+    .tilde svg { position: relative; width: 76px; height: 76px; }
+    .tilde circle { fill: var(--verde); stroke: var(--verde); stroke-width: 2; stroke-dasharray: 230; stroke-dashoffset: 230; animation: trazo .55s ease forwards; }
+    .tilde path { fill: none; stroke: #fff; stroke-width: 5; stroke-linecap: round; stroke-linejoin: round; stroke-dasharray: 60; stroke-dashoffset: 60; animation: trazo .4s .45s ease forwards; }
 
-    /* Resumen de precio */
-    .resumen-precio {
-      background: var(--fondo-crema);
-      border-radius: 10px;
-      padding: 1.25rem;
-      margin-top: 1.5rem;
-      display: none;
-    }
-    .resumen-precio.visible { display: block; }
-    .resumen-row {
-      display: flex; justify-content: space-between;
-      font-size: 0.9rem;
-      padding: 0.3rem 0;
-      border-bottom: 1px solid rgba(0,0,0,0.06);
-    }
-    .resumen-row:last-child { border: none; }
-    .resumen-total {
-      font-weight: 700; font-size: 1.1rem;
-      color: var(--verde-salvia);
-    }
+    /* Accesibilidad */
+    :focus-visible { outline: 3px solid var(--verde-osc); outline-offset: 2px; }
+    .dia small { font-size: .68rem; color: #5F5F5F; }
+    @media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation: none !important; transition: none !important; } .tilde circle, .tilde path { stroke-dashoffset: 0; } }
 
-    /* ---- STEP 3: FORMULARIO CONTACTO ---- */
-    .campos-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 1rem;
-      margin-bottom: 1.25rem;
-    }
-    @media (max-width: 560px) { .campos-grid { grid-template-columns: 1fr; } }
-
-    .campo-full { grid-column: 1 / -1; }
-
-    /* Resumen final antes de enviar */
-    .resumen-final {
-      background: var(--fondo-oscuro);
-      color: var(--blanco-calido);
-      border-radius: 10px;
-      padding: 1.25rem;
-      margin: 1.5rem 0;
-    }
-    .resumen-final h3 {
-      font-family: 'Playfair Display', serif;
-      font-size: 1.1rem;
-      margin-bottom: 0.75rem;
-    }
-    .resumen-final .resumen-row {
-      color: rgba(250,250,247,0.8);
-      border-bottom-color: rgba(255,255,255,0.1);
-    }
-    .resumen-final .resumen-total { color: var(--beige-arena); }
-
-    /* ---- CONFIRMACIÓN ---- */
-    #confirmacion {
-      display: none;
-      text-align: center;
-      padding: 3rem 2rem;
-      background: #fff;
-      border-radius: 12px;
-      box-shadow: 0 4px 24px rgba(0,0,0,0.08);
-    }
-    #confirmacion .conf-icono {
-      font-size: 3rem; margin-bottom: 1rem;
-    }
-    #confirmacion h2 {
-      font-family: 'Playfair Display', serif;
-      font-size: 1.75rem;
-      margin-bottom: 0.75rem;
-    }
-    #confirmacion p {
-      color: var(--texto-secundario);
-      max-width: 460px; margin: 0 auto 1.5rem;
-    }
-
-    /* ---- BOTONES ---- */
-    .btn {
-      display: inline-flex; align-items: center; gap: 0.5rem;
-      padding: 0.875rem 1.75rem;
-      border-radius: 8px;
-      font-family: 'Inter', sans-serif;
-      font-size: 0.9375rem; font-weight: 600;
-      cursor: pointer;
-      transition: all 0.25s;
-      border: 2px solid transparent;
-      text-decoration: none;
-    }
-    .btn-primario {
-      background: var(--verde-salvia); color: #fff;
-    }
-    .btn-primario:hover { background: #67795f; }
-    .btn-secundario {
-      background: transparent;
-      border-color: #e8e8e8;
-      color: var(--texto-principal);
-    }
-    .btn-secundario:hover { border-color: var(--verde-salvia); }
-    .btn-wa {
-      background: var(--whatsapp-verde); color: #fff;
-    }
-    .btn-wa:hover { background: #1ebe5a; }
-    .btn:disabled {
-      opacity: 0.5; cursor: not-allowed;
-    }
-    .btn-full { width: 100%; justify-content: center; }
-
-    /* Separador "o" */
-    .separador-o {
-      display: flex; align-items: center; gap: 1rem;
-      color: var(--texto-secundario); font-size: 0.85rem;
-      margin: 1.25rem 0;
-    }
-    .separador-o::before, .separador-o::after {
-      content: ''; flex: 1; height: 1px; background: #e8e8e8;
-    }
-
-    /* Navegación entre steps */
-    .step-nav {
-      display: flex; gap: 1rem; margin-top: 1.5rem;
-      justify-content: space-between;
-    }
-
-    /* Error inline */
-    .error-msg {
-      background: rgba(192,57,43,0.08);
-      border: 1px solid rgba(192,57,43,0.3);
-      color: var(--rojo-ocupado);
-      padding: 0.75rem 1rem;
-      border-radius: 8px;
-      font-size: 0.875rem;
-      margin-bottom: 1rem;
-      display: none;
-    }
-    .error-msg.visible { display: block; }
-
-    /* Loading spinner */
-    .spinner {
-      display: inline-block;
-      width: 18px; height: 18px;
-      border: 2px solid rgba(255,255,255,0.4);
-      border-top-color: #fff;
-      border-radius: 50%;
-      animation: spin 0.7s linear infinite;
-    }
-    @keyframes spin { to { transform: rotate(360deg); } }
-
-    /* ---- FOOTER ---- */
-    #footer {
-      background: var(--footer-oscuro);
-      color: rgba(250,250,247,0.5);
-      padding: 2rem;
-      text-align: center;
-      font-size: 0.82rem;
-      margin-top: 4rem;
-    }
-    #footer a { color: var(--beige-arena); }
-
-    /* WA flotante */
-    .wa-flotante {
-      position: fixed; bottom: 24px; right: 24px; z-index: 1000;
-      width: 54px; height: 54px; border-radius: 50%;
-      background: var(--whatsapp-verde);
-      display: flex; align-items: center; justify-content: center;
-      box-shadow: 0 4px 20px rgba(37,211,102,0.4);
-      animation: pulse-wa 2s ease-in-out infinite;
-    }
-    .wa-flotante:hover { animation: none; transform: scale(1.08); }
-    @keyframes pulse-wa { 0%,100%{transform:scale(1)} 50%{transform:scale(1.05)} }
+    footer { background: #111A12; color: #C9C9C0; text-align: center; padding: 2rem 1rem; font-size: .9rem; }
+    footer a { color: #fff; }
+    .wa-flot { position: fixed; right: 18px; bottom: 18px; width: 58px; height: 58px; border-radius: 50%; background: var(--wa); display: flex;
+               align-items: center; justify-content: center; box-shadow: 0 6px 18px rgba(0,0,0,.25); z-index: 60; }
   </style>
 </head>
 <body>
 
-<!-- NAVBAR -->
-<nav id="navbar">
-  <a href="index.html" class="nav-logo">
-    <img src="logo/aromas-color.png" alt="Aromas de Campo"
-         onerror="this.style.display='none'">
-  </a>
-  <a href="index.html" class="nav-volver">
-    ← Volver al sitio
-  </a>
-</nav>
-
-<!-- HERO -->
-<section id="hero-reservas">
-  <h1 class="hero-res-titulo">Consultá disponibilidad</h1>
-  <p class="hero-res-sub">Elegí tu cabaña, las fechas, y te confirmamos en minutos por WhatsApp.</p>
-</section>
-
-<!-- BOOKING WIDGET -->
-<div id="booking-widget">
-
-  <!-- Steps indicator -->
-  <div class="steps-bar">
-    <div class="step-tab activo" id="tab-1">1. Cabaña y fechas</div>
-    <div class="step-tab" id="tab-2">2. Disponibilidad</div>
-    <div class="step-tab" id="tab-3">3. Tus datos</div>
+<div class="aviso" id="aviso"></div>
+<header class="top">
+  <div class="top-in">
+    <a href="index.html" aria-label="Volver al inicio"><img src="logo/aromas-color.png" alt="Aromas de Campo"></a>
+    <nav class="top-links">
+      <a href="index.html">← Inicio</a>
+      <a class="btn-wa" id="wa-top" href="https://wa.me/5491169495055" target="_blank" rel="noopener" aria-label="WhatsApp barra superior">WhatsApp</a>
+    </nav>
   </div>
+</header>
 
-  <!-- Error global -->
-  <div class="error-msg" id="error-global"></div>
+<main>
+  <section class="cabecera">
+    <h1>Disponibilidad y precios</h1>
+    <p>Elegí la cabaña y tocá en el calendario el día que llegás y el día que te vas. Ves el precio exacto antes de reservar, en pesos y sin comisiones.</p>
+  </section>
 
-  <!-- PASO 1: Cabaña + fechas básicas -->
-  <div class="step-panel activo" id="step-1">
-    <h2 style="font-family:'Playfair Display',serif;font-size:1.3rem;margin-bottom:1.25rem;">
-      ¿Cuál cabaña te interesa?
-    </h2>
-    <div class="cabanas-selector" id="cabanas-selector">
-      <!-- Se carga dinámicamente desde Supabase -->
-      <div style="color:var(--texto-secundario);font-size:0.9rem;padding:1rem 0">
-        Cargando cabañas…
-      </div>
-    </div>
+  <p class="paso">1 · Elegí tu cabaña</p>
+  <div class="cabanas primera" id="cabanas" aria-busy="true"><div class="sk-cab"><div class="sk"></div><div class="sk sk-linea"></div><div class="sk sk-linea corta"></div></div><div class="sk-cab"><div class="sk"></div><div class="sk sk-linea"></div><div class="sk sk-linea corta"></div></div><div class="sk-cab"><div class="sk"></div><div class="sk sk-linea"></div><div class="sk sk-linea corta"></div></div></div>
 
-    <h2 style="font-family:'Playfair Display',serif;font-size:1.3rem;margin-bottom:1.25rem;">
-      ¿Cuándo llegás?
-    </h2>
-    <div class="fechas-row">
-      <div class="campo-grupo">
-        <label>Check-in</label>
-        <input type="date" id="inp-checkin" required>
-      </div>
-      <div class="campo-grupo">
-        <label>Check-out</label>
-        <input type="date" id="inp-checkout" required>
-      </div>
-    </div>
-
-    <div class="step-nav">
-      <span></span>
-      <button class="btn btn-primario" onclick="irStep2()">
-        Ver disponibilidad →
-      </button>
-    </div>
-  </div>
-
-  <!-- PASO 2: Calendario + precio -->
-  <div class="step-panel" id="step-2">
-    <div class="badge-demanda" id="badge-demanda">
-      🔥 ¡Alta demanda! Pocos días disponibles este mes.
-    </div>
-
-    <div class="calendario-wrapper">
-      <div class="cal-nav">
-        <button class="cal-btn-nav" id="cal-prev" onclick="cambiarMes(-1)">‹</button>
-        <span class="cal-mes-titulo" id="cal-titulo"></span>
-        <button class="cal-btn-nav" id="cal-next" onclick="cambiarMes(1)">›</button>
-      </div>
-      <div class="cal-grid" id="cal-grid"></div>
-      <div class="cal-leyenda">
-        <div class="leyenda-item">
-          <div class="leyenda-dot dot-libre"></div> Libre
+  <p class="paso">2 · Elegí las fechas</p>
+  <div class="grilla">
+    <div>
+      <div class="panel">
+        <div class="cal-nav">
+          <button id="ant" aria-label="Mes anterior">‹</button>
+          <div class="ayuda" id="ayuda">Tocá el día de llegada</div>
+          <button id="sig" aria-label="Mes siguiente">›</button>
         </div>
-        <div class="leyenda-item">
-          <div class="leyenda-dot dot-ocupado"></div> Ocupado
-        </div>
-        <div class="leyenda-item">
-          <div class="leyenda-dot dot-bloq"></div> Bloqueado
-        </div>
-        <div class="leyenda-item">
-          <div class="leyenda-dot dot-sel"></div> Tu selección
+        <div class="meses" id="meses" aria-busy="true"><div><div class="sk" style="height:18px;width:50%;margin:0 auto .8rem"></div><div class="sk-dias"><div class="sk"></div><div class="sk"></div><div class="sk"></div><div class="sk"></div><div class="sk"></div><div class="sk"></div><div class="sk"></div><div class="sk"></div><div class="sk"></div><div class="sk"></div><div class="sk"></div><div class="sk"></div><div class="sk"></div><div class="sk"></div><div class="sk"></div><div class="sk"></div><div class="sk"></div><div class="sk"></div><div class="sk"></div><div class="sk"></div><div class="sk"></div><div class="sk"></div><div class="sk"></div><div class="sk"></div><div class="sk"></div><div class="sk"></div><div class="sk"></div><div class="sk"></div><div class="sk"></div><div class="sk"></div><div class="sk"></div><div class="sk"></div><div class="sk"></div><div class="sk"></div><div class="sk"></div></div></div></div>
+        <div class="leyenda">
+          <span class="l-bajo">Precio más bajo</span>
+          <span>Precio normal</span>
+          <span class="l-alto">Temporada alta</span>
+          <span class="l-ocu">Ocupado</span>
+          <span class="l-pocas">Quedan pocas cabañas</span>
         </div>
       </div>
+      <div class="panel info-cab" id="info-cab"></div>
     </div>
 
-    <div class="resumen-precio" id="resumen-precio">
-      <div class="resumen-row">
-        <span>Cabaña</span>
-        <strong id="res-cabana">—</strong>
-      </div>
-      <div class="resumen-row">
-        <span>Fechas</span>
-        <strong id="res-fechas">—</strong>
-      </div>
-      <div class="resumen-row">
-        <span id="res-noches-label">Noches</span>
-        <strong id="res-noches">—</strong>
-      </div>
-      <div class="resumen-row">
-        <span class="resumen-total">Total estimado</span>
-        <span class="resumen-total" id="res-total">—</span>
-      </div>
-    </div>
-
-    <div class="step-nav">
-      <button class="btn btn-secundario" onclick="irStep(1)">← Atrás</button>
-      <button class="btn btn-primario" id="btn-a-paso3" onclick="irStep3()" disabled>
-        Continuar →
-      </button>
-    </div>
+    <aside class="panel resumen" id="resumen" aria-live="polite"><div class="sk" style="height:26px;width:55%"></div><div class="sk" style="height:14px;margin-top:1rem"></div><div class="sk" style="height:14px;width:70%;margin-top:.6rem"></div></aside>
   </div>
 
-  <!-- PASO 3: Datos de contacto -->
-  <div class="step-panel" id="step-3">
-    <h2 style="font-family:'Playfair Display',serif;font-size:1.3rem;margin-bottom:1.5rem;">
-      Tus datos de contacto
-    </h2>
+  <p class="paso" id="preguntas">Preguntas frecuentes</p>
+  <div class="faq" id="faq"></div>
+  <p class="no-encontras">¿No encontrás tu respuesta? <a href="#" id="wa-faq">Escribinos por WhatsApp</a> y te contestamos.</p>
+</main>
 
-    <div class="campos-grid">
-      <div class="campo-grupo">
-        <label>Nombre completo *</label>
-        <input type="text" id="inp-nombre" placeholder="Tu nombre" required>
-      </div>
-      <div class="campo-grupo">
-        <label>Teléfono / WhatsApp *</label>
-        <input type="tel" id="inp-tel" placeholder="+54 9 11 ..." required>
-      </div>
-      <div class="campo-grupo">
-        <label>Email *</label>
-        <input type="email" id="inp-email" placeholder="tu@email.com" required>
-      </div>
-      <div class="campo-grupo">
-        <label>Cantidad de personas *</label>
-        <select id="inp-personas" required>
-          <option value="">Seleccioná</option>
-          <option value="1">1 persona</option>
-          <option value="2">2 personas</option>
-          <option value="3">3 personas</option>
-          <option value="4">4 personas</option>
-        </select>
-      </div>
-      <div class="campo-grupo campo-full">
-        <label>Comentarios (opcional)</label>
-        <textarea id="inp-notas" placeholder="¿Algún pedido especial? ¿Festejás algo?"></textarea>
-      </div>
-    </div>
-
-    <!-- Resumen antes de enviar -->
-    <div class="resumen-final" id="resumen-final">
-      <h3>Resumen de tu consulta</h3>
-      <div class="resumen-row">
-        <span>Cabaña</span>
-        <strong id="rf-cabana">—</strong>
-      </div>
-      <div class="resumen-row">
-        <span>Check-in</span>
-        <strong id="rf-checkin">—</strong>
-      </div>
-      <div class="resumen-row">
-        <span>Check-out</span>
-        <strong id="rf-checkout">—</strong>
-      </div>
-      <div class="resumen-row">
-        <span class="resumen-total">Total estimado</span>
-        <span class="resumen-total" id="rf-total">—</span>
-      </div>
-    </div>
-
-    <div class="error-msg" id="error-step3"></div>
-
-    <button class="btn btn-primario btn-full" id="btn-enviar" onclick="enviarReserva()">
-      Enviar consulta
-    </button>
-
-    <div class="separador-o">o</div>
-
-    <a id="btn-wa-directo" href="#" target="_blank" rel="noopener noreferrer"
-       class="btn btn-wa btn-full">
-      <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
-        <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51a12.8 12.8 0 00-.57-.01c-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
-      </svg>
-      Consultar directo por WhatsApp
-    </a>
-
-    <div class="step-nav" style="margin-top:1.25rem">
-      <button class="btn btn-secundario" onclick="irStep(2)">← Atrás</button>
-    </div>
-  </div>
-
-  <!-- CONFIRMACIÓN -->
-  <div id="confirmacion">
-    <div class="conf-icono">🌿</div>
-    <h2>¡Consulta enviada!</h2>
-    <p>Recibimos tu solicitud para <strong id="conf-cabana"></strong>. Te confirmamos disponibilidad por WhatsApp a la brevedad.</p>
-    <a id="conf-wa-btn" href="#" target="_blank" rel="noopener noreferrer"
-       class="btn btn-wa" style="margin: 0 auto 1rem; display: inline-flex;">
-      Escribinos por WhatsApp
-    </a>
-    <br>
-    <a href="index.html" class="btn btn-secundario">Volver al inicio</a>
-  </div>
-
-</div><!-- /booking-widget -->
-
-<!-- FOOTER -->
-<footer id="footer">
-  <p>© 2025 <a href="index.html">Aromas de Campo</a> — Colón, Entre Ríos. Todos los derechos reservados.</p>
+<footer>
+  <p>Aromas de Campo · Cabañas de tronco en Colón, Entre Ríos</p>
+  <p style="margin-top:.4rem"><a href="index.html">Inicio</a> · <a href="https://instagram.com/aromasdecampo22" target="_blank" rel="noopener">Instagram</a> · <a href="https://facebook.com/aromasdecampo022" target="_blank" rel="noopener">Facebook</a></p>
 </footer>
 
-<!-- WA flotante -->
-<a href="https://wa.me/5491169495055?text=Hola!%20Quiero%20consultar%20disponibilidad."
-   target="_blank" rel="noopener noreferrer" class="wa-flotante" aria-label="WhatsApp">
-  <svg width="26" height="26" viewBox="0 0 24 24" fill="#fff">
-    <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51a12.8 12.8 0 00-.57-.01c-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
-  </svg>
+<a class="wa-flot" id="wa-flot" href="https://wa.me/5491169495055" target="_blank" rel="noopener" aria-label="WhatsApp botón flotante">
+  <svg width="30" height="30" viewBox="0 0 24 24" fill="#fff" aria-hidden="true"><path d="M17.5 14.4c-.3-.1-1.8-.9-2-1-.3-.1-.5-.1-.7.1-.2.3-.8 1-.9 1.2-.2.2-.3.2-.6.1-.3-.1-1.3-.5-2.4-1.5-.9-.8-1.5-1.8-1.7-2.1-.2-.3 0-.5.1-.6l.4-.5c.2-.2.2-.3.3-.5.1-.2 0-.4 0-.5l-.9-2.2c-.2-.6-.5-.5-.7-.5h-.6c-.2 0-.5.1-.8.4-.3.3-1 1-1 2.5s1.1 2.9 1.2 3.1c.1.2 2.1 3.2 5.1 4.5.7.3 1.3.5 1.7.6.7.2 1.4.2 1.9.1.6-.1 1.8-.7 2-1.4.2-.7.2-1.3.2-1.4-.1-.1-.3-.2-.6-.3zM12 21.8c-1.8 0-3.5-.5-5-1.4l-.4-.2-3.7 1 1-3.6-.2-.4C2.7 15.6 2.2 13.8 2.2 12 2.2 6.6 6.6 2.2 12 2.2c2.6 0 5.1 1 6.9 2.9 1.8 1.8 2.9 4.3 2.9 6.9 0 5.4-4.4 9.8-9.8 9.8zM20.5 3.5C18.2 1.2 15.2 0 12 0 5.4 0 0 5.4 0 12c0 2.1.6 4.2 1.6 6L0 24l6.2-1.6c1.8 1 3.8 1.5 5.8 1.5 6.6 0 12-5.4 12-12 0-3.2-1.2-6.2-3.5-8.4z"/></svg>
 </a>
 
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="js/aromas.js"></script>
 <script>
-// ================================================================
-// CONFIGURACIÓN
-// ================================================================
-const WA_NUMBER = '5491169495055';
-const MESES_ES  = ['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];
-const DIAS_ES   = ['Dom','Lun','Mar','Mié','Jue','Vie','Sáb'];
+(() => {
+  const A = window.Aromas, db = window.db;
+  const $ = id => document.getElementById(id);
+  const estado = {
+    cabanas: [], ajustes: null, dias: {},   // dias[cabana_id][fecha] = {precio, libre, nivel, quedan}
+    cab: null, entrada: null, salida: null, mesBase: null, cotizacion: null
+  };
+  const hoy = A.hoy();
+  const MESES_VISIBLES = 12;
 
-// Estado de la app
-const estado = {
-  cabanas:      [],
-  cabanaId:     null,
-  cabanaSlug:   null,
-  cabanaNombre: null,
-  checkin:      null,
-  checkout:     null,
-  precioTotal:  0,
-  precioPorNoche: 0,
-  calAnio:      new Date().getFullYear(),
-  calMes:       new Date().getMonth(),
-  disponibilidad: {},   // { 'YYYY-MM-DD': 'libre'|'ocupado'|'bloqueado' }
-  selStep:      'checkin', // 'checkin' | 'checkout'
-};
+  function waLink(texto) {
+    const n = (estado.ajustes && estado.ajustes.whatsapp) || '5491169495055';
+    return 'https://wa.me/' + n.replace(/\D/g, '') + (texto ? '?text=' + encodeURIComponent(texto) : '');
+  }
+  function refrescarLinksWA() {
+    const cab = cabActual();
+    const txt = cab && estado.entrada && estado.salida
+      ? `Hola! Consulto por la cabaña ${cab.nombre} del ${A.lindo(estado.entrada)} al ${A.lindo(estado.salida)}.`
+      : 'Hola! Quiero consultar disponibilidad en Aromas de Campo.';
+    ['wa-top', 'wa-flot'].forEach(id => $(id).href = waLink(txt));
+    $('wa-faq').href = waLink('Hola! Tengo una consulta sobre las cabañas.');
+    $('wa-faq').target = '_blank';
+  }
+  const cabActual = () => estado.cabanas.find(c => c.id === estado.cab);
 
-// ================================================================
-// INIT
-// ================================================================
-document.addEventListener('DOMContentLoaded', async () => {
-  const hoy = new Date().toISOString().split('T')[0];
-  document.getElementById('inp-checkin').min  = hoy;
-  document.getElementById('inp-checkout').min = hoy;
+  async function iniciar() {
+    A.escucharWhatsApp();
+    if (!db) { $('cabanas').innerHTML = '<p class="error">El sistema de reservas se está configurando. Mientras tanto, consultanos por WhatsApp.</p>'; $('meses').innerHTML = ''; refrescarLinksWA(); pintarResumen(); return; }
+    A.track('visita', 'reservas');
 
-  document.getElementById('inp-checkin').addEventListener('change', function() {
-    const ci = this.value;
-    if (!ci) return;
-    const minCo = new Date(ci);
-    minCo.setDate(minCo.getDate() + 1);
-    document.getElementById('inp-checkout').min = minCo.toISOString().split('T')[0];
-    if (document.getElementById('inp-checkout').value <= ci) {
-      document.getElementById('inp-checkout').value = '';
+    const [c, a, f, cal] = await Promise.all([
+      db.from('cabanas').select('*').eq('activa', true).order('orden'),
+      db.from('ajustes').select('*').single(),
+      db.from('preguntas').select('pregunta,respuesta').eq('visible', true).order('orden'),
+      db.rpc('calendario_publico', { p_desde: hoy, p_hasta: A.sumar(hoy, 31 * MESES_VISIBLES) })
+    ]);
+    if (c.error || cal.error) { $('cabanas').innerHTML = '<p class="error">No pudimos cargar la disponibilidad. Probá de nuevo en un rato o escribinos por WhatsApp.</p>'; return; }
+    estado.cabanas = c.data; estado.ajustes = a.data;
+    if (a.data && a.data.aviso) $('aviso').textContent = a.data.aviso;
+    cal.data.forEach(d => { (estado.dias[d.cabana_id] ||= {})[d.fecha] = d; });
+
+    const pedida = new URLSearchParams(location.search).get('cabana');
+    const elegida = estado.cabanas.find(x => x.slug === pedida) || estado.cabanas[0];
+    estado.cab = elegida ? elegida.id : null;
+    const h = A.fecha(hoy); estado.mesBase = new Date(h.getFullYear(), h.getMonth(), 1);
+
+    pintarCabanas(); pintarCalendario(); pintarInfo(); pintarResumen(); pintarFaq(f.data || []); refrescarLinksWA();
+  }
+
+  function desdePrecio(cabId) {
+    const dias = Object.values(estado.dias[cabId] || {}).filter(d => d.libre);
+    return dias.length ? Math.min(...dias.map(d => d.precio)) : null;
+  }
+
+  function pintarCabanas() {
+    $('cabanas').removeAttribute('aria-busy'); $('meses').removeAttribute('aria-busy');
+    $('cabanas').innerHTML = estado.cabanas.map((c, i) => {
+      const desde = desdePrecio(c.id) || c.precio_base;
+      return `<button class="cab ${c.id === estado.cab ? 'activa' : ''}" style="--i:${i}" data-id="${c.id}" aria-pressed="${c.id === estado.cab}">
+        <div class="cab-img">${c.foto ? `<img src="${A.esc(c.foto)}" alt="Cabaña ${A.esc(c.nombre)}" loading="lazy">` : ''}
+          ${c.etiqueta ? `<span class="cab-tag">${A.esc(c.etiqueta)}</span>` : ''}<span class="cab-check">✓</span></div>
+        <div class="cab-txt"><h3>${A.esc(c.nombre)}</h3>
+          <p class="meta">Hasta ${c.capacidad} personas · ${c.habitaciones} habitaciones</p>
+          <p class="desde">desde ${A.pesos(desde)} <span>/ noche</span></p></div></button>`;
+    }).join('');
+    setTimeout(() => $('cabanas').classList.remove('primera'), 900);
+    $('cabanas').querySelectorAll('.cab').forEach(b => b.onclick = () => {
+      estado.cab = Number(b.dataset.id);
+      // si las fechas elegidas no están libres en la nueva cabaña, se reinician
+      if (estado.entrada && estado.salida && !rangoLibre(estado.entrada, estado.salida)) { estado.entrada = estado.salida = null; }
+      estado.cotizacion = null;
+      pintarCabanas(); pintarCalendario('entra'); pintarInfo(); cotizar();
+      history.replaceState(null, '', '?cabana=' + cabActual().slug);
+    });
+  }
+
+  function dia(f) { return (estado.dias[estado.cab] || {})[f]; }
+  function rangoLibre(a, b) {
+    for (let f = a; f < b; f = A.sumar(f, 1)) { const d = dia(f); if (!d || !d.libre) return false; }
+    return true;
+  }
+
+  function pintarCalendario(anim) {
+    const meses = [0, 1].map(i => new Date(estado.mesBase.getFullYear(), estado.mesBase.getMonth() + i, 1));
+    $('meses').innerHTML = meses.map(m => {
+      const primero = (m.getDay() + 6) % 7;  // semana arranca el lunes
+      const total = new Date(m.getFullYear(), m.getMonth() + 1, 0).getDate();
+      let celdas = ['lun', 'mar', 'mié', 'jue', 'vie', 'sáb', 'dom'].map(d => `<div class="dsem">${d}</div>`).join('');
+      for (let i = 0; i < primero; i++) celdas += '<div class="dia vacio"></div>';
+      for (let n = 1; n <= total; n++) {
+        const f = A.iso(new Date(m.getFullYear(), m.getMonth(), n)); const d = dia(f);
+        let cls = 'dia', extra = '', dis = false;
+        if (f < hoy || !d) { cls += ' pasado'; dis = true; }
+        else if (!d.libre) {
+          // un día ocupado puede ser el día de SALIDA si la noche anterior está libre
+          const puedeSalir = estado.entrada && !estado.salida && f > estado.entrada && rangoLibre(estado.entrada, f);
+          cls += puedeSalir ? ' salida-ok' : ' ocupado'; dis = !puedeSalir;
+        } else {
+          if (d.nivel !== 'normal') cls += ' ' + d.nivel;
+          if (d.quedan === 1) extra = '<span class="pocas" title="Queda una sola cabaña libre"></span>';
+        }
+        if (f === estado.entrada || f === estado.salida) cls += ' sel';
+        else if (estado.entrada && estado.salida && f > estado.entrada && f < estado.salida) cls += ' en-rango';
+        const precio = d && d.libre ? `<small>${A.pesosCorto(d.precio)}</small>` : '<small>&nbsp;</small>';
+        celdas += `<button class="${cls}" data-f="${f}" ${dis ? 'disabled' : ''} aria-label="${A.lindo(f)}${d && d.libre ? ', ' + A.pesos(d.precio) + ' la noche' : ', ocupado'}${f === estado.entrada ? ', día de llegada elegido' : f === estado.salida ? ', día de salida elegido' : ''}">${n}${precio}${extra}</button>`;
+      }
+      return `<div class="mes"><h3>${A.MESES[m.getMonth()]} ${m.getFullYear()}</h3><div class="dias">${celdas}</div></div>`;
+    }).join('');
+    if (anim) { const el = $('meses'); el.classList.remove('der', 'izq', 'entra'); void el.offsetWidth; el.classList.add(anim); }
+    $('meses').querySelectorAll('button.dia:not([disabled])').forEach(b => b.onclick = () => elegirDia(b.dataset.f));
+
+    const h = A.fecha(hoy);
+    $('ant').disabled = estado.mesBase <= new Date(h.getFullYear(), h.getMonth(), 1);
+    $('sig').disabled = estado.mesBase >= new Date(h.getFullYear(), h.getMonth() + MESES_VISIBLES - 2, 1);
+    $('ayuda').textContent = !estado.entrada ? 'Tocá el día de llegada'
+      : !estado.salida ? 'Ahora tocá el día que te vas' : `${A.noches(estado.entrada, estado.salida)} noches elegidas`;
+  }
+  $('ant').onclick = () => { estado.mesBase = new Date(estado.mesBase.getFullYear(), estado.mesBase.getMonth() - 1, 1); pintarCalendario('izq'); };
+  $('sig').onclick = () => { estado.mesBase = new Date(estado.mesBase.getFullYear(), estado.mesBase.getMonth() + 1, 1); pintarCalendario('der'); };
+
+  function elegirDia(f) {
+    if (!estado.entrada || estado.salida || f <= estado.entrada) {
+      const d = dia(f);
+      if (!d || !d.libre) return;
+      estado.entrada = f; estado.salida = null; estado.cotizacion = null;
+      A.track('calendario', cabActual().nombre);
+    } else if (rangoLibre(estado.entrada, f)) {
+      estado.salida = f;
+    } else {
+      estado.entrada = f; estado.salida = null;
     }
-  });
+    pintarCalendario(); refrescarLinksWA();
+    if (estado.salida) cotizar(); else pintarResumen();
+  }
 
-  await cargarCabanas();
-  actualizarBtnWaDirecto();
-});
+  async function cotizar() {
+    if (!estado.entrada || !estado.salida) { pintarResumen(); return; }
+    $('resumen').innerHTML = '<div class="puntos" role="status" aria-label="Calculando"><i></i><i></i><i></i></div><p class="puntos-txt">Calculando tu estadía…</p>';
+    const { data, error } = await db.rpc('cotizar', { p_cabana: estado.cab, p_entrada: estado.entrada, p_salida: estado.salida });
+    estado.cotizacion = error ? { ok: false, error: 'No pudimos calcular el precio. Probá de nuevo.' } : data;
+    if (!error) A.track('cotizacion', `${cabActual().nombre} ${estado.entrada} ${data.noches}n`);
+    pintarResumen();
+  }
 
-// ================================================================
-// CARGAR CABAÑAS
-// ================================================================
-async function cargarCabanas() {
-  const contenedor = document.getElementById('cabanas-selector');
+  function pintarResumen() {
+    const r = $('resumen'), cab = cabActual(), q = estado.cotizacion;
+    if (!cab) { r.innerHTML = `<h2>Tu reserva</h2><p class="vacio-msg">Consultanos por WhatsApp.</p>`; return; }
+    if (!estado.entrada) { r.innerHTML = `<h2>Tu reserva</h2><p class="vacio-msg">Cabaña <strong>${A.esc(cab.nombre)}</strong>. Elegí en el calendario el día que llegás.</p>`; return; }
+    if (!estado.salida) { r.innerHTML = `<h2>Tu reserva</h2><p class="vacio-msg">Llegás el <strong>${A.lindo(estado.entrada)}</strong>. Ahora tocá el día que te vas.</p>`; return; }
+    if (!q) { r.innerHTML = '<div class="puntos" role="status" aria-label="Calculando"><i></i><i></i><i></i></div><p class="puntos-txt">Calculando tu estadía…</p>'; return; }
 
-  if (!window.db) {
-    // Sin Supabase: mostrar datos hardcodeados de fallback
-    estado.cabanas = [
-      { id: '1', slug: 'sofia',  nombre: 'Sofía',  precio_base: 35000, fotos: ['fotos/cabana-1.jpg'], capacidad_max: 4 },
-      { id: '2', slug: 'olivia', nombre: 'Olivia', precio_base: 33000, fotos: ['fotos/cabana-2.jpg'], capacidad_max: 4 },
-      { id: '3', slug: 'emma',   nombre: 'Emma',   precio_base: 33000, fotos: ['fotos/cabana-3.jpg'], capacidad_max: 4 },
-    ];
-  } else {
-    const { data, error } = await window.db
-      .from('cabanas')
-      .select('id, slug, nombre, precio_base, fotos, capacidad_max')
-      .eq('activa', true)
-      .order('orden');
-    if (error || !data?.length) {
-      contenedor.innerHTML = '<p style="color:var(--rojo-ocupado)">Error cargando cabañas.</p>';
+    let html = `<h2>Tu reserva</h2>
+      <div class="linea"><span>Cabaña</span><strong>${A.esc(cab.nombre)}</strong></div>
+      <div class="linea"><span>Llegada</span><span>${A.lindo(estado.entrada)}</span></div>
+      <div class="linea"><span>Salida</span><span>${A.lindo(estado.salida)}</span></div>
+      <div class="linea"><span>Noches</span><span>${q.noches || A.noches(estado.entrada, estado.salida)}</span></div>`;
+    if (q.total) html += `<div class="linea total"><span>Total</span><span data-contar="${q.total}">${A.pesos(q.total)}</span></div>
+      <div class="linea sena"><span>Seña para reservar</span><span>${A.pesos(q.sena)}</span></div>`;
+    if (!q.ok) {
+      r.innerHTML = html + `<p class="error">${A.esc(q.error || 'Esas fechas no están disponibles.')}</p>
+        <a class="btn-wa" style="justify-content:center;width:100%;padding:.9rem" target="_blank" rel="noopener" href="${waLink(`Hola! Consulto por la cabaña ${cab.nombre} del ${A.lindo(estado.entrada)} al ${A.lindo(estado.salida)}.`)}" aria-label="WhatsApp desde resumen">Consultar por WhatsApp</a>`;
       return;
     }
-    estado.cabanas = data;
-  }
-
-  contenedor.innerHTML = estado.cabanas.map(c => `
-    <div class="cabana-card-sel" data-id="${c.id}" data-slug="${c.slug}" data-nombre="${c.nombre}" onclick="seleccionarCabana(this)">
-      <div class="cabana-check-icon">✓</div>
-      <img src="${(c.fotos && c.fotos[0]) || 'fotos/cabana-1.jpg'}" alt="${c.nombre}"
-           onerror="this.style.background='linear-gradient(135deg,#7A8C72,#1C2B1E)'">
-      <div class="cabana-card-info">
-        <div class="cabana-card-nombre">${c.nombre}</div>
-        <div class="cabana-card-precio">
-          desde <strong>$${formatPrecio(c.precio_base)}</strong>/noche · hasta ${c.capacidad_max} personas
+    const opciones = Array.from({ length: cab.capacidad }, (_, i) => `<option value="${i + 1}" ${i + 1 === Math.min(2, cab.capacidad) ? 'selected' : ''}>${i + 1} ${i ? 'personas' : 'persona'}</option>`).join('');
+    r.innerHTML = html + `
+      <form id="form" novalidate>
+        <label>Nombre y apellido<input name="nombre" autocomplete="name" required maxlength="80"></label>
+        <div class="fila2">
+          <label>WhatsApp / teléfono<input name="telefono" type="tel" autocomplete="tel" inputmode="tel" required maxlength="30" placeholder="11 5555 1234"></label>
+          <label>Personas<select name="personas">${opciones}</select></label>
         </div>
+        <label>Email (opcional)<input name="email" type="email" autocomplete="email" maxlength="120"></label>
+        <label class="check"><input type="checkbox" name="mascota"> Vamos con mascota</label>
+        <label>¿Algo que quieras contarnos? (opcional)<textarea name="mensaje" rows="2" maxlength="800" placeholder="Horario de llegada, consultas…"></textarea></label>
+        <div id="form-error"></div>
+        <button class="btn" type="submit">Reservar estas fechas</button>
+        <p class="nota">Todavía no pagás nada. Te mostramos los datos para la seña y las fechas quedan guardadas ${estado.ajustes ? estado.ajustes.horas_para_senar : 48} hs.</p>
+      </form>`;
+    contar(r); $('form').onsubmit = enviar;
+  }
+
+  function contar(cont) {
+    if (matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    cont.querySelectorAll('[data-contar]').forEach(el => {
+      const fin = Number(el.dataset.contar), t0 = performance.now(), dur = 700;
+      const paso = t => { const k = Math.min(1, (t - t0) / dur), e = 1 - Math.pow(1 - k, 3);
+        el.textContent = A.pesos(Math.round(fin * e / 100) * 100); if (k < 1) requestAnimationFrame(paso); else el.textContent = A.pesos(fin); };
+      requestAnimationFrame(paso);
+    });
+  }
+
+  async function enviar(e) {
+    e.preventDefault();
+    const f = e.target, btn = f.querySelector('button[type=submit]');
+    const v = Object.fromEntries(new FormData(f));
+    if ((v.nombre || '').trim().length < 2) return mostrarError('Escribí tu nombre.');
+    if ((v.telefono || '').replace(/\D/g, '').length < 8) return mostrarError('Escribí un teléfono válido para poder contactarte.');
+    btn.disabled = true; btn.innerHTML = 'Guardando tus fechas…';
+    const { data, error } = await db.rpc('solicitar_reserva', {
+      p_cabana: estado.cab, p_entrada: estado.entrada, p_salida: estado.salida,
+      p_nombre: v.nombre, p_telefono: v.telefono, p_email: v.email || null,
+      p_personas: Number(v.personas), p_mascota: !!v.mascota, p_mensaje: v.mensaje || null
+    });
+    if (error || !data.ok) {
+      btn.disabled = false; btn.textContent = 'Reservar estas fechas';
+      mostrarError((data && data.error) || 'No se pudo enviar. Probá de nuevo o escribinos por WhatsApp.');
+      if (data && !data.ok) recargarDisponibilidad();
+      return;
+    }
+    exito(data, v);
+  }
+  function mostrarError(t) { $('form-error').innerHTML = `<p class="error">${A.esc(t)}</p>`; }
+
+  async function recargarDisponibilidad() {
+    const { data } = await db.rpc('calendario_publico', { p_desde: hoy, p_hasta: A.sumar(hoy, 31 * MESES_VISIBLES) });
+    if (data) { estado.dias = {}; data.forEach(d => { (estado.dias[d.cabana_id] ||= {})[d.fecha] = d; }); pintarCalendario(); }
+  }
+
+  function exito(d, v) {
+    const cab = cabActual(), aj = estado.ajustes || {};
+    const vence = new Date(d.vence);
+    const venceTxt = vence.toLocaleString('es-AR', { weekday: 'long', day: 'numeric', month: 'long', hour: '2-digit', minute: '2-digit' });
+    const msg = `Hola! Hice la reserva ${d.codigo} en la web: cabaña ${cab.nombre}, del ${A.lindo(estado.entrada)} al ${A.lindo(estado.salida)}, a nombre de ${v.nombre}. Te mando el comprobante de la seña (${A.pesos(d.sena)}).`;
+    const filaPago = (t, val) => val ? `<div><span>${t}: <strong>${A.esc(val)}</strong></span><button class="copiar" data-copiar="${A.esc(val)}">Copiar</button></div>` : '';
+    const hayDatos = aj.alias || aj.cbu;
+    $('resumen').innerHTML = `<div class="exito">
+      <div class="tilde" aria-hidden="true"><svg viewBox="0 0 76 76"><circle cx="38" cy="38" r="36"/><path d="M23 39 l10 10 l20 -22"/></svg></div>
+      <h2>¡Fechas guardadas!</h2>
+      <p>Código de reserva: <span class="codigo">${d.codigo}</span></p>
+      <p style="margin-top:.6rem">Cabaña <strong>${A.esc(cab.nombre)}</strong>, del ${A.lindo(estado.entrada)} al ${A.lindo(estado.salida)}.</p>
+      <div class="datos-pago">
+        <div><span>Total de la estadía</span><strong>${A.pesos(d.total)}</strong></div>
+        <div><span>Seña para confirmar</span><strong>${A.pesos(d.sena)}</strong></div>
+        ${hayDatos ? filaPago('Alias', aj.alias) + filaPago('CBU / CVU', aj.cbu) + (aj.titular ? `<div><span>Titular: ${A.esc(aj.titular)}</span></div>` : '')
+                   : '<div><span>Te pasamos los datos para la seña por WhatsApp.</span></div>'}
       </div>
-    </div>
-  `).join('');
-}
-
-function seleccionarCabana(el) {
-  document.querySelectorAll('.cabana-card-sel').forEach(c => c.classList.remove('seleccionada'));
-  el.classList.add('seleccionada');
-  estado.cabanaId    = el.dataset.id;
-  estado.cabanaSlug  = el.dataset.slug;
-  estado.cabanaNombre= el.dataset.nombre;
-  actualizarBtnWaDirecto();
-}
-
-// ================================================================
-// NAVEGACIÓN ENTRE STEPS
-// ================================================================
-function irStep(n) {
-  document.querySelectorAll('.step-panel').forEach((p, i) => {
-    p.classList.toggle('activo', i + 1 === n);
-  });
-  document.querySelectorAll('.step-tab').forEach((t, i) => {
-    t.classList.remove('activo', 'completado');
-    if (i + 1 === n) t.classList.add('activo');
-    if (i + 1 < n)  t.classList.add('completado');
-  });
-  ocultarError('error-global');
-}
-
-async function irStep2() {
-  ocultarError('error-global');
-
-  if (!estado.cabanaId) {
-    mostrarError('error-global', 'Por favor seleccioná una cabaña.');
-    return;
-  }
-  const ci = document.getElementById('inp-checkin').value;
-  const co = document.getElementById('inp-checkout').value;
-  if (!ci || !co) {
-    mostrarError('error-global', 'Ingresá las fechas de check-in y check-out.');
-    return;
-  }
-  if (co <= ci) {
-    mostrarError('error-global', 'El check-out debe ser posterior al check-in.');
-    return;
+      <p class="nota" style="margin-bottom:1rem">Guardamos las fechas hasta el ${venceTxt}. Transferí la seña y mandanos el comprobante por WhatsApp para confirmar.</p>
+      <a class="btn-wa" style="justify-content:center;width:100%;padding:1rem;font-size:1rem" target="_blank" rel="noopener" href="${waLink(msg)}" aria-label="WhatsApp enviar comprobante">Enviar comprobante por WhatsApp</a>
+    </div>`;
+    $('resumen').querySelectorAll('[data-copiar]').forEach(b => b.onclick = () => {
+      navigator.clipboard && navigator.clipboard.writeText(b.dataset.copiar).then(() => { b.textContent = '¡Copiado!'; setTimeout(() => b.textContent = 'Copiar', 1800); });
+    });
+    $('resumen').scrollIntoView({ behavior: 'smooth', block: 'start' });
+    recargarDisponibilidad();
   }
 
-  estado.checkin  = ci;
-  estado.checkout = co;
-
-  // Ir al mes del checkin
-  const fechaCi = new Date(ci + 'T00:00:00');
-  estado.calAnio = fechaCi.getFullYear();
-  estado.calMes  = fechaCi.getMonth();
-
-  irStep(2);
-
-  await cargarDisponibilidadMes(estado.calAnio, estado.calMes);
-  renderCalendario();
-  verificarAltaDemanda();
-}
-
-async function irStep3() {
-  if (!estado.checkin || !estado.checkout) {
-    mostrarError('error-global', 'Seleccioná las fechas en el calendario.');
-    return;
+  function pintarInfo() {
+    const c = cabActual(); if (!c) return;
+    const aj = estado.ajustes || {};
+    $('info-cab').innerHTML = `<h3 style="font-size:1.3rem">Cabaña ${A.esc(c.nombre)}</h3>
+      <p style="color:var(--texto2);margin-top:.3rem">${A.esc(c.descripcion || '')}</p>
+      <p style="margin-top:.6rem">👥 Hasta <strong>${c.capacidad} personas</strong> · 🛏️ ${c.habitaciones} habitaciones · 🌙 mínimo ${c.minimo_noches} noches
+        ${aj.checkin ? ` · 🕑 Entrada ${A.esc(aj.checkin)} · salida ${A.esc(aj.checkout)}` : ''}</p>
+      <div class="equip">${(c.equipamiento || []).map(e => `<span>${A.esc(e)}</span>`).join('')}</div>`;
   }
 
-  // Calcular precio
-  await calcularPrecio();
-
-  // Actualizar resumen final
-  document.getElementById('rf-cabana').textContent  = estado.cabanaNombre;
-  document.getElementById('rf-checkin').textContent = formatFecha(estado.checkin);
-  document.getElementById('rf-checkout').textContent= formatFecha(estado.checkout);
-  document.getElementById('rf-total').textContent   = '$' + formatPrecio(estado.precioTotal);
-
-  actualizarBtnWaDirecto();
-  irStep(3);
-}
-
-// ================================================================
-// CALENDARIO
-// ================================================================
-async function cargarDisponibilidadMes(anio, mes) {
-  const clave = `${anio}-${mes}-${estado.cabanaId}`;
-  if (estado.disponibilidad[clave]) return; // cache hit
-
-  if (!window.db) {
-    estado.disponibilidad[clave] = {};
-    return;
+  function pintarFaq(lista) {
+    $('faq').innerHTML = lista.map(p => `<details><summary>${A.esc(p.pregunta)}</summary><p>${A.esc(p.respuesta)}</p></details>`).join('');
+    $('faq').querySelectorAll('details').forEach(d => d.addEventListener('toggle', () => {
+      if (d.open) A.track('pregunta', d.querySelector('summary').textContent.slice(0, 120));
+    }));
   }
 
-  const desde = new Date(anio, mes, 1).toISOString().split('T')[0];
-  const hasta  = new Date(anio, mes + 1, 0).toISOString().split('T')[0];
-
-  const { data } = await window.db
-    .from('dias_ocupados_por_cabana')
-    .select('fecha, estado')
-    .eq('cabana_id', estado.cabanaId)
-    .gte('fecha', desde)
-    .lte('fecha', hasta);
-
-  const mapa = {};
-  (data || []).forEach(d => { mapa[d.fecha] = d.estado; });
-  estado.disponibilidad[clave] = mapa;
-}
-
-function getDisponibilidadDia(fecha) {
-  const clave = `${estado.calAnio}-${estado.calMes}-${estado.cabanaId}`;
-  const mapa  = estado.disponibilidad[clave] || {};
-  return mapa[fecha] || 'libre';
-}
-
-async function cambiarMes(delta) {
-  estado.calMes += delta;
-  if (estado.calMes < 0)  { estado.calMes = 11; estado.calAnio--; }
-  if (estado.calMes > 11) { estado.calMes = 0;  estado.calAnio++; }
-
-  await cargarDisponibilidadMes(estado.calAnio, estado.calMes);
-  renderCalendario();
-  verificarAltaDemanda();
-}
-
-function renderCalendario() {
-  const titulo = document.getElementById('cal-titulo');
-  const grid   = document.getElementById('cal-grid');
-  const hoy    = new Date(); hoy.setHours(0,0,0,0);
-
-  titulo.textContent = `${MESES_ES[estado.calMes]} ${estado.calAnio}`;
-
-  // Días de la semana
-  let html = DIAS_ES.map(d => `<div class="cal-dia-nombre">${d}</div>`).join('');
-
-  // Primer día del mes (ajustar para que empiece en domingo)
-  const primerDia = new Date(estado.calAnio, estado.calMes, 1).getDay();
-  for (let i = 0; i < primerDia; i++) {
-    html += '<div class="cal-dia vacio"></div>';
-  }
-
-  const diasEnMes = new Date(estado.calAnio, estado.calMes + 1, 0).getDate();
-
-  for (let d = 1; d <= diasEnMes; d++) {
-    const fecha = `${estado.calAnio}-${String(estado.calMes + 1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
-    const fechaObj = new Date(fecha + 'T00:00:00');
-    const esPasado = fechaObj < hoy;
-    const dispEst  = esPasado ? 'pasado' : getDisponibilidadDia(fecha);
-
-    let clases = `cal-dia ${dispEst}`;
-    if (fecha === estado.checkin)  clases += ' checkin-sel';
-    if (fecha === estado.checkout) clases += ' checkout-sel';
-
-    // Pintar rango
-    if (estado.checkin && estado.checkout && fecha > estado.checkin && fecha < estado.checkout) {
-      clases += ' en-rango';
-    }
-
-    const clickable = !esPasado && dispEst === 'libre';
-    html += `<div class="${clases}" data-fecha="${fecha}" ${clickable ? `onclick="clickDia('${fecha}')"` : ''}>${d}</div>`;
-  }
-
-  grid.innerHTML = html;
-}
-
-function clickDia(fecha) {
-  const disp = getDisponibilidadDia(fecha);
-  if (disp !== 'libre') return;
-
-  if (!estado.checkin || (estado.checkin && estado.checkout)) {
-    // Empieza selección nueva
-    estado.checkin  = fecha;
-    estado.checkout = null;
-    document.getElementById('btn-a-paso3').disabled = true;
-    document.getElementById('resumen-precio').classList.remove('visible');
-  } else {
-    // Ya hay checkin, ahora seleccionar checkout
-    if (fecha <= estado.checkin) {
-      estado.checkin  = fecha;
-      estado.checkout = null;
-    } else {
-      // Verificar que no haya días ocupados en el rango
-      if (hayDiasOcupadosEnRango(estado.checkin, fecha)) {
-        mostrarError('error-global', 'Hay días no disponibles en el rango seleccionado. Elegí otras fechas.');
-        return;
-      }
-      estado.checkout = fecha;
-      document.getElementById('inp-checkin').value  = estado.checkin;
-      document.getElementById('inp-checkout').value = estado.checkout;
-      document.getElementById('btn-a-paso3').disabled = false;
-      calcularPrecioYMostrar();
-    }
-  }
-  ocultarError('error-global');
-  renderCalendario();
-}
-
-function hayDiasOcupadosEnRango(desde, hasta) {
-  const clave = `${estado.calAnio}-${estado.calMes}-${estado.cabanaId}`;
-  const mapa  = estado.disponibilidad[clave] || {};
-  let fecha = new Date(desde + 'T00:00:00');
-  const fin = new Date(hasta + 'T00:00:00');
-  fecha.setDate(fecha.getDate() + 1);
-  while (fecha < fin) {
-    const fStr = fecha.toISOString().split('T')[0];
-    if (mapa[fStr] && mapa[fStr] !== 'libre') return true;
-    fecha.setDate(fecha.getDate() + 1);
-  }
-  return false;
-}
-
-async function calcularPrecioYMostrar() {
-  await calcularPrecio();
-  const noches = diasEntre(estado.checkin, estado.checkout);
-  document.getElementById('res-cabana').textContent      = estado.cabanaNombre;
-  document.getElementById('res-fechas').textContent      = `${formatFecha(estado.checkin)} → ${formatFecha(estado.checkout)}`;
-  document.getElementById('res-noches-label').textContent= `${noches} noche${noches > 1 ? 's' : ''}`;
-  document.getElementById('res-noches').textContent      = noches;
-  document.getElementById('res-total').textContent       = '$' + formatPrecio(estado.precioTotal);
-  document.getElementById('resumen-precio').classList.add('visible');
-}
-
-async function calcularPrecio() {
-  if (!window.db) {
-    const noches = diasEntre(estado.checkin, estado.checkout);
-    const base   = estado.cabanas.find(c => c.id === estado.cabanaId)?.precio_base || 33000;
-    estado.precioTotal   = base * noches;
-    estado.precioPorNoche= base;
-    return;
-  }
-  const { data } = await window.db.rpc('calcular_precio_reserva', {
-    p_cabana_id: estado.cabanaId,
-    p_checkin:   estado.checkin,
-    p_checkout:  estado.checkout,
-  });
-  if (data && data[0]) {
-    estado.precioTotal    = data[0].precio_total;
-    estado.precioPorNoche = data[0].precio_por_noche;
-  }
-}
-
-function verificarAltaDemanda() {
-  const clave = `${estado.calAnio}-${estado.calMes}-${estado.cabanaId}`;
-  const mapa  = estado.disponibilidad[clave] || {};
-  const valores = Object.values(mapa);
-  if (!valores.length) return;
-  const ocupados = valores.filter(v => v !== 'libre').length;
-  const pct = ocupados / valores.length;
-  document.getElementById('badge-demanda').classList.toggle('visible', pct >= 0.5);
-}
-
-// ================================================================
-// ENVÍO DE RESERVA
-// ================================================================
-async function enviarReserva() {
-  ocultarError('error-step3');
-
-  const nombre  = document.getElementById('inp-nombre').value.trim();
-  const email   = document.getElementById('inp-email').value.trim();
-  const tel     = document.getElementById('inp-tel').value.trim();
-  const personas= parseInt(document.getElementById('inp-personas').value);
-  const notas   = document.getElementById('inp-notas').value.trim();
-
-  if (!nombre || !email || !tel || !personas) {
-    mostrarError('error-step3', 'Completá todos los campos requeridos.');
-    return;
-  }
-
-  const btn = document.getElementById('btn-enviar');
-  btn.disabled = true;
-  btn.innerHTML = '<span class="spinner"></span> Enviando…';
-
-  try {
-    // Verificar disponibilidad en tiempo real
-    if (window.db) {
-      const { data: disponible } = await window.db.rpc('check_disponibilidad', {
-        p_cabana_id: estado.cabanaId,
-        p_checkin:   estado.checkin,
-        p_checkout:  estado.checkout,
-      });
-      if (!disponible) {
-        mostrarError('error-step3', 'Las fechas ya no están disponibles. Por favor elegí otras.');
-        btn.disabled = false;
-        btn.textContent = 'Enviar consulta';
-        return;
-      }
-
-      const { error } = await window.db.from('reservas').insert({
-        cabana_id:       estado.cabanaId,
-        nombre,
-        email,
-        telefono:        tel,
-        personas,
-        fecha_checkin:   estado.checkin,
-        fecha_checkout:  estado.checkout,
-        precio_total:    estado.precioTotal,
-        precio_por_noche:estado.precioPorNoche,
-        notas_huesped:   notas,
-        estado:          'pendiente',
-      });
-
-      if (error) {
-        mostrarError('error-step3', 'Hubo un error al enviar. Intentá por WhatsApp directamente.');
-        btn.disabled = false;
-        btn.textContent = 'Enviar consulta';
-        return;
-      }
-    }
-
-    // Mostrar confirmación
-    const waUrl = generarUrlWA({ nombre, tel, notas });
-    document.getElementById('conf-cabana').textContent = estado.cabanaNombre;
-    document.getElementById('conf-wa-btn').href = waUrl;
-
-    document.getElementById('booking-widget').innerHTML = '';
-    document.getElementById('confirmacion').style.display = 'block';
-    document.getElementById('booking-widget').appendChild(document.getElementById('confirmacion'));
-
-  } catch (e) {
-    mostrarError('error-step3', 'Error de conexión. Escribinos por WhatsApp.');
-    btn.disabled = false;
-    btn.textContent = 'Enviar consulta';
-  }
-}
-
-// ================================================================
-// WHATSAPP
-// ================================================================
-function generarUrlWA({ nombre = '', tel = '', notas = '' } = {}) {
-  const noches = diasEntre(estado.checkin, estado.checkout);
-  const txt = [
-    `Hola! Quiero consultar disponibilidad en Aromas de Campo.`,
-    `📋 *Cabaña:* ${estado.cabanaNombre}`,
-    `📅 *Check-in:* ${formatFecha(estado.checkin)}`,
-    `📅 *Check-out:* ${formatFecha(estado.checkout)}`,
-    `🌙 *Noches:* ${noches}`,
-    `💰 *Total estimado:* $${formatPrecio(estado.precioTotal)}`,
-    nombre ? `👤 *Nombre:* ${nombre}` : '',
-    tel    ? `📱 *Teléfono:* ${tel}` : '',
-    notas  ? `💬 *Nota:* ${notas}` : '',
-  ].filter(Boolean).join('\n');
-  return `https://wa.me/${WA_NUMBER}?text=${encodeURIComponent(txt)}`;
-}
-
-function actualizarBtnWaDirecto() {
-  const btn = document.getElementById('btn-wa-directo');
-  if (!btn) return;
-  if (estado.cabanaId && estado.checkin && estado.checkout) {
-    btn.href = generarUrlWA();
-  } else if (estado.cabanaId) {
-    const txt = `Hola! Me interesa la cabaña ${estado.cabanaNombre} en Aromas de Campo. ¿Me podés informar disponibilidad?`;
-    btn.href = `https://wa.me/${WA_NUMBER}?text=${encodeURIComponent(txt)}`;
-  } else {
-    btn.href = `https://wa.me/${WA_NUMBER}?text=${encodeURIComponent('Hola! Quiero consultar disponibilidad en Aromas de Campo.')}`;
-  }
-}
-
-// ================================================================
-// UTILIDADES
-// ================================================================
-function diasEntre(desde, hasta) {
-  return Math.round((new Date(hasta) - new Date(desde)) / 86400000);
-}
-
-function formatFecha(fecha) {
-  if (!fecha) return '—';
-  const [a, m, d] = fecha.split('-');
-  return `${d}/${m}/${a}`;
-}
-
-function formatPrecio(n) {
-  return Number(n || 0).toLocaleString('es-AR');
-}
-
-function mostrarError(id, msg) {
-  const el = document.getElementById(id);
-  if (!el) return;
-  el.textContent = msg;
-  el.classList.add('visible');
-}
-
-function ocultarError(id) {
-  const el = document.getElementById(id);
-  if (el) el.classList.remove('visible');
-}
+  iniciar();
+})();
 </script>
 </body>
 </html>

@@ -684,6 +684,14 @@
       margin-top: 0.25rem;
     }
 
+    .card-wa {
+      display: block;
+      text-align: center;
+      margin-top: .6rem;
+      font-size: .88rem;
+      color: var(--texto-secundario);
+    }
+
     .card-btn:hover {
       background-color: #67795f;
       transform: translateY(-1px);
@@ -1850,7 +1858,7 @@
       <li><a href="#reels">Videos</a></li>
       <li><a href="#testimonios">Opiniones</a></li>
       <li><a href="#faq">FAQ</a></li>
-      <li><a href="#cta-final">Reservar</a></li>
+      <li><a href="reservas.html">Precios y reservas</a></li>
     </ul>
 
     <!-- CTA desktop -->
@@ -1877,7 +1885,7 @@
     <a href="#testimonios" onclick="cerrarMenu()">Opiniones</a>
     <a href="#faq" onclick="cerrarMenu()">FAQ</a>
     <a href="#ubicacion" onclick="cerrarMenu()">Ubicación</a>
-    <a href="#cta-final" onclick="cerrarMenu()">Reservar</a>
+    <a href="reservas.html">Precios y reservas</a>
     <a href="https://wa.me/5491169495055?text=Hola!%20Quiero%20consultar%20disponibilidad%20en%20Aromas%20de%20Campo."
        target="_blank" rel="noopener noreferrer"
        class="btn btn-primario" onclick="cerrarMenu()">
@@ -1927,10 +1935,8 @@
     </p>
 
     <div class="hero-botones fade-in delay-3">
-      <a href="https://wa.me/5491169495055?text=Hola!%20Quiero%20consultar%20disponibilidad%20en%20Aromas%20de%20Campo."
-         target="_blank" rel="noopener noreferrer"
-         class="btn btn-primario">
-        Reservar ahora
+      <a href="reservas.html" class="btn btn-primario">
+        Ver precios y reservar
       </a>
       <a href="#cabanas" class="btn btn-outline">
         Ver cabañas
@@ -1996,7 +2002,7 @@
       </div>
       <div class="card-cuerpo">
         <h3 class="card-nombre">Sofía</h3>
-        <p class="card-precio">desde $35.000 <span>/ noche</span></p>
+        <p class="card-precio" data-cabana="sofia">desde $35.000 <span>/ noche</span></p>
         <p class="card-desc">La más amplia del complejo. Deck propio, luz natural y ese silencio de campo que se siente desde que entrás.</p>
         <p class="card-capacidad">👥 Hasta 4 personas</p>
         <div class="card-amenities">
@@ -2006,11 +2012,12 @@
           <span class="amenity-tag">📶 WiFi</span>
           <span class="amenity-tag">☀️ Deck propio</span>
         </div>
-        <a href="https://wa.me/5491169495055?text=Hola!%20Me%20interesa%20la%20Caba%C3%B1a%20Sof%C3%ADa."
-           target="_blank" rel="noopener noreferrer"
-           class="card-btn" aria-label="Consultar cabaña Sofía por WhatsApp">
-          Consultar esta cabaña
+        <a href="reservas.html?cabana=sofia" class="card-btn" aria-label="Ver precios y disponibilidad de la cabaña Sofía">
+          Ver precios y disponibilidad
         </a>
+        <a href="https://wa.me/5491169495055?text=Hola!%20Me%20interesa%20la%20Caba%C3%B1a%20Sof%C3%ADa."
+           target="_blank" rel="noopener noreferrer" class="card-wa"
+           aria-label="Consultar cabaña Sofía por WhatsApp">o consultá por WhatsApp</a>
       </div>
     </article>
 
@@ -2028,7 +2035,7 @@
       </div>
       <div class="card-cuerpo">
         <h3 class="card-nombre">Olivia</h3>
-        <p class="card-precio">desde $33.000 <span>/ noche</span></p>
+        <p class="card-precio" data-cabana="olivia">desde $33.000 <span>/ noche</span></p>
         <p class="card-desc">La preferida de las familias. Cómoda, práctica y con todo lo que necesitás para que los chicos disfruten al máximo.</p>
         <p class="card-capacidad">👥 Hasta 4 personas</p>
         <div class="card-amenities">
@@ -2038,11 +2045,12 @@
           <span class="amenity-tag">📶 WiFi</span>
           <span class="amenity-tag">👨‍👩‍👧 Ideal familias</span>
         </div>
-        <a href="https://wa.me/5491169495055?text=Hola!%20Me%20interesa%20la%20Caba%C3%B1a%20Olivia."
-           target="_blank" rel="noopener noreferrer"
-           class="card-btn" aria-label="Consultar cabaña Olivia por WhatsApp">
-          Consultar esta cabaña
+        <a href="reservas.html?cabana=olivia" class="card-btn" aria-label="Ver precios y disponibilidad de la cabaña Olivia">
+          Ver precios y disponibilidad
         </a>
+        <a href="https://wa.me/5491169495055?text=Hola!%20Me%20interesa%20la%20Caba%C3%B1a%20Olivia."
+           target="_blank" rel="noopener noreferrer" class="card-wa"
+           aria-label="Consultar cabaña Olivia por WhatsApp">o consultá por WhatsApp</a>
       </div>
     </article>
 
@@ -2060,7 +2068,7 @@
       </div>
       <div class="card-cuerpo">
         <h3 class="card-nombre">Emma</h3>
-        <p class="card-precio">desde $33.000 <span>/ noche</span></p>
+        <p class="card-precio" data-cabana="emma">desde $33.000 <span>/ noche</span></p>
         <p class="card-desc">Con vista al jardín y rodeada de verde. La opción ideal para una escapada en pareja con calma, fogón y estrellado.</p>
         <p class="card-capacidad">👥 Hasta 4 personas</p>
         <div class="card-amenities">
@@ -2070,11 +2078,12 @@
           <span class="amenity-tag">📶 WiFi</span>
           <span class="amenity-tag">🌿 Vista al jardín</span>
         </div>
-        <a href="https://wa.me/5491169495055?text=Hola!%20Me%20interesa%20la%20Caba%C3%B1a%20Emma."
-           target="_blank" rel="noopener noreferrer"
-           class="card-btn" aria-label="Consultar cabaña Emma por WhatsApp">
-          Consultar esta cabaña
+        <a href="reservas.html?cabana=emma" class="card-btn" aria-label="Ver precios y disponibilidad de la cabaña Emma">
+          Ver precios y disponibilidad
         </a>
+        <a href="https://wa.me/5491169495055?text=Hola!%20Me%20interesa%20la%20Caba%C3%B1a%20Emma."
+           target="_blank" rel="noopener noreferrer" class="card-wa"
+           aria-label="Consultar cabaña Emma por WhatsApp">o consultá por WhatsApp</a>
       </div>
     </article>
 
@@ -2535,8 +2544,9 @@
   <div class="cta-final-inner">
     <h2 class="titulo-seccion claro fade-in">¿Cuándo es tu próxima escapada?</h2>
     <p class="subtitulo-seccion claro fade-in delay-1">
-      Escribinos hoy y te confirmamos disponibilidad al instante.
+      Mirá las fechas libres y el precio exacto, o escribinos y te respondemos al toque.
     </p>
+    <a href="reservas.html" class="btn btn-primario fade-in delay-2" style="margin:0 .5rem 1rem">Ver fechas y precios</a>
 
     <a href="https://wa.me/5491169495055?text=Hola!%20Quiero%20consultar%20disponibilidad%20en%20Aromas%20de%20Campo."
        target="_blank" rel="noopener noreferrer"
@@ -2600,7 +2610,7 @@
           <li><a href="#amenities">Amenities</a></li>
           <li><a href="#testimonios">Opiniones</a></li>
           <li><a href="#ubicacion">Ubicación</a></li>
-          <li><a href="#cta-final">Reservar</a></li>
+          <li><a href="reservas.html">Precios y reservas</a></li>
         </ul>
       </div>
 
@@ -2901,28 +2911,70 @@
     if (e.key === 'ArrowRight') irNext();
   });
 
-  // ---- FAQ Accordion ----
-  document.querySelectorAll('.faq-pregunta').forEach(function(btn) {
-    btn.addEventListener('click', function() {
-      const item = btn.closest('.faq-item');
-      const respuesta = item.querySelector('.faq-respuesta');
-      const estaAbierto = item.classList.contains('abierto');
-
-      // Cerrar todos
-      document.querySelectorAll('.faq-item').forEach(function(i) {
-        i.classList.remove('abierto');
-        i.querySelector('.faq-pregunta').setAttribute('aria-expanded', 'false');
-        i.querySelector('.faq-respuesta').hidden = true;
-      });
-
-      // Abrir el clickeado si estaba cerrado
-      if (!estaAbierto) {
-        item.classList.add('abierto');
-        btn.setAttribute('aria-expanded', 'true');
-        respuesta.hidden = false;
-      }
+  // ---- FAQ Accordion (delegado: también funciona con preguntas cargadas desde el panel) ----
+  document.addEventListener('click', function(e) {
+    const btn = e.target.closest && e.target.closest('.faq-pregunta');
+    if (!btn) return;
+    const item = btn.closest('.faq-item');
+    const respuesta = item.querySelector('.faq-respuesta');
+    const estaAbierto = item.classList.contains('abierto');
+    document.querySelectorAll('.faq-item').forEach(function(i) {
+      i.classList.remove('abierto');
+      i.querySelector('.faq-pregunta').setAttribute('aria-expanded', 'false');
+      i.querySelector('.faq-respuesta').hidden = true;
     });
+    if (!estaAbierto) {
+      item.classList.add('abierto');
+      btn.setAttribute('aria-expanded', 'true');
+      respuesta.hidden = false;
+      if (window.Aromas) Aromas.track('pregunta', btn.childNodes[0].textContent.trim().slice(0, 120));
+    }
   });
+</script>
+
+<!-- Sistema de reservas: precios reales, preguntas editables desde el panel y estadísticas -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="js/aromas.js"></script>
+<script>
+(function () {
+  if (!window.db) return;
+  var A = window.Aromas, db = window.db;
+  A.track('visita', 'inicio');
+  A.escucharWhatsApp();
+  var hoy = A.hoy();
+  Promise.all([
+    db.from('cabanas').select('id,slug,precio_base').eq('activa', true),
+    db.rpc('calendario_publico', { p_desde: hoy, p_hasta: A.sumar(hoy, 180) }),
+    db.from('preguntas').select('pregunta,respuesta').eq('visible', true).order('orden'),
+    db.from('ajustes').select('aviso').single()
+  ]).then(function (r) {
+    var cabs = r[0].data || [], cal = r[1].data || [], faq = r[2].data || [], aj = r[3].data;
+    // "desde $X / noche" con el precio libre más bajo de los próximos 6 meses
+    var minimo = {};
+    cal.forEach(function (d) { if (d.libre) minimo[d.cabana_id] = Math.min(minimo[d.cabana_id] || Infinity, d.precio); });
+    cabs.forEach(function (c) {
+      var el = document.querySelector('.card-precio[data-cabana="' + c.slug + '"]');
+      var p = minimo[c.id] || c.precio_base;
+      if (el && p) el.innerHTML = 'desde ' + A.pesos(p) + ' <span>/ noche</span>';
+    });
+    // preguntas frecuentes desde el panel
+    var lista = document.querySelector('.faq-lista');
+    if (lista && faq.length) {
+      lista.innerHTML = faq.map(function (p) {
+        return '<div class="faq-item"><button class="faq-pregunta" aria-expanded="false">' + A.esc(p.pregunta) +
+          '<span class="faq-icono" aria-hidden="true">+</span></button><div class="faq-respuesta" hidden><p style="white-space:pre-line">' +
+          A.esc(p.respuesta) + '</p></div></div>';
+      }).join('');
+    }
+    // aviso opcional arriba de todo
+    if (aj && aj.aviso) {
+      var b = document.createElement('div');
+      b.textContent = aj.aviso;
+      b.style.cssText = 'background:#1C2B1E;color:#fff;text-align:center;padding:.55rem 1rem;font-size:.95rem;position:relative;z-index:1001';
+      document.body.insertBefore(b, document.body.firstChild);
+    }
+  }).catch(function () {});
+})();
 </script>
 
 </body>
