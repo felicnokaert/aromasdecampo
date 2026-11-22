@@ -239,9 +239,16 @@
     .puntaje { font-family: var(--display); font-size: clamp(6rem, 22vw, 10rem); line-height: .8; }
     .puntaje small { display: block; font-family: var(--ui); font-size: 1rem; margin-top: 1rem; line-height: 1.4; }
     .puntaje .estrellas { color: #E39A2C; letter-spacing: 2px; font-size: 1.2rem; }
-    .resenas { display: grid; gap: 1rem; }
-    @media (min-width: 760px) { .resenas { grid-template-columns: repeat(2, 1fr); } }
-    @media (min-width: 1100px) { .resenas { grid-template-columns: repeat(3, 1fr); } }
+    .resenas { --por: 1; display: grid; grid-auto-flow: column; grid-auto-columns: calc((100% - (var(--por) - 1) * 1rem) / var(--por)); gap: 1rem;
+      overflow-x: auto; scroll-snap-type: x mandatory; scroll-behavior: smooth; scrollbar-width: none; padding-bottom: .3rem; }
+    .resenas::-webkit-scrollbar { display: none; }
+    .resenas .resena { scroll-snap-align: start; }
+    @media (min-width: 760px) { .resenas { --por: 2; } }
+    @media (min-width: 1100px) { .resenas { --por: 3; } }
+    .puntos { display: flex; gap: .45rem; justify-content: center; margin-top: 1.1rem; }
+    .puntos button { width: 9px; height: 9px; border-radius: 999px; background: var(--linea); transition: width .35s, background .35s; padding: 0; }
+    .puntos button[aria-current=true] { width: 26px; background: var(--madera); }
+    .puntos button::before { content: ''; display: block; margin: -16px; width: 41px; height: 41px; }
     .resena { background: var(--papel); padding: 1.4rem; border-radius: 4px; display: flex; flex-direction: column; gap: .8rem; position: relative; }
     .resena .estrellas { color: #E39A2C; letter-spacing: 1px; }
     .resena p { font-family: var(--serif); font-size: 1.12rem; line-height: 1.45; }
@@ -798,7 +805,33 @@
         '<div class="quien"><span><b>' + A.esc(x.nombre) + '</b>' + (x.ciudad ? ' · ' + A.esc(x.ciudad) : '') + '</span>' + (FUENTES[x.fuente] ? '<span class="fuente">' + FUENTES[x.fuente] + '</span>' : '') + '</div></article>';
     }
     if (res.length) {
-      $('#resenas').innerHTML = res.slice(0, 3).map(tarjeta).join('');
+      var cinta = $('#resenas');
+      cinta.innerHTML = res.map(tarjeta).join('');
+      cinta.setAttribute('aria-roledescription', 'carrusel'); cinta.setAttribute('aria-label', 'Opiniones de huéspedes');
+      var puntos = document.createElement('div'); puntos.className = 'puntos'; cinta.after(puntos);
+      var porVista = function () { return +getComputedStyle(cinta).getPropertyValue('--por') || 1; };
+      var paginas = function () { return Math.max(1, Math.ceil(res.length / porVista())); };
+      var paso = function () { var t = cinta.children[0]; return t ? t.getBoundingClientRect().width + 16 : 0; };
+      var actual = function () { if (cinta.scrollLeft + cinta.clientWidth >= cinta.scrollWidth - 4) return paginas() - 1; return Math.round(cinta.scrollLeft / (paso() * porVista() || 1)); };
+      function irA(i) { cinta.scrollTo({ left: ((i + paginas()) % paginas()) * porVista() * paso() }); }
+      function pintarPuntos() {
+        var n = paginas(), a = Math.min(actual(), n - 1);
+        if (n > 8) { puntos.hidden = false; puntos.innerHTML = '<span style="font-size:.9rem;color:var(--tinta-2)">' + (a + 1) + ' de ' + n + '</span>'; return; }
+        if (puntos.children.length !== n) puntos.innerHTML = Array.from({ length: n }, function (_, i) { return '<button aria-label="Opiniones ' + (i + 1) + ' de ' + n + '"></button>'; }).join('');
+        puntos.hidden = n < 2;
+        [].forEach.call(puntos.children, function (b, i) { b.setAttribute('aria-current', i === a); });
+      }
+      puntos.addEventListener('click', function (e) { var b = e.target.closest('button'); if (b) { irA([].indexOf.call(puntos.children, b)); frenar(); } });
+      cinta.addEventListener('scroll', function () { requestAnimationFrame(pintarPuntos); }, { passive: true });
+      window.addEventListener('resize', pintarPuntos);
+      pintarPuntos();
+      // pasan solas cada 6 segundos; se frenan si la persona las toca o pasa el mouse
+      var quieto = matchMedia('(prefers-reduced-motion: reduce)').matches, pausa = false, reloj = null, visible = false;
+      function frenar() { pausa = true; clearTimeout(reloj); reloj = setTimeout(function () { pausa = false; }, 12000); }
+      ['pointerdown', 'touchstart', 'wheel', 'focusin'].forEach(function (ev) { cinta.addEventListener(ev, frenar, { passive: true }); });
+      cinta.addEventListener('mouseenter', function () { pausa = true; }); cinta.addEventListener('mouseleave', function () { pausa = false; });
+      new IntersectionObserver(function (es) { visible = es[0].isIntersecting; }, { threshold: .4 }).observe(cinta);
+      if (!quieto && res.length > 1) setInterval(function () { if (!pausa && visible && !document.hidden && !hoja.classList.contains('abierta')) irA(actual() + 1); }, 6000);
       $('#hojaLista').innerHTML = res.map(tarjeta).join('');
       $('#hojaTitulo').textContent = res.length + (res.length === 1 ? ' opinión' : ' opiniones');
     } else {
