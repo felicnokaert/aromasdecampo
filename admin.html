@@ -692,7 +692,9 @@
     const hoy = A.hoy();
     const fechas = S.temporadas.filter(t => t.hasta >= hoy);
     const precioTxt = t => t.precio ? `<b>${A.pesos(t.precio)}</b> (2 pers.)${t.extra_persona != null ? ` · <b>${A.pesos(p4(t.precio, t.extra_persona))}</b> (4 pers.)` : ''}`
-      : t.recargo_pct ? `${t.recargo_pct > 0 ? '+' : ''}${t.recargo_pct}%` : '<span style="color:var(--naranja)">Sin precio especial todavía</span>';
+      : t.recargo_pct ? `${t.recargo_pct > 0 ? '+' : ''}${t.recargo_pct}%`
+      : t.tipo === 'feriado' && S.ajustes.recargo_feriado_pct ? `Precio común +${S.ajustes.recargo_feriado_pct}% (recargo de findes largos)`
+      : '<span style="color:var(--naranja)">Sin precio especial todavía</span>';
     const icono = { temporada: '☀️', feriado: '🎉', especial: '⭐' };
     $('vista').innerHTML = `<h1 class="titulo">Precios</h1>
       <div class="caja"><h2>Precio de un día común</h2>
@@ -705,6 +707,11 @@
           <div class="f2" style="margin-top:.8rem">
             <label>Recargo viernes y sábado % <small>(0 = sin recargo)</small><input type="number" name="finde" value="${S.ajustes.recargo_finde_pct || 0}" min="0" max="200" step="5"></label>
             <label>Descuento por 7 noches o más % <small>(0 = sin descuento)</small><input type="number" name="semana" value="${S.ajustes.descuento_semana_pct || 0}" min="0" max="60" step="5"></label>
+          </div>
+          <h3 style="margin:1.1rem 0 .3rem;font-size:1.05rem">Fines de semana largos</h3>
+          <div class="f2">
+            <label>Recargo por noche % <small>(se suma al precio de esos días; ej. 20)</small><input type="number" name="feriado" value="${S.ajustes.recargo_feriado_pct || 0}" min="0" max="300" step="5"></label>
+            <label>¿Se alquilan completos?<select name="completo"><option value="1" ${S.ajustes.feriado_completo !== false ? 'selected' : ''}>Sí, el finde entero (no se corta)</option><option value="0" ${S.ajustes.feriado_completo === false ? 'selected' : ''}>No, se puede tomar una parte</option></select></label>
           </div>
           <button class="btn grande" style="margin-top:1rem">Guardar precios</button></form></div>
 
@@ -727,7 +734,8 @@
             if (err) throw err; Object.assign(c, { precio_base: p2, extra_persona: extra, minimo_noches: mn });
           }
         }
-        const cambios = { recargo_finde_pct: Number(f.finde.value) || 0, descuento_semana_pct: Number(f.semana.value) || 0 };
+        const cambios = { recargo_finde_pct: Number(f.finde.value) || 0, descuento_semana_pct: Number(f.semana.value) || 0,
+                          recargo_feriado_pct: Number(f.feriado.value) || 0, feriado_completo: f.completo.value === '1' };
         const { error: err } = await db.from('ajustes').update(cambios).eq('id', true); if (err) throw err;
         Object.assign(S.ajustes, cambios);
         aviso('Precios guardados ✓ Ya se ven en la web.'); VISTAS.precios();
