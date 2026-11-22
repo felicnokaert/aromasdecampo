@@ -1,27 +1,25 @@
-# Sistema de reservas — cómo se conecta
+# Sistema de reservas — Aromas de Campo
 
-Todo es gratis: Vercel (la web) + Supabase (la base de datos) + Resend (los emails de aviso).
+Todo gratis: Vercel (la web) + Supabase (base de datos y funciones) + Resend (emails).
 
-## 1. Base de datos (una sola vez)
-1. Supabase → proyecto nuevo (región São Paulo).
-2. SQL Editor → pegar todo `schema.sql` → **Run**. Se puede correr de nuevo sin romper nada.
-3. Settings → API → copiar **Project URL** y la clave **publishable / anon**.
-4. Pegar las dos en `js/aromas.js` (arriba de todo). Son públicas: la seguridad la da la base.
-5. Authentication → URL Configuration → Site URL: la dirección de la web. Redirect URLs: `.../admin.html`.
+## Páginas
+- `/` inicio · `/reservas.html` calendario, precios y reserva · `/guia.html` guía de Colón
+- `/opinar.html?c=CODIGO` reseña del huésped · `/admin.html` panel
+- `/cal/booking/<token>.ics` y `/cal/airbnb/<token>.ics` calendarios para las plataformas (se copian desde el panel)
 
-## 2. Administradores
-Solo pueden crear cuenta los emails de la tabla `admins_invitados`
-(aranda.ruben@hotmail.com, lourdesdaranda16@gmail.com, felipecnokaert@gmail.com).
-La primera vez entran a `/admin.html` → **"¿Primera vez? Crear mi contraseña"**.
-Para sumar a alguien: `insert into admins_invitados values ('email@nuevo.com');`
+## Base de datos (Supabase, cuenta "Aromas de Campo", proyecto aromas-de-campo)
+- Estructura completa en `schema.sql` (ya cargada).
+- Reglas: la reserva se confirma con la seña; un pedido sin seña no ocupa la fecha.
+- Precios: común (2 y 4 personas), especiales por día/rango/temporada/feriado, recargo finde, descuento semanal, último minuto.
+- Administradores: solo los emails de `admins_invitados`. Sumar uno:
+  `insert into admins_invitados values ('email@nuevo.com');`
 
-## 3. Avisos por email de reservas nuevas
-1. Crear cuenta gratis en resend.com **con aranda.ruben@hotmail.com** (sin dominio propio, Resend solo deja mandar al email del dueño de la cuenta).
-2. Resend → API Keys → crear → guardarla en Supabase → Edge Functions → Secrets como `RESEND_API_KEY`.
-3. Publicar la función `functions/avisar-reserva` (sin verificación JWT: se protege sola).
-4. En SQL Editor: `alter database postgres set app.funciones_url = 'https://TU-PROYECTO.supabase.co/functions/v1';`
-   y `create extension if not exists pg_net;`
-5. Cuando tengan dominio propio: verificarlo en Resend y agregar el secreto `EMAIL_DESDE` = `Aromas de Campo <reservas@su-dominio.com.ar>`.
+## Funciones automáticas (Supabase Edge Functions)
+- `avisar-reserva`: email a Rubén por cada pedido nuevo de la web.
+- `sincronizar`: lee Booking/Airbnb cada 30 min (pg_cron), avisa dobles reservas.
+- `diario`: 10 hs — recordatorios y pedidos de reseña (con dominio propio) y resumen semanal los lunes.
 
-## Estadísticas por canal
-Usar links con `?utm_source=`: en la bio de Instagram `.../?utm_source=instagram`, en los anuncios de Meta `?utm_source=meta`.
+## Pendiente para activar los emails
+1. Cuenta gratis en resend.com con el email que recibe los avisos.
+2. API key → Supabase → Edge Functions → Secrets → `RESEND_API_KEY`.
+3. Con dominio propio: verificarlo en Resend y agregar el secreto `EMAIL_DESDE`.

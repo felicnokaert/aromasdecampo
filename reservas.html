@@ -41,6 +41,10 @@
     .paso { font-size: .78rem; letter-spacing: .12em; text-transform: uppercase; color: var(--verde-osc); font-weight: 600; margin: 2rem 0 .7rem; }
 
     /* Cabañas */
+    .personas { display: flex; gap: .5rem; flex-wrap: wrap; }
+    .personas button { border: 2px solid var(--borde); background: var(--blanco); border-radius: 999px; padding: .6rem 1.1rem; font-weight: 600; font-size: 1rem; transition: all .2s; }
+    .personas button.act { background: var(--verde); border-color: var(--verde); color: #fff; transform: scale(1.04); }
+    .urgencia { background: #FFF1E0; color: #8A4B12; border-radius: 10px; padding: .6rem .8rem; font-size: .92rem; margin: .6rem 0; }
     .cabanas { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 1rem; }
     .cab { background: var(--blanco); border: 2px solid transparent; border-radius: var(--radio); overflow: hidden; text-align: left;
            box-shadow: 0 2px 10px rgba(60,50,30,.07); transition: border-color .2s, transform .2s; padding: 0; }
@@ -86,6 +90,7 @@
     .dia.en-rango { background: #E3E9DF; }
     .dia.sel { background: var(--verde) !important; color: #fff; border-color: var(--verde); }
     .dia.sel small { color: #fff !important; }
+    .dia .um { position: absolute; bottom: 2px; left: 50%; transform: translateX(-50%); font-size: .55rem; line-height: 1; }
     .dia .pocas { position: absolute; top: 2px; right: 3px; width: 7px; height: 7px; border-radius: 50%; background: #D9822B; }
     .leyenda { display: flex; flex-wrap: wrap; gap: .9rem; margin-top: 1rem; font-size: .82rem; color: var(--texto2); }
     .leyenda span::before { content: ''; display: inline-block; width: 13px; height: 13px; border-radius: 4px; vertical-align: -2px; margin-right: .35rem; background: #fff; border: 1px solid #E5DCCB; }
@@ -209,13 +214,18 @@
 <main>
   <section class="cabecera">
     <h1>Disponibilidad y precios</h1>
-    <p>Elegí la cabaña y tocá en el calendario el día que llegás y el día que te vas. Ves el precio exacto antes de reservar, en pesos y sin comisiones.</p>
+    <p>Elegí la cabaña y tocá en el calendario el día que llegás y el día que te vas. Ves el precio exacto antes de reservar, en pesos y sin comisiones. Reservando acá directo pagás menos que en las plataformas.</p>
   </section>
 
-  <p class="paso">1 · Elegí tu cabaña</p>
+  <p class="paso">1 · ¿Cuántos van?</p>
+  <div class="personas" id="personas" role="radiogroup" aria-label="Cantidad de personas">
+    <button data-p="1" role="radio">1 persona</button><button data-p="2" role="radio" class="act">2 personas</button><button data-p="3" role="radio">3 personas</button><button data-p="4" role="radio">4 personas</button>
+  </div>
+
+  <p class="paso">2 · Elegí tu cabaña</p>
   <div class="cabanas primera" id="cabanas" aria-busy="true"><div class="sk-cab"><div class="sk"></div><div class="sk sk-linea"></div><div class="sk sk-linea corta"></div></div><div class="sk-cab"><div class="sk"></div><div class="sk sk-linea"></div><div class="sk sk-linea corta"></div></div><div class="sk-cab"><div class="sk"></div><div class="sk sk-linea"></div><div class="sk sk-linea corta"></div></div></div>
 
-  <p class="paso">2 · Elegí las fechas</p>
+  <p class="paso">3 · Elegí las fechas <span style="text-transform:none;letter-spacing:0;font-weight:400;color:var(--texto2)">· precio por noche para <span id="pers-txt">2 personas</span></span></p>
   <div class="grilla">
     <div>
       <div class="panel">
@@ -231,6 +241,7 @@
           <span class="l-alto">Temporada alta</span>
           <span class="l-ocu">Ocupado</span>
           <span class="l-pocas">Quedan pocas cabañas</span>
+          <span>🔥 Último minuto</span>
         </div>
       </div>
       <div class="panel info-cab" id="info-cab"></div>
@@ -246,7 +257,7 @@
 
 <footer>
   <p>Aromas de Campo · Cabañas de tronco en Colón, Entre Ríos</p>
-  <p style="margin-top:.4rem"><a href="index.html">Inicio</a> · <a href="https://instagram.com/aromasdecampo22" target="_blank" rel="noopener">Instagram</a> · <a href="https://facebook.com/aromasdecampo022" target="_blank" rel="noopener">Facebook</a></p>
+  <p style="margin-top:.4rem"><a href="index.html">Inicio</a> · <a href="guia.html">Guía de Colón</a> · <a href="https://instagram.com/aromasdecampo22" target="_blank" rel="noopener">Instagram</a> · <a href="https://facebook.com/aromasdecampo022" target="_blank" rel="noopener">Facebook</a></p>
 </footer>
 
 <a class="wa-flot" id="wa-flot" href="https://wa.me/5491169495055" target="_blank" rel="noopener" aria-label="WhatsApp botón flotante">
@@ -261,7 +272,7 @@
   const $ = id => document.getElementById(id);
   const estado = {
     cabanas: [], ajustes: null, dias: {},   // dias[cabana_id][fecha] = {precio, libre, nivel, quedan}
-    cab: null, entrada: null, salida: null, mesBase: null, cotizacion: null
+    cab: null, entrada: null, salida: null, mesBase: null, cotizacion: null, personas: 2
   };
   const hoy = A.hoy();
   const MESES_VISIBLES = 12;
@@ -288,7 +299,7 @@
 
     const [c, a, f, cal] = await Promise.all([
       db.from('cabanas').select('*').eq('activa', true).order('orden'),
-      db.from('ajustes').select('*').single(),
+      db.from('ajustes').select('whatsapp,sena_pct,checkin,checkout,aviso').single(),
       db.from('preguntas').select('pregunta,respuesta').eq('visible', true).order('orden'),
       db.rpc('calendario_publico', { p_desde: hoy, p_hasta: A.sumar(hoy, 31 * MESES_VISIBLES) })
     ]);
@@ -303,17 +314,27 @@
     const h = A.fecha(hoy); estado.mesBase = new Date(h.getFullYear(), h.getMonth(), 1);
 
     pintarCabanas(); pintarCalendario(); pintarInfo(); pintarResumen(); pintarFaq(f.data || []); refrescarLinksWA();
+    $('personas').querySelectorAll('button').forEach(b => {
+      b.setAttribute('aria-checked', b.classList.contains('act'));
+      b.onclick = () => {
+        estado.personas = Number(b.dataset.p);
+        $('personas').querySelectorAll('button').forEach(x => { x.classList.toggle('act', x === b); x.setAttribute('aria-checked', x === b); });
+        $('pers-txt').textContent = b.textContent;
+        pintarCabanas(); pintarCalendario(); if (estado.salida) cotizar(); else pintarResumen();
+      };
+    });
   }
 
   function desdePrecio(cabId) {
     const dias = Object.values(estado.dias[cabId] || {}).filter(d => d.libre);
-    return dias.length ? Math.min(...dias.map(d => d.precio)) : null;
+    const c = estado.cabanas.find(x => x.id === cabId), extra = Math.max(estado.personas - 2, 0) * ((c && c.extra_persona) || 0);
+    return dias.length ? Math.min(...dias.map(d => d.precio)) + extra : null;
   }
 
   function pintarCabanas() {
     $('cabanas').removeAttribute('aria-busy'); $('meses').removeAttribute('aria-busy');
     $('cabanas').innerHTML = estado.cabanas.map((c, i) => {
-      const desde = desdePrecio(c.id) || c.precio_base;
+      const desde = desdePrecio(c.id) || (c.precio_base + Math.max(estado.personas - 2, 0) * c.extra_persona);
       return `<button class="cab ${c.id === estado.cab ? 'activa' : ''}" style="--i:${i}" data-id="${c.id}" aria-pressed="${c.id === estado.cab}">
         <div class="cab-img">${c.foto ? `<img src="${A.esc(c.foto)}" alt="Cabaña ${A.esc(c.nombre)}" loading="lazy">` : ''}
           ${c.etiqueta ? `<span class="cab-tag">${A.esc(c.etiqueta)}</span>` : ''}<span class="cab-check">✓</span></div>
@@ -333,6 +354,8 @@
   }
 
   function dia(f) { return (estado.dias[estado.cab] || {})[f]; }
+  // el calendario trae el precio para 2; para 3 o 4 se suma el adicional por persona de la cabaña
+  function precioDia(d) { const c = cabActual(); return d.precio + Math.max(estado.personas - 2, 0) * ((c && c.extra_persona) || 0); }
   function rangoLibre(a, b) {
     for (let f = a; f < b; f = A.sumar(f, 1)) { const d = dia(f); if (!d || !d.libre) return false; }
     return true;
@@ -356,11 +379,12 @@
         } else {
           if (d.nivel !== 'normal') cls += ' ' + d.nivel;
           if (d.quedan === 1) extra = '<span class="pocas" title="Queda una sola cabaña libre"></span>';
+          if (d.ultimo_minuto) extra += '<span class="um" title="Precio de último minuto">🔥</span>';
         }
         if (f === estado.entrada || f === estado.salida) cls += ' sel';
         else if (estado.entrada && estado.salida && f > estado.entrada && f < estado.salida) cls += ' en-rango';
-        const precio = d && d.libre ? `<small>${A.pesosCorto(d.precio)}</small>` : '<small>&nbsp;</small>';
-        celdas += `<button class="${cls}" data-f="${f}" ${dis ? 'disabled' : ''} aria-label="${A.lindo(f)}${d && d.libre ? ', ' + A.pesos(d.precio) + ' la noche' : ', ocupado'}${f === estado.entrada ? ', día de llegada elegido' : f === estado.salida ? ', día de salida elegido' : ''}">${n}${precio}${extra}</button>`;
+        const precio = d && d.libre ? `<small>${A.pesosCorto(precioDia(d))}</small>` : '<small>&nbsp;</small>';
+        celdas += `<button class="${cls}" data-f="${f}" ${dis ? 'disabled' : ''} aria-label="${A.lindo(f)}${d && d.libre ? ', ' + A.pesos(precioDia(d)) + ' la noche' : ', ocupado'}${f === estado.entrada ? ', día de llegada elegido' : f === estado.salida ? ', día de salida elegido' : ''}">${n}${precio}${extra}</button>`;
       }
       return `<div class="mes"><h3>${A.MESES[m.getMonth()]} ${m.getFullYear()}</h3><div class="dias">${celdas}</div></div>`;
     }).join('');
@@ -394,7 +418,7 @@
   async function cotizar() {
     if (!estado.entrada || !estado.salida) { pintarResumen(); return; }
     $('resumen').innerHTML = '<div class="puntos" role="status" aria-label="Calculando"><i></i><i></i><i></i></div><p class="puntos-txt">Calculando tu estadía…</p>';
-    const { data, error } = await db.rpc('cotizar', { p_cabana: estado.cab, p_entrada: estado.entrada, p_salida: estado.salida });
+    const { data, error } = await db.rpc('cotizar', { p_cabana: estado.cab, p_entrada: estado.entrada, p_salida: estado.salida, p_personas: estado.personas });
     estado.cotizacion = error ? { ok: false, error: 'No pudimos calcular el precio. Probá de nuevo.' } : data;
     if (!error) A.track('cotizacion', `${cabActual().nombre} ${estado.entrada} ${data.noches}n`);
     pintarResumen();
@@ -411,28 +435,26 @@
       <div class="linea"><span>Cabaña</span><strong>${A.esc(cab.nombre)}</strong></div>
       <div class="linea"><span>Llegada</span><span>${A.lindo(estado.entrada)}</span></div>
       <div class="linea"><span>Salida</span><span>${A.lindo(estado.salida)}</span></div>
-      <div class="linea"><span>Noches</span><span>${q.noches || A.noches(estado.entrada, estado.salida)}</span></div>`;
+      <div class="linea"><span>Noches</span><span>${q.noches || A.noches(estado.entrada, estado.salida)}</span></div>
+      <div class="linea"><span>Personas</span><span>${estado.personas}</span></div>`;
     if (q.total) html += `<div class="linea total"><span>Total</span><span data-contar="${q.total}">${A.pesos(q.total)}</span></div>
       <div class="linea sena"><span>Seña para reservar</span><span>${A.pesos(q.sena)}</span></div>`;
+    if (q.ok && q.consultas > 0) html += `<p class="urgencia">🔥 Hay ${q.consultas === 1 ? 'otra consulta' : q.consultas + ' consultas más'} por estas fechas. Se las queda quien primero pague la seña.</p>`;
     if (!q.ok) {
       r.innerHTML = html + `<p class="error">${A.esc(q.error || 'Esas fechas no están disponibles.')}</p>
         <a class="btn-wa" style="justify-content:center;width:100%;padding:.9rem" target="_blank" rel="noopener" href="${waLink(`Hola! Consulto por la cabaña ${cab.nombre} del ${A.lindo(estado.entrada)} al ${A.lindo(estado.salida)}.`)}" aria-label="WhatsApp desde resumen">Consultar por WhatsApp</a>`;
       return;
     }
-    const opciones = Array.from({ length: cab.capacidad }, (_, i) => `<option value="${i + 1}" ${i + 1 === Math.min(2, cab.capacidad) ? 'selected' : ''}>${i + 1} ${i ? 'personas' : 'persona'}</option>`).join('');
     r.innerHTML = html + `
       <form id="form" novalidate>
         <label>Nombre y apellido<input name="nombre" autocomplete="name" required maxlength="80"></label>
-        <div class="fila2">
-          <label>WhatsApp / teléfono<input name="telefono" type="tel" autocomplete="tel" inputmode="tel" required maxlength="30" placeholder="11 5555 1234"></label>
-          <label>Personas<select name="personas">${opciones}</select></label>
-        </div>
+        <label>WhatsApp / teléfono<input name="telefono" type="tel" autocomplete="tel" inputmode="tel" required maxlength="30" placeholder="11 5555 1234"></label>
         <label>Email (opcional)<input name="email" type="email" autocomplete="email" maxlength="120"></label>
-        <label class="check"><input type="checkbox" name="mascota"> Vamos con mascota</label>
+        <p class="nota" style="text-align:left">🐾 No se aceptan mascotas · Se alquila solo el alojamiento (traé ropa de cama y toallas).</p>
         <label>¿Algo que quieras contarnos? (opcional)<textarea name="mensaje" rows="2" maxlength="800" placeholder="Horario de llegada, consultas…"></textarea></label>
         <div id="form-error"></div>
         <button class="btn" type="submit">Reservar estas fechas</button>
-        <p class="nota">Todavía no pagás nada. Te mostramos los datos para la seña y las fechas quedan guardadas ${estado.ajustes ? estado.ajustes.horas_para_senar : 48} hs.</p>
+        <p class="nota">Todavía no pagás nada. Te mostramos los datos para transferir la seña. <b>La reserva se confirma cuando recibimos la seña</b>: hasta ese momento las fechas siguen disponibles para otras personas.</p>
       </form>`;
     contar(r); $('form').onsubmit = enviar;
   }
@@ -457,7 +479,7 @@
     const { data, error } = await db.rpc('solicitar_reserva', {
       p_cabana: estado.cab, p_entrada: estado.entrada, p_salida: estado.salida,
       p_nombre: v.nombre, p_telefono: v.telefono, p_email: v.email || null,
-      p_personas: Number(v.personas), p_mascota: !!v.mascota, p_mensaje: v.mensaje || null
+      p_personas: estado.personas, p_mascota: false, p_mensaje: v.mensaje || null
     });
     if (error || !data.ok) {
       btn.disabled = false; btn.textContent = 'Reservar estas fechas';
@@ -475,24 +497,22 @@
   }
 
   function exito(d, v) {
-    const cab = cabActual(), aj = estado.ajustes || {};
-    const vence = new Date(d.vence);
-    const venceTxt = vence.toLocaleString('es-AR', { weekday: 'long', day: 'numeric', month: 'long', hour: '2-digit', minute: '2-digit' });
-    const msg = `Hola! Hice la reserva ${d.codigo} en la web: cabaña ${cab.nombre}, del ${A.lindo(estado.entrada)} al ${A.lindo(estado.salida)}, a nombre de ${v.nombre}. Te mando el comprobante de la seña (${A.pesos(d.sena)}).`;
+    const cab = cabActual(), aj = d;
+    const msg = `Hola! Hice la reserva ${d.codigo} en la web: cabaña ${cab.nombre}, del ${A.lindo(estado.entrada)} al ${A.lindo(estado.salida)}, ${estado.personas} personas, a nombre de ${v.nombre}. Te mando el comprobante de la seña (${A.pesos(d.sena)}).`;
     const filaPago = (t, val) => val ? `<div><span>${t}: <strong>${A.esc(val)}</strong></span><button class="copiar" data-copiar="${A.esc(val)}">Copiar</button></div>` : '';
     const hayDatos = aj.alias || aj.cbu;
     $('resumen').innerHTML = `<div class="exito">
       <div class="tilde" aria-hidden="true"><svg viewBox="0 0 76 76"><circle cx="38" cy="38" r="36"/><path d="M23 39 l10 10 l20 -22"/></svg></div>
-      <h2>¡Fechas guardadas!</h2>
+      <h2>¡Pedido enviado!</h2>
       <p>Código de reserva: <span class="codigo">${d.codigo}</span></p>
-      <p style="margin-top:.6rem">Cabaña <strong>${A.esc(cab.nombre)}</strong>, del ${A.lindo(estado.entrada)} al ${A.lindo(estado.salida)}.</p>
+      <p style="margin-top:.6rem">Cabaña <strong>${A.esc(cab.nombre)}</strong>, del ${A.lindo(estado.entrada)} al ${A.lindo(estado.salida)} · ${estado.personas} ${estado.personas === 1 ? 'persona' : 'personas'}.</p>
       <div class="datos-pago">
         <div><span>Total de la estadía</span><strong>${A.pesos(d.total)}</strong></div>
         <div><span>Seña para confirmar</span><strong>${A.pesos(d.sena)}</strong></div>
         ${hayDatos ? filaPago('Alias', aj.alias) + filaPago('CBU / CVU', aj.cbu) + (aj.titular ? `<div><span>Titular: ${A.esc(aj.titular)}</span></div>` : '')
                    : '<div><span>Te pasamos los datos para la seña por WhatsApp.</span></div>'}
       </div>
-      <p class="nota" style="margin-bottom:1rem">Guardamos las fechas hasta el ${venceTxt}. Transferí la seña y mandanos el comprobante por WhatsApp para confirmar.</p>
+      <p class="nota" style="margin-bottom:1rem"><b>Para asegurar tus fechas</b> transferí la seña y mandanos el comprobante por WhatsApp. La reserva queda confirmada cuando la recibimos.</p>
       <a class="btn-wa" style="justify-content:center;width:100%;padding:1rem;font-size:1rem" target="_blank" rel="noopener" href="${waLink(msg)}" aria-label="WhatsApp enviar comprobante">Enviar comprobante por WhatsApp</a>
     </div>`;
     $('resumen').querySelectorAll('[data-copiar]').forEach(b => b.onclick = () => {
@@ -507,7 +527,7 @@
     const aj = estado.ajustes || {};
     $('info-cab').innerHTML = `<h3 style="font-size:1.3rem">Cabaña ${A.esc(c.nombre)}</h3>
       <p style="color:var(--texto2);margin-top:.3rem">${A.esc(c.descripcion || '')}</p>
-      <p style="margin-top:.6rem">👥 Hasta <strong>${c.capacidad} personas</strong> · 🛏️ ${c.habitaciones} habitaciones · 🌙 mínimo ${c.minimo_noches} noches
+      <p style="margin-top:.6rem">👥 Hasta <strong>${c.capacidad} personas</strong> · 🛏️ ${c.habitaciones} habitaciones · 🌙 mínimo ${c.minimo_noches} noches (3 en temporada alta)
         ${aj.checkin ? ` · 🕑 Entrada ${A.esc(aj.checkin)} · salida ${A.esc(aj.checkout)}` : ''}</p>
       <div class="equip">${(c.equipamiento || []).map(e => `<span>${A.esc(e)}</span>`).join('')}</div>`;
   }

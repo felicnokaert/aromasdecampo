@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Guía de Colón, Entre Ríos: qué hacer cerca de las cabañas — Aromas de Campo</title>
+  <meta name="description" content="Termas, playas sobre el río Uruguay, el Parque Nacional El Palmar, el Molino Forclaz y más. Qué hacer en Colón, Entre Ríos, cerca de las cabañas de tronco Aromas de Campo.">
+  <meta property="og:title" content="Guía de Colón, Entre Ríos — Aromas de Campo">
+  <meta property="og:description" content="Termas, playas, El Palmar y paseos para armar tu escapada a Colón.">
+  <meta property="og:image" content="fotos/hero-poster.jpg">
+  <link rel="icon" type="image/png" href="logo/favicon-dark.png">
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    :root { --verde: #7A8C72; --verde-osc: #4F6049; --beige: #C8B89A; --crema: #F5EFE4; --oscuro: #1C2B1E; --blanco: #FAFAF7; --texto2: #5E5E5E; --borde: #E2D9C8; --wa: #25D366; }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'Inter', sans-serif; background: var(--crema); color: #1E1E1E; line-height: 1.6; }
+    h1, h2, h3 { font-family: 'Playfair Display', serif; line-height: 1.2; }
+    a { color: inherit; }
+    .top { position: sticky; top: 0; z-index: 50; background: rgba(250,250,247,.95); backdrop-filter: blur(8px); border-bottom: 1px solid var(--borde); }
+    .top-in { max-width: 1100px; margin: auto; padding: .7rem 1.2rem; display: flex; justify-content: space-between; align-items: center; gap: 1rem; }
+    .top img { height: 46px; }
+    .top nav { display: flex; gap: .8rem; align-items: center; font-size: .92rem; }
+    .top nav a { text-decoration: none; color: var(--texto2); }
+    .btn { display: inline-flex; align-items: center; gap: .4rem; background: var(--verde); color: #fff !important; padding: .75rem 1.2rem; border-radius: 999px; font-weight: 600; text-decoration: none; transition: transform .15s, box-shadow .25s; }
+    .btn:hover { box-shadow: 0 8px 20px rgba(94,111,87,.35); transform: translateY(-1px); }
+    .btn:active { transform: scale(.97); }
+    .hero { position: relative; min-height: 52vh; display: flex; align-items: flex-end; color: #fff;
+            background: linear-gradient(180deg, rgba(17,26,18,.15), rgba(17,26,18,.82)), url('fotos/hero-poster.jpg') center/cover; }
+    .hero-in { max-width: 1100px; margin: auto; padding: 3rem 1.2rem 2.4rem; width: 100%; }
+    .hero h1 { font-size: clamp(2rem, 5vw, 3.2rem); animation: subir .8s cubic-bezier(.2,.8,.2,1) both; }
+    .hero p { max-width: 620px; margin-top: .7rem; opacity: .92; animation: subir .8s .12s cubic-bezier(.2,.8,.2,1) both; }
+    main { max-width: 1100px; margin: auto; padding: 2.2rem 1.2rem 3rem; }
+    .intro { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: .8rem; margin-bottom: 2.4rem; }
+    .dato { background: var(--blanco); border-radius: 16px; padding: 1rem 1.1rem; box-shadow: 0 2px 10px rgba(60,50,30,.06); }
+    .dato b { display: block; font-size: 1.4rem; font-family: 'Playfair Display', serif; color: var(--verde-osc); }
+    .dato span { color: var(--texto2); font-size: .9rem; }
+    .seccion { margin-top: 2.6rem; }
+    .seccion > h2 { font-size: 1.8rem; margin-bottom: .3rem; }
+    .seccion > p { color: var(--texto2); margin-bottom: 1.1rem; }
+    .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(270px, 1fr)); gap: 1rem; }
+    .lugar { background: var(--blanco); border-radius: 18px; padding: 1.3rem 1.3rem 1.1rem; box-shadow: 0 2px 12px rgba(60,50,30,.07);
+             transition: transform .25s cubic-bezier(.2,.8,.2,1), box-shadow .25s; display: flex; flex-direction: column; }
+    .lugar:hover { transform: translateY(-4px); box-shadow: 0 12px 28px rgba(60,50,30,.12); }
+    .lugar .ico { font-size: 2rem; }
+    .lugar h3 { font-size: 1.25rem; margin: .4rem 0 .3rem; }
+    .lugar .dist { font-size: .8rem; font-weight: 600; color: var(--verde-osc); background: #E8EEE4; border-radius: 999px; padding: .15rem .6rem; display: inline-block; margin-bottom: .5rem; }
+    .lugar p { color: #444; font-size: .95rem; flex: 1; }
+    .lugar a.mapa { margin-top: .8rem; font-size: .88rem; font-weight: 600; color: var(--verde-osc); text-decoration: none; }
+    .lugar a.mapa:hover { text-decoration: underline; }
+    .plan { background: var(--oscuro); color: #E9E9E1; border-radius: 22px; padding: 2rem 1.5rem; margin-top: 3rem; }
+    .plan h2 { color: #fff; font-size: 1.7rem; }
+    .dias { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1rem; margin-top: 1.2rem; }
+    .dias div { background: rgba(255,255,255,.06); border-radius: 14px; padding: 1rem; }
+    .dias b { color: var(--beige); display: block; margin-bottom: .3rem; }
+    .cta { text-align: center; margin-top: 3rem; }
+    .cta h2 { font-size: 1.9rem; margin-bottom: .6rem; }
+    .cta p { color: var(--texto2); margin-bottom: 1.2rem; }
+    footer { background: #111A12; color: #C9C9C0; text-align: center; padding: 2rem 1rem; font-size: .9rem; }
+    footer a { color: #fff; }
+    .nota { font-size: .82rem; color: var(--texto2); margin-top: 1.6rem; text-align: center; }
+    @keyframes subir { from { opacity: 0; transform: translateY(18px); } to { opacity: 1; transform: none; } }
+    .revelar { opacity: 0; transform: translateY(22px); transition: opacity .7s cubic-bezier(.2,.8,.2,1), transform .7s cubic-bezier(.2,.8,.2,1); }
+    .revelar.visible { opacity: 1; transform: none; }
+    :focus-visible { outline: 3px solid var(--verde-osc); outline-offset: 2px; }
+    @media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation: none !important; transition: none !important; } .revelar { opacity: 1; transform: none; } }
+  </style>
+</head>
+<body>
+<header class="top"><div class="top-in">
+  <a href="index.html" aria-label="Inicio"><img src="logo/aromas-color.png" alt="Aromas de Campo"></a>
+  <nav><a href="index.html">Inicio</a><a class="btn" href="reservas.html" style="padding:.55rem 1rem">Ver fechas</a></nav>
+</div></header>
+
+<section class="hero"><div class="hero-in">
+  <h1>Guía de Colón</h1>
+  <p>Termas frente al río, playas de arena, palmeras centenarias y pueblos con historia. Todo lo que podés hacer cerca de las cabañas, para armar tu escapada.</p>
+</div></section>
+
+<main>
+  <div class="intro revelar">
+    <div class="dato"><b>~320 km</b><span>desde Buenos Aires, por Autopista y Ruta Nacional 14</span></div>
+    <div class="dato"><b>5 playas</b><span>sobre el río Uruguay, cerca de 14 km de costa</span></div>
+    <div class="dato"><b>~50 km</b><span>hasta el Parque Nacional El Palmar</span></div>
+    <div class="dato"><b>Todo el año</b><span>termas en invierno, río y playa en verano</span></div>
+  </div>
+
+  <section class="seccion">
+    <h2 class="revelar">💧 Termas y río</h2>
+    <p class="revelar">Para descansar de verdad.</p>
+    <div class="grid">
+      <article class="lugar revelar"><span class="ico">♨️</span><h3>Termas de Colón</h3><span class="dist">En la ciudad</span>
+        <p>Complejo de piletas de aguas termales con spa y parque acuático, frente al río Uruguay. Ideal en cualquier época del año.</p>
+        <a class="mapa" target="_blank" rel="noopener" href="https://www.google.com/maps/search/?api=1&query=Termas+de+Col%C3%B3n+Entre+R%C3%ADos">Ver en el mapa →</a></article>
+      <article class="lugar revelar"><span class="ico">🏖️</span><h3>Playas del río Uruguay</h3><span class="dist">En la ciudad</span>
+        <p>Cinco playas de arena a lo largo de la costa, con atardeceres sobre el río. Kayak, lanchas, pesca y mate en la costanera.</p>
+        <a class="mapa" target="_blank" rel="noopener" href="https://www.google.com/maps/search/?api=1&query=Playa+Norte+Col%C3%B3n+Entre+R%C3%ADos">Ver en el mapa →</a></article>
+      <article class="lugar revelar"><span class="ico">🌊</span><h3>Termas de Villa Elisa</h3><span class="dist">~30 minutos</span>
+        <p>Termas de aguas saladas, otra opción tranquila para un día de relax cerca de Colón.</p>
+        <a class="mapa" target="_blank" rel="noopener" href="https://www.google.com/maps/search/?api=1&query=Termas+Villa+Elisa+Entre+R%C3%ADos">Ver en el mapa →</a></article>
+    </div>
+  </section>
+
+  <section class="seccion">
+    <h2 class="revelar">🌴 Naturaleza</h2>
+    <p class="revelar">Lo que vinieron a buscar.</p>
+    <div class="grid">
+      <article class="lugar revelar"><span class="ico">🌴</span><h3>Parque Nacional El Palmar</h3><span class="dist">~50 km al norte</span>
+        <p>Uno de los últimos bosques de palmeras yatay. Senderos, miradores, arroyos y fauna como carpinchos. Llevá agua y repelente.</p>
+        <a class="mapa" target="_blank" rel="noopener" href="https://www.google.com/maps/search/?api=1&query=Parque+Nacional+El+Palmar">Ver en el mapa →</a></article>
+      <article class="lugar revelar"><span class="ico">🏞️</span><h3>Pueblo Liebig</h3><span class="dist">Cerca de Colón</span>
+        <p>Pueblo nacido alrededor de una antigua fábrica de extracto de carne, con herencia inglesa y una larga playa sobre el río.</p>
+        <a class="mapa" target="_blank" rel="noopener" href="https://www.google.com/maps/search/?api=1&query=Pueblo+Liebig+Entre+R%C3%ADos">Ver en el mapa →</a></article>
+      <article class="lugar revelar"><span class="ico">🌳</span><h3>Parque Quirós</h3><span class="dist">En la ciudad</span>
+        <p>Espacio verde de la ciudad para caminar, andar en bici o hacer un picnic a la sombra.</p>
+        <a class="mapa" target="_blank" rel="noopener" href="https://www.google.com/maps/search/?api=1&query=Parque+Quir%C3%B3s+Col%C3%B3n">Ver en el mapa →</a></article>
+    </div>
+  </section>
+
+  <section class="seccion">
+    <h2 class="revelar">🏛️ Historia y sabores</h2>
+    <p class="revelar">Para los días de paseo.</p>
+    <div class="grid">
+      <article class="lugar revelar"><span class="ico">⚙️</span><h3>Molino Forclaz</h3><span class="dist">Entre Colón y San José</span>
+        <p>Molino del siglo XIX construido por inmigrantes suizos. Hoy es museo, con visitas guiadas y pan artesanal.</p>
+        <a class="mapa" target="_blank" rel="noopener" href="https://www.google.com/maps/search/?api=1&query=Molino+Forclaz">Ver en el mapa →</a></article>
+      <article class="lugar revelar"><span class="ico">🏰</span><h3>Palacio San José</h3><span class="dist">Cerca de Concepción del Uruguay</span>
+        <p>La residencia del General Urquiza, hoy museo histórico. Un viaje a la organización del país.</p>
+        <a class="mapa" target="_blank" rel="noopener" href="https://www.google.com/maps/search/?api=1&query=Palacio+San+Jos%C3%A9+Urquiza">Ver en el mapa →</a></article>
+      <article class="lugar revelar"><span class="ico">🍷</span><h3>Bodega Vulliez Sermet</h3><span class="dist">Zona de Colón</span>
+        <p>Recorridos y catas de vino de la zona, con la tradición de los colonos.</p>
+        <a class="mapa" target="_blank" rel="noopener" href="https://www.google.com/maps/search/?api=1&query=Bodega+Vulliez+Sermet">Ver en el mapa →</a></article>
+      <article class="lugar revelar"><span class="ico">🛍️</span><h3>Calle 12 de Abril y Mercado de Artesanías</h3><span class="dist">Centro</span>
+        <p>El centro para caminar de noche: locales, artesanías regionales, quesos y dulces para llevar.</p>
+        <a class="mapa" target="_blank" rel="noopener" href="https://www.google.com/maps/search/?api=1&query=Calle+12+de+Abril+Col%C3%B3n+Entre+R%C3%ADos">Ver en el mapa →</a></article>
+    </div>
+  </section>
+
+  <section class="plan revelar">
+    <h2>Una escapada de 3 días</h2>
+    <div class="dias">
+      <div><b>Día 1 · Llegada</b>Check-in, fuego en la parrilla y atardecer en la costanera.</div>
+      <div><b>Día 2 · Naturaleza</b>Mañana en El Palmar, tarde de pileta en las cabañas.</div>
+      <div><b>Día 3 · Relax</b>Termas de Colón, Molino Forclaz y paseo por el centro antes de volver.</div>
+    </div>
+  </section>
+
+  <section class="cta revelar">
+    <h2>¿Cuándo venís?</h2>
+    <p>Mirá las fechas libres y el precio exacto. Reservás directo, en pesos y sin comisiones.</p>
+    <a class="btn" href="reservas.html">Ver disponibilidad y precios</a>
+  </section>
+  <p class="nota">Antes de ir, chequeá horarios y precios de cada lugar en sus canales oficiales.</p>
+</main>
+
+<footer>
+  <p>Aromas de Campo · Cabañas de tronco en Colón, Entre Ríos</p>
+  <p style="margin-top:.4rem"><a href="index.html">Inicio</a> · <a href="reservas.html">Reservas</a> · <a href="https://instagram.com/aromasdecampo22" target="_blank" rel="noopener">Instagram</a></p>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="js/aromas.js"></script>
+<script>
+  const io = new IntersectionObserver(es => es.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); io.unobserve(e.target); } }), { threshold: .12 });
+  document.querySelectorAll('.revelar').forEach((el, i) => { el.style.transitionDelay = (i % 4) * 70 + 'ms'; io.observe(el); });
+  if (window.Aromas) { Aromas.track('visita', 'guia'); Aromas.escucharWhatsApp(); }
+</script>
+</body>
+</html>

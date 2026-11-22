@@ -46,7 +46,7 @@ Deno.serve(async (req) => {
           <tr><td style="padding:6px 0;color:#666">Código</td><td>${esc(r.codigo)}</td></tr>
         </table>
         ${r.mensaje ? `<p style="background:#F0EBE1;padding:10px;border-radius:8px">💬 ${esc(r.mensaje)}</p>` : ""}
-        <p>Las fechas quedan guardadas hasta que llegue la seña. Cuando la recibas, confirmala en el panel.</p>
+        <p>Ojo: hasta que no pague la seña <b>las fechas siguen libres</b> para otros. Cuando te llegue la seña, confirmala en el panel con un toque.</p>
         <p><a href="https://wa.me/${tel}" style="background:#25D366;color:#fff;padding:12px 18px;border-radius:10px;text-decoration:none;font-weight:bold">Escribirle por WhatsApp</a>
            &nbsp; <a href="${panel}" style="background:#7A8C72;color:#fff;padding:12px 18px;border-radius:10px;text-decoration:none;font-weight:bold">Abrir el panel</a></p>
       </div>`;

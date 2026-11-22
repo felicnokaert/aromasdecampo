@@ -1763,7 +1763,7 @@
         "name": "¿Qué incluye el precio de las cabañas?",
         "acceptedAnswer": {
           "@type": "Answer",
-          "text": "El precio incluye ropa de cama, toallas, WiFi, parrilla exclusiva, utensilios de cocina y acceso a la pileta del complejo."
+          "text": "Se alquila solo el alojamiento: cabaña equipada, parrilla exclusiva, utensilios de cocina y acceso a la pileta del complejo. No incluye ropa de cama ni toallas."
         }
       },
       {
@@ -1771,7 +1771,7 @@
         "name": "¿Aceptan mascotas en Aromas de Campo?",
         "acceptedAnswer": {
           "@type": "Answer",
-          "text": "Sí, aceptamos mascotas con previo aviso y evaluación caso a caso."
+          "text": "No, no se aceptan mascotas."
         }
       },
       {
@@ -1817,18 +1817,11 @@
       {"@type": "LocationFeatureSpecification", "name": "Pileta", "value": true},
       {"@type": "LocationFeatureSpecification", "name": "WiFi gratuito", "value": true},
       {"@type": "LocationFeatureSpecification", "name": "Parrilla privada", "value": true},
-      {"@type": "LocationFeatureSpecification", "name": "Estacionamiento", "value": true},
-      {"@type": "LocationFeatureSpecification", "name": "Mascotas permitidas", "value": true}
+      {"@type": "LocationFeatureSpecification", "name": "Estacionamiento", "value": true}
     ],
     "numberOfRooms": 3,
-    "petsAllowed": true,
+    "petsAllowed": false,
     "priceRange": "$$",
-    "aggregateRating": {
-      "@type": "AggregateRating",
-      "ratingValue": "4.9",
-      "reviewCount": "47",
-      "bestRating": "5"
-    },
     "hasMap": "https://maps.google.com/maps?q=Aromas+de+campo,+Col%C3%B3n,+Entre+R%C3%ADos"
   }
   </script>
@@ -1858,7 +1851,8 @@
       <li><a href="#reels">Videos</a></li>
       <li><a href="#testimonios">Opiniones</a></li>
       <li><a href="#faq">FAQ</a></li>
-      <li><a href="reservas.html">Precios y reservas</a></li>
+      <li><a href="guia.html">Guía de Colón</a></li>
+        <li><a href="reservas.html">Precios y reservas</a></li>
     </ul>
 
     <!-- CTA desktop -->
@@ -1885,7 +1879,8 @@
     <a href="#testimonios" onclick="cerrarMenu()">Opiniones</a>
     <a href="#faq" onclick="cerrarMenu()">FAQ</a>
     <a href="#ubicacion" onclick="cerrarMenu()">Ubicación</a>
-    <a href="reservas.html">Precios y reservas</a>
+    <a href="guia.html">Guía de Colón</a>
+      <a href="reservas.html">Precios y reservas</a>
     <a href="https://wa.me/5491169495055?text=Hola!%20Quiero%20consultar%20disponibilidad%20en%20Aromas%20de%20Campo."
        target="_blank" rel="noopener noreferrer"
        class="btn btn-primario" onclick="cerrarMenu()">
@@ -1943,7 +1938,7 @@
       </a>
     </div>
 
-    <p class="hero-trust fade-in delay-4">⭐ 4.9 promedio &nbsp;·&nbsp; +200 familias &nbsp;·&nbsp; Respuesta en menos de 1 hora</p>
+    <p class="hero-trust fade-in delay-4">Reservá directo &nbsp;·&nbsp; Sin comisiones &nbsp;·&nbsp; Precios en pesos</p>
   </div>
 
   <!-- Scroll indicator -->
@@ -1966,12 +1961,12 @@
       <span class="stat-label">Personas por cabaña</span>
     </div>
     <div class="stat-item fade-in delay-3">
-      <span class="stat-numero" data-prefix="+" data-target="200">0</span>
-      <span class="stat-label">Familias hospedadas</span>
+      <span class="stat-numero" data-target="2">0</span>
+      <span class="stat-label">Habitaciones por cabaña</span>
     </div>
     <div class="stat-item fade-in delay-4">
-      <span class="stat-numero">4.9★</span>
-      <span class="stat-label">Calificación promedio</span>
+      <span class="stat-numero" data-target="365">0</span>
+      <span class="stat-label">Días al año abiertos</span>
     </div>
   </div>
 </section>
@@ -2123,7 +2118,7 @@
     <div class="amenity-card fade-in delay-2">
       <span class="amenity-icono" aria-hidden="true">📶</span>
       <h3 class="amenity-titulo">WiFi y confort</h3>
-      <p class="amenity-desc">TV, cocina equipada, ropa de cama incluida. Todo lo necesario sin que sobre nada.</p>
+      <p class="amenity-desc">TV y cocina equipada. Traé tu ropa de cama y toallas.</p>
     </div>
     <div class="amenity-card fade-in delay-3">
       <span class="amenity-icono" aria-hidden="true">🌅</span>
@@ -2424,42 +2419,13 @@
 <!-- =====================================================
      SECCIÓN: TESTIMONIOS
 ===================================================== -->
-<section id="testimonios" aria-label="Opiniones de huéspedes">
-  <div class="seccion-header fade-in">
+<section id="testimonios" aria-label="Opiniones de huéspedes" hidden>
+  <div class="seccion-header fade-in visible">
     <h2 class="titulo-seccion">Lo que dicen<br>los que ya vinieron</h2>
     <div class="separador centrado"></div>
+    <p class="subtitulo-seccion" id="resumen-resenas" style="margin:1rem auto 0"></p>
   </div>
-
-  <div class="testi-grid">
-
-    <div class="testi-card fade-in delay-1">
-      <div class="testi-estrellas" aria-label="5 estrellas">★★★★★</div>
-      <p class="testi-texto">Volvimos por segundo año seguido. Las cabañas son increíbles, los dueños súper atentos. Los chicos no querían irse.</p>
-      <div class="testi-autor">
-        <span class="testi-nombre">Familia Rodríguez</span>
-        <span class="testi-detalle">Buenos Aires · Cabaña Olivia</span>
-      </div>
-    </div>
-
-    <div class="testi-card fade-in delay-2">
-      <div class="testi-estrellas" aria-label="5 estrellas">★★★★★</div>
-      <p class="testi-texto">El lugar más tranquilo que encontramos cerca del río. La cabaña Emma es perfecta para dos. Sin duda volvemos en julio.</p>
-      <div class="testi-autor">
-        <span class="testi-nombre">Lucía y Tomás</span>
-        <span class="testi-detalle">Rosario · Cabaña Emma</span>
-      </div>
-    </div>
-
-    <div class="testi-card fade-in delay-3">
-      <div class="testi-estrellas" aria-label="5 estrellas">★★★★★</div>
-      <p class="testi-texto">Reservamos la Sofía para el fin de semana largo. La parrilla, la pileta, todo perfecto. Precio justo y atención de 10.</p>
-      <div class="testi-autor">
-        <span class="testi-nombre">Martín y amigos</span>
-        <span class="testi-detalle">Córdoba · Cabaña Sofía</span>
-      </div>
-    </div>
-
-  </div>
+  <div class="testi-grid" id="testi-grid"></div>
 </section>
 
 <!-- =====================================================
@@ -2490,7 +2456,7 @@
         <span class="faq-icono" aria-hidden="true">+</span>
       </button>
       <div class="faq-respuesta" hidden>
-        <p>El precio incluye <strong>ropa de cama, toallas, WiFi, parrilla exclusiva, utensilios de cocina</strong> y acceso a la pileta del complejo. No incluye leña ni carbón (disponible en el lugar). El desayuno no está incluido, pero hay cocina equipada en cada cabaña.</p>
+        <p>Se alquila <strong>solo el alojamiento</strong>: cabaña equipada, <strong>parrilla exclusiva, utensilios de cocina</strong> y acceso a la pileta del complejo. No incluye leña ni carbón (disponible en el lugar). El desayuno no está incluido, pero hay cocina equipada en cada cabaña.</p>
       </div>
     </div>
 
@@ -2500,7 +2466,7 @@
         <span class="faq-icono" aria-hidden="true">+</span>
       </button>
       <div class="faq-respuesta" hidden>
-        <p>Sí, <strong>aceptamos mascotas</strong> con previo aviso y evaluación caso a caso. Avisanos antes de reservar para confirmar disponibilidad y condiciones. El complejo tiene espacio al aire libre para que tu mascota también disfrute.</p>
+        <p>No, <strong>no se aceptan mascotas</strong>.</p>
       </div>
     </div>
 
@@ -2943,12 +2909,13 @@
   A.escucharWhatsApp();
   var hoy = A.hoy();
   Promise.all([
-    db.from('cabanas').select('id,slug,precio_base').eq('activa', true),
+    db.from('cabanas').select('id,slug,nombre,precio_base').eq('activa', true),
     db.rpc('calendario_publico', { p_desde: hoy, p_hasta: A.sumar(hoy, 180) }),
     db.from('preguntas').select('pregunta,respuesta').eq('visible', true).order('orden'),
-    db.from('ajustes').select('aviso').single()
+    db.from('ajustes').select('aviso,google_puntaje,google_cantidad,google_url').single(),
+    db.from('resenas').select('nombre,ciudad,estrellas,texto,respuesta,cabana_id').eq('aprobada', true).order('creada', { ascending: false })
   ]).then(function (r) {
-    var cabs = r[0].data || [], cal = r[1].data || [], faq = r[2].data || [], aj = r[3].data;
+    var cabs = r[0].data || [], cal = r[1].data || [], faq = r[2].data || [], aj = r[3].data, res = r[4].data || [];
     // "desde $X / noche" con el precio libre más bajo de los próximos 6 meses
     var minimo = {};
     cal.forEach(function (d) { if (d.libre) minimo[d.cabana_id] = Math.min(minimo[d.cabana_id] || Infinity, d.precio); });
@@ -2965,6 +2932,41 @@
           '<span class="faq-icono" aria-hidden="true">+</span></button><div class="faq-respuesta" hidden><p style="white-space:pre-line">' +
           A.esc(p.respuesta) + '</p></div></div>';
       }).join('');
+    }
+    // solo las cabañas que se alquilan hoy
+    var activas = cabs.map(function (c) { return c.slug; });
+    document.querySelectorAll('.card-precio[data-cabana]').forEach(function (el) {
+      if (activas.indexOf(el.dataset.cabana) < 0) { var card = el.closest('.card-cabana'); if (card) card.style.display = 'none'; }
+    });
+    var statCab = document.querySelector('.stat-numero[data-target="3"]');
+    if (statCab && cabs.length) statCab.dataset.target = String(cabs.length);
+    // puntaje real de Google
+    if (aj && aj.google_puntaje && aj.google_cantidad) {
+      var g = document.createElement('a');
+      g.href = aj.google_url || '#'; g.target = '_blank'; g.rel = 'noopener';
+      g.className = 'hero-trust fade-in visible';
+      g.style.cssText = 'display:inline-block;margin-top:.5rem;color:inherit;text-decoration:none;opacity:.95';
+      g.textContent = '★ ' + String(aj.google_puntaje).replace('.', ',') + ' en Google · ' + aj.google_cantidad + ' opiniones';
+      var trust = document.querySelector('p.hero-trust'); if (trust) trust.insertAdjacentElement('afterend', g);
+      if (!res.length) {
+        document.getElementById('resumen-resenas').innerHTML = '★ ' + String(aj.google_puntaje).replace('.', ',') + ' de promedio en Google, con ' + aj.google_cantidad + ' opiniones de huéspedes reales.';
+        document.getElementById('testi-grid').innerHTML = '<p style="grid-column:1/-1;text-align:center"><a class="btn btn-primario" target="_blank" rel="noopener" href="' + A.esc(aj.google_url || '#') + '">Leer las opiniones en Google</a></p>';
+        document.getElementById('testimonios').hidden = false;
+      }
+    }
+    // reseñas reales aprobadas en el panel
+    if (res.length) {
+      var nombreCab = function (id) { var c = cabs.find(function (k) { return k.id === id; }); return c ? 'Cabaña ' + c.nombre : ''; };
+      var prom = res.reduce(function (a, x) { return a + x.estrellas; }, 0) / res.length;
+      document.getElementById('resumen-resenas').textContent = (aj && aj.google_puntaje ? '★ ' + String(aj.google_puntaje).replace('.', ',') + ' en Google (' + aj.google_cantidad + ' opiniones) · ' : '') + '★ ' + prom.toFixed(1).replace('.', ',') + ' en nuestra web (' + res.length + ')';
+      document.getElementById('testi-grid').innerHTML = res.slice(0, 6).map(function (x, i) {
+        return '<div class="testi-card fade-in visible" style="animation-delay:' + (i * 80) + 'ms"><div class="testi-estrellas" aria-label="' + x.estrellas + ' estrellas">' +
+          '★★★★★'.slice(0, x.estrellas) + '<span style="opacity:.3">' + '★★★★★'.slice(x.estrellas) + '</span></div><p class="testi-texto">' + A.esc(x.texto) + '</p>' +
+          (x.respuesta ? '<p class="testi-texto" style="font-size:.88rem;opacity:.85;border-left:3px solid #7A8C72;padding-left:.6rem">💬 ' + A.esc(x.respuesta) + '</p>' : '') +
+          '<div class="testi-autor"><span class="testi-nombre">' + A.esc(x.nombre) + '</span><span class="testi-detalle">' +
+          A.esc([x.ciudad, nombreCab(x.cabana_id)].filter(Boolean).join(' · ')) + '</span></div></div>';
+      }).join('');
+      document.getElementById('testimonios').hidden = false;
     }
     // aviso opcional arriba de todo
     if (aj && aj.aviso) {

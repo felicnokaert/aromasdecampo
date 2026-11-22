@@ -111,6 +111,9 @@
     @media (max-width: 560px) { .f2 { grid-template-columns: 1fr; } }
     .fila-precio { display: grid; grid-template-columns: 1fr 140px 110px; gap: .6rem; align-items: end; padding: .7rem 0; border-bottom: 1px solid var(--beige); }
     @media (max-width: 560px) { .fila-precio { grid-template-columns: 1fr 1fr; } .fila-precio .nom { grid-column: 1 / -1; } }
+    .fila-precio.fp4 { grid-template-columns: 1fr 1fr 90px; }
+    .fila-precio.fp4 .nom { grid-column: 1 / -1; }
+    @media (max-width: 560px) { .fila-precio.fp4 { grid-template-columns: 1fr 1fr; } .fila-precio.fp4 label:last-child { grid-column: 1 / -1; } }
     .temporada { display: flex; justify-content: space-between; gap: .6rem; align-items: center; padding: .7rem 0; border-bottom: 1px solid var(--beige); }
     .pct-mas { color: var(--naranja); font-weight: 700; } .pct-menos { color: #2F5A27; font-weight: 700; }
     .ayuda { background: var(--azul-claro); color: var(--azul); border-radius: 12px; padding: .8rem 1rem; font-size: .92rem; margin-bottom: 1rem; }
@@ -135,6 +138,24 @@
 
     .toast { position: fixed; left: 50%; bottom: 100px; transform: translateX(-50%); background: var(--oscuro); color: #fff; padding: .8rem 1.2rem; border-radius: 12px; z-index: 80; font-weight: 600; box-shadow: 0 6px 20px rgba(0,0,0,.25); max-width: 90vw; text-align: center; }
     .toast.mal { background: var(--rojo); }
+
+    .alerta { background: var(--rojo-claro); border: 1.5px solid #E8B4B0; border-radius: 14px; padding: 1rem; margin-bottom: 1rem; }
+    .alerta.aviso { background: var(--azul-claro); border-color: #C8D7E8; }
+    .alerta p { margin-bottom: .6rem; }
+    .tarea { display: flex; gap: .8rem; align-items: center; justify-content: space-between; padding: .75rem 0; border-bottom: 1px solid var(--beige); flex-wrap: wrap; }
+    .tarea:last-child { border-bottom: none; }
+    .link-copiar { display: flex; gap: .4rem; align-items: center; margin: .35rem 0 .8rem; }
+    .link-copiar input { font-size: .8rem; padding: .55rem .6rem; background: var(--beige); }
+    .plat { border: 1.5px solid var(--borde); border-radius: 14px; padding: 1rem; margin-bottom: .8rem; }
+    .plat h3 { font-size: 1.05rem; margin-bottom: .4rem; }
+    .estado-sync { font-size: .85rem; color: var(--texto2); }
+    .estado-sync.ok { color: #2F5A27; } .estado-sync.mal { color: var(--rojo); }
+    .estrellas { color: #D9A21B; letter-spacing: 2px; font-size: 1.05rem; }
+    .resena { border-bottom: 1px solid var(--beige); padding: .9rem 0; }
+    .resena:last-child { border-bottom: none; }
+    .sel-estrellas { display: flex; gap: .3rem; font-size: 2rem; }
+    .sel-estrellas button { background: none; border: none; color: #D8D0BF; transition: transform .15s, color .15s; }
+    .sel-estrellas button.on { color: #D9A21B; } .sel-estrellas button:active { transform: scale(1.2); }
 
     /* ===== Movimiento y carga ===== */
     @keyframes subir { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: none; } }
@@ -315,23 +336,27 @@
 
   async function cargarTodo() {
     const desde = A.sumar(A.hoy(), -400);
-    const [c, a, r, t, p] = await Promise.all([
+    const [c, a, r, t, p, al, ce, rs] = await Promise.all([
       db.from('cabanas').select('*').order('orden'),
       db.from('ajustes').select('*').single(),
       db.from('reservas').select('*').gte('salida', desde).order('entrada'),
       db.from('temporadas').select('*').order('desde'),
-      db.from('preguntas').select('*').order('orden')
+      db.from('preguntas').select('*').order('orden'),
+      db.from('alertas').select('*').eq('vista', false).order('creada', { ascending: false }),
+      db.from('calendarios_externos').select('*'),
+      db.from('resenas').select('*').order('creada', { ascending: false })
     ]);
-    [c, a, r, t, p].forEach(x => x.error && error(x.error));
+    [c, a, r, t, p, al, ce, rs].forEach(x => x.error && error(x.error));
+    S.alertas = al.data || []; S.calExt = ce.data || []; S.resenas = rs.data || [];
     S.cabanas = c.data || []; S.ajustes = a.data || {}; S.reservas = r.data || []; S.temporadas = t.data || []; S.preguntas = p.data || [];
     S.cal.cab ||= (S.cabanas[0] || {}).id;
     // las pendientes vencidas se muestran como "vencidas" pero no ocupan lugar
     pintarBadge();
   }
   const pendientesVivas = () => S.reservas.filter(r => r.estado === 'pendiente');
-  const vencida = r => r.estado === 'pendiente' && r.vence && new Date(r.vence) < new Date();
+  const vencida = () => false;
   function pintarBadge() {
-    const n = pendientesVivas().length;
+    const n = pendientesVivas().length + (S.alertas || []).length;
     const b = document.querySelector('nav.abajo [data-v="inicio"]');
     b.innerHTML = `<span>🏠</span>Inicio${n ? `<sup class="badge">${n}</sup>` : ''}`;
   }
@@ -341,7 +366,7 @@
   function ir(v) {
     if (!VISTAS[v]) v = 'inicio';
     S.vista = v; location.hash = v;
-    document.querySelectorAll('nav.abajo button').forEach(b => b.classList.toggle('act', b.dataset.v === v || (['preguntas','cabanas','ajustes','estadisticas'].includes(v) && b.dataset.v === 'mas')));
+    document.querySelectorAll('nav.abajo button').forEach(b => b.classList.toggle('act', b.dataset.v === v || (['preguntas','cabanas','ajustes','estadisticas','sync','resenas'].includes(v) && b.dataset.v === 'mas')));
     window.scrollTo({ top: 0, behavior: 'smooth' });
     const vi = $('vista'); vi.classList.remove('vista-anim'); void vi.offsetWidth; vi.classList.add('vista-anim');
     VISTAS[v]();
@@ -400,7 +425,20 @@
   function confirmarReserva(r) {
     confirmar(`¿Confirmar la reserva de ${esc(r.nombre || '')}?<br><small style="font-family:Inter;font-weight:400;font-size:1rem;color:var(--texto2)">Hacelo cuando ya te llegó la seña de ${A.pesos(r.sena)}.</small>`, 'Sí, llegó la seña', async () => {
       await cambiarEstado(r, 'confirmada');
-      if (r.telefono) {
+      const otros = S.reservas.filter(x => x.id !== r.id && x.estado === 'pendiente' && x.cabana_id === r.cabana_id && x.entrada < r.salida && x.salida > r.entrada);
+      if (otros.length) {
+        setTimeout(() => modal(`<h2>¡Confirmada! ✓</h2><p class="ayuda">Había ${otros.length === 1 ? 'otro pedido' : otros.length + ' pedidos'} por esas mismas fechas. Avisales que ya se ocuparon:</p>` +
+          otros.map(o => `<div class="tarea"><div><b>${esc(o.nombre)}</b><br><small class="vacio">${A.corto(o.entrada)} al ${A.corto(o.salida)}</small></div><div class="botones" style="margin:0">
+            ${o.telefono ? `<a class="btn wa chico" target="_blank" rel="noopener" href="https://wa.me/${telWa(o.telefono)}?text=${encodeURIComponent(`Hola ${primerNombre(o)}! Te escribo de Aromas de Campo. Las fechas que consultaste en la cabaña ${cabNombre(o.cabana_id)} (${A.corto(o.entrada)} al ${A.corto(o.salida)}) ya se reservaron. ¿Querés que te pase otras fechas u otra cabaña? 🌿`)}">Avisar</a>` : ''}
+            <button class="btn rojo chico" data-canc-otro="${o.id}">Cancelar pedido</button></div></div>`).join('') +
+          `<button class="btn sec grande" style="margin-top:1rem" data-cerrar>Listo</button>`, () => {
+            document.querySelectorAll('[data-canc-otro]').forEach(b => b.onclick = async () => {
+              const o = S.reservas.find(x => x.id === Number(b.dataset.cancOtro));
+              const { error: err } = await db.from('reservas').update({ estado: 'cancelada' }).eq('id', o.id); if (err) return error(err);
+              o.estado = 'cancelada'; b.textContent = 'Cancelado ✓'; b.disabled = true; pintarBadge();
+            });
+          }), 60);
+      } else if (r.telefono) {
         const txt = `Hola ${(r.nombre || '').split(' ')[0]}! Recibimos tu seña. Tu reserva ${r.codigo} en la cabaña ${cabNombre(r.cabana_id)} del ${A.lindo(r.entrada)} al ${A.lindo(r.salida)} está CONFIRMADA. Entrada desde las ${S.ajustes.checkin || '14 hs'}. ¡Te esperamos! 🌿 Aromas de Campo`;
         setTimeout(() => modal(`<h2>¡Confirmada! ✓</h2><p style="margin-bottom:1rem">¿Le avisás al huésped por WhatsApp? Ya está escrito el mensaje.</p>
           <a class="btn wa grande" target="_blank" rel="noopener" href="https://wa.me/${telWa(r.telefono)}?text=${encodeURIComponent(txt)}" data-cerrar>Avisar por WhatsApp</a>
@@ -458,7 +496,7 @@
         ${esBloqueo ? `<label>Motivo <small>(opcional)</small><input name="notas" value="${esc(r.notas || '')}" placeholder="Ej: pintura, familia"></label>` : `
         <label>Nombre<input name="nombre" value="${esc(r.nombre || '')}" required></label>
         <div class="f2"><label>Teléfono<input type="tel" name="telefono" value="${esc(r.telefono || '')}"></label>
-        <label>Personas<input type="number" name="personas" min="1" max="20" value="${r.personas || 2}"></label></div>
+        <label>Personas<input type="number" name="personas" min="1" max="4" value="${r.personas || 2}"></label></div>
         <div class="f2"><label>Total $<input type="number" name="total" min="0" step="500" value="${r.total || ''}" placeholder="Se calcula solo"></label>
         <label>Seña $<input type="number" name="sena" min="0" step="100" value="${r.sena || ''}"></label></div>
         <div class="f2"><label>Vino por<select name="origen">${Object.entries(ORIGENES).filter(([k]) => k !== 'bloqueo').map(([k, v]) => `<option value="${k}" ${k === r.origen ? 'selected' : ''}>${v}</option>`).join('')}</select></label>
@@ -472,10 +510,10 @@
       const calcular = async () => {
         if (esBloqueo || !f.entrada.value || !f.salida.value || f.salida.value <= f.entrada.value || f.total.dataset.tocado) return;
         let total = 0; // estimación con los precios cargados
-        const { data } = await db.rpc('cotizar', { p_cabana: Number(f.cabana_id.value), p_entrada: f.entrada.value, p_salida: f.salida.value });
+        const { data } = await db.rpc('cotizar', { p_cabana: Number(f.cabana_id.value), p_entrada: f.entrada.value, p_salida: f.salida.value, p_personas: Number(f.personas.value) || 2 });
         if (data && data.total) { total = data.total; f.total.value = total; f.sena.value = data.sena; }
       };
-      if (!esBloqueo) { f.total.oninput = () => f.total.dataset.tocado = 1; ['entrada', 'salida', 'cabana_id'].forEach(n => f[n].addEventListener('change', calcular)); }
+      if (!esBloqueo) { f.total.oninput = () => f.total.dataset.tocado = 1; ['entrada', 'salida', 'cabana_id', 'personas'].forEach(n => f[n].addEventListener('change', calcular)); }
       f.onsubmit = async e => {
         e.preventDefault();
         const v = Object.fromEntries(new FormData(f));
@@ -498,6 +536,20 @@
     });
   }
 
+  const primerNombre = r => (r.nombre || '').split(' ')[0];
+  const web = () => location.origin;
+  function msgRecordatorio(r) {
+    const a = S.ajustes;
+    return `Hola ${primerNombre(r)}! Te esperamos el ${A.lindo(r.entrada)} en la cabaña ${cabNombre(r.cabana_id)} 🌿 ` +
+      `La entrada es desde las ${a.checkin || '14 hs'} y la salida el ${A.lindo(r.salida)} hasta las ${a.checkout || '11 hs'}.` +
+      (a.info_llegada ? `\n\n${a.info_llegada}` : '') + `\n\nCualquier cosa nos escribís. ¡Buen viaje!`;
+  }
+  const msgResena = r => `Hola ${primerNombre(r)}! Gracias por elegir Aromas de Campo 🌿 ¿Nos contás cómo la pasaste? Es un minuto y nos ayuda muchísimo: ${web()}/opinar.html?c=${r.codigo}`;
+  async function marcar(r, campo) {
+    const { error: err } = await db.from('reservas').update({ [campo]: true }).eq('id', r.id);
+    if (err) return error(err); r[campo] = true; aviso('Listo ✓'); VISTAS[S.vista]();
+  }
+
   // ======================= INICIO =======================
   VISTAS.inicio = async () => {
     const hoy = A.hoy(), en14 = A.sumar(hoy, 14);
@@ -505,7 +557,19 @@
     const llegan = S.reservas.filter(r => r.estado === 'confirmada' && r.entrada >= hoy && r.entrada <= en14);
     const adentro = S.reservas.filter(r => r.estado === 'confirmada' && r.entrada <= hoy && r.salida > hoy);
     const saludo = new Date().getHours() < 13 ? 'Buen día' : new Date().getHours() < 20 ? 'Buenas tardes' : 'Buenas noches';
-    $('vista').innerHTML = `<h1 class="titulo">${saludo} 👋</h1>
+    const recordar = S.reservas.filter(r => r.estado === 'confirmada' && r.telefono && !r.recordatorio_enviado && r.entrada > hoy && r.entrada <= A.sumar(hoy, 2));
+    const opinar = S.reservas.filter(r => r.estado === 'confirmada' && r.telefono && !r.resena_pedida && r.codigo
+      && ['web', 'whatsapp', 'instagram', 'otro'].includes(r.origen) && r.salida <= hoy && r.salida >= A.sumar(hoy, -3));
+    const tareas = recordar.map(r => `<div class="tarea"><div>🚗 <b>${esc(r.nombre)}</b> llega el ${A.lindo(r.entrada)}<br><small class="vacio">Mandale el recordatorio con cómo llegar</small></div>
+        <div class="botones" style="margin:0"><a class="btn wa chico" target="_blank" rel="noopener" href="https://wa.me/${telWa(r.telefono)}?text=${encodeURIComponent(msgRecordatorio(r))}">WhatsApp</a>
+        <button class="btn sec chico" data-hecho="${r.id}" data-campo="recordatorio_enviado">✓ Ya lo mandé</button></div></div>`).join('') +
+      opinar.map(r => `<div class="tarea"><div>⭐ <b>${esc(r.nombre)}</b> se fue el ${A.lindo(r.salida)}<br><small class="vacio">Pedile que deje su opinión</small></div>
+        <div class="botones" style="margin:0"><a class="btn wa chico" target="_blank" rel="noopener" href="https://wa.me/${telWa(r.telefono)}?text=${encodeURIComponent(msgResena(r))}">WhatsApp</a>
+        <button class="btn sec chico" data-hecho="${r.id}" data-campo="resena_pedida">✓ Ya lo mandé</button></div></div>`).join('');
+    const alertas = (S.alertas || []).map(a => `<div class="alerta ${a.tipo === 'doble' ? '' : 'aviso'}"><p>${esc(a.mensaje)}</p>
+        <button class="btn ${a.tipo === 'doble' ? 'rojo' : 'sec'} chico" data-visto="${a.id}">Entendido</button></div>`).join('');
+    $('vista').innerHTML = `<h1 class="titulo">${saludo} 👋</h1>${alertas}
+      ${tareas ? `<div class="caja"><h2>✅ Para hacer hoy</h2>${tareas}</div>` : ''}
       <div class="caja"><h2>🟠 Para confirmar (${pend.length})</h2>
         ${pend.length ? '<p class="vacio" style="margin-bottom:.6rem">Gente que pidió fechas en la web. Cuando te llegue la seña, tocá "Llegó la seña".</p>' + pend.map(r => tarjeta(r, true)).join('') : '<p class="vacio">No hay reservas esperando seña. 👍</p>'}</div>
       <div class="caja"><h2>🏡 Ahora en las cabañas</h2>${adentro.length ? adentro.map(r => tarjeta(r)).join('') : '<p class="vacio">Ninguna cabaña ocupada hoy.</p>'}</div>
@@ -516,6 +580,11 @@
     activarTarjetas($('vista'));
     $('nueva').onclick = () => formReserva(null);
     $('ver-est').onclick = () => ir('estadisticas');
+    $('vista').querySelectorAll('[data-hecho]').forEach(b => b.onclick = () => marcar(S.reservas.find(x => x.id === Number(b.dataset.hecho)), b.dataset.campo));
+    $('vista').querySelectorAll('[data-visto]').forEach(b => b.onclick = async () => {
+      const id = Number(b.dataset.visto); const { error: err } = await db.from('alertas').update({ vista: true }).eq('id', id);
+      if (err) return error(err); S.alertas = S.alertas.filter(a => a.id !== id); pintarBadge(); VISTAS.inicio();
+    });
     const { data, error: err } = await db.rpc('estadisticas', { p_dias: 30 });
     if (err || !$('nums')) return;
     $('nums').innerHTML = [
@@ -570,7 +639,7 @@
       celdas += `<button class="${cls}" data-f="${f}" ${r ? `data-r="${r.id}"` : ''}><b>${n}</b><small>${esc(txt)}</small></button>`;
     }
     $('vista').innerHTML = `<h1 class="titulo">Calendario</h1>
-      <div class="cab-tabs">${S.cabanas.map(c => `<button data-c="${c.id}" class="${c.id === S.cal.cab ? 'act' : ''}">${esc(c.nombre)}</button>`).join('')}</div>
+      <div class="cab-tabs">${S.cabanas.filter(c => c.activa).map(c => `<button data-c="${c.id}" class="${c.id === S.cal.cab ? 'act' : ''}">${esc(c.nombre)}</button>`).join('')}</div>
       <div class="caja">
         <div class="cal-top"><button id="ca">‹</button><h2>${A.MESES[m.getMonth()]} ${m.getFullYear()}</h2><button id="cs">›</button></div>
         <p class="vacio" style="text-align:center;margin-bottom:.6rem" id="cal-ayuda">${S.cal.a ? `Llega el ${A.lindo(S.cal.a)}. Ahora tocá el día que se va.` : 'Tocá un día libre para cargar una reserva o bloquear. Tocá una reserva para verla.'}</p>
@@ -585,7 +654,7 @@
       const f = b.dataset.f;
       if (!S.cal.a || f <= S.cal.a) { S.cal.a = f; return VISTAS.calendario(); }
       const desde = S.cal.a; S.cal.a = null;
-      if (deCab.some(x => x.entrada < f && x.salida > desde)) { VISTAS.calendario(); return aviso('Entre esos días ya hay una reserva o un bloqueo. Elegí otras fechas.', true); }
+      if (deCab.some(x => ['confirmada', 'bloqueo'].includes(x.estado) && x.entrada < f && x.salida > desde)) { VISTAS.calendario(); return aviso('Entre esos días ya hay una reserva o un bloqueo. Elegí otras fechas.', true); }
       VISTAS.calendario();
       modal(`<h2>${esc(cabNombre(S.cal.cab))}: ${A.corto(desde)} al ${A.corto(f)}</h2><p style="margin-bottom:1rem">${A.noches(desde, f)} noches. ¿Qué querés hacer?</p>
         <div class="form"><button class="btn grande" id="op-res">📋 Cargar una reserva</button><button class="btn sec grande" id="op-bloq">🔒 Bloquear estas fechas</button><button class="btn sec grande" data-cerrar>Nada, volver</button></div>`, () => {
@@ -596,42 +665,49 @@
   };
 
   // ======================= PRECIOS =======================
+  const p4 = (base, extra) => base + 2 * (extra || 0);
   VISTAS.precios = () => {
-    const pct = p => p > 0 ? `<span class="pct-mas">+${p}%</span>` : p < 0 ? `<span class="pct-menos">${p}%</span>` : '0%';
     const hoy = A.hoy();
-    const temps = S.temporadas.filter(t => t.hasta >= hoy);
+    const fechas = S.temporadas.filter(t => t.hasta >= hoy);
+    const precioTxt = t => t.precio ? `<b>${A.pesos(t.precio)}</b> (2 pers.)${t.extra_persona != null ? ` · <b>${A.pesos(p4(t.precio, t.extra_persona))}</b> (4 pers.)` : ''}`
+      : t.recargo_pct ? `${t.recargo_pct > 0 ? '+' : ''}${t.recargo_pct}%` : '<span style="color:var(--naranja)">Sin precio especial todavía</span>';
+    const icono = { temporada: '☀️', feriado: '🎉', especial: '⭐' };
     $('vista').innerHTML = `<h1 class="titulo">Precios</h1>
-      <div class="caja"><h2>Precio normal por noche</h2>
-        <p class="vacio" style="margin-bottom:.4rem">El precio de un día común. Las temporadas suben o bajan este precio.</p>
-        <form id="fp">${S.cabanas.map(c => `<div class="fila-precio"><div class="nom"><b>${esc(c.nombre)}</b></div>
-          <label>$ por noche<input type="number" name="p${c.id}" value="${c.precio_base}" min="1000" step="500" required></label>
+      <div class="caja"><h2>💲 Precio de un día común</h2>
+        <p class="vacio" style="margin-bottom:.4rem">Por noche, en pesos. Se usa todos los días que no tengan un precio especial abajo.</p>
+        <form id="fp">${S.cabanas.filter(c => c.activa).map(c => `<div class="fila-precio fp4"><div class="nom"><b>${esc(c.nombre)}</b></div>
+          <label>2 pers. $<input type="number" name="p${c.id}" value="${c.precio_base}" min="1000" step="500" required></label>
+          <label>4 pers. $<input type="number" name="q${c.id}" value="${p4(c.precio_base, c.extra_persona)}" min="1000" step="500" required></label>
           <label>Mín. noches<input type="number" name="m${c.id}" value="${c.minimo_noches}" min="1" max="30" required></label></div>`).join('')}
-          <label style="margin-top:.9rem">Recargo viernes y sábado <small>(0 = sin recargo)</small>
-            <input type="number" name="finde" value="${S.ajustes.recargo_finde_pct || 0}" min="0" max="200" step="5"></label>
+          <p class="vacio" style="font-size:.85rem;margin-top:.5rem">Para 3 personas se cobra el punto medio entre los dos precios.</p>
+          <div class="f2" style="margin-top:.8rem">
+            <label>Recargo viernes y sábado % <small>(0 = sin recargo)</small><input type="number" name="finde" value="${S.ajustes.recargo_finde_pct || 0}" min="0" max="200" step="5"></label>
+            <label>Descuento por 7 noches o más % <small>(0 = sin descuento)</small><input type="number" name="semana" value="${S.ajustes.descuento_semana_pct || 0}" min="0" max="60" step="5"></label>
+          </div>
           <button class="btn grande" style="margin-top:1rem">Guardar precios</button></form></div>
 
-      <div class="caja"><h2>Temporadas y fechas especiales</h2>
-        <p class="ayuda">Ejemplos: <b>Enero +40%</b>, <b>Semana Santa +50% con mínimo 3 noches</b>, <b>Temporada baja −15%</b>. En la web, los días más baratos se ven en verde y los más caros en naranja.</p>
-        ${temps.length ? temps.map(t => `<div class="temporada"><div><b>${esc(t.nombre)}</b> ${pct(t.recargo_pct)}${t.minimo_noches ? ` · mín. ${t.minimo_noches} noches` : ''}<br>
-          <small style="color:var(--texto2)">${A.corto(t.desde)} al ${A.corto(t.hasta)}${t.cabana_id ? ' · solo ' + esc(cabNombre(t.cabana_id)) : ' · todas las cabañas'}</small><br>
-          <small>${S.cabanas.filter(c => !t.cabana_id || c.id === t.cabana_id).map(c => `${esc(c.nombre)} ${A.pesos(Math.round(c.precio_base * (1 + t.recargo_pct / 100) / 500) * 500)}`).join(' · ')}</small></div>
-          <div style="display:flex;gap:.3rem"><button class="btn sec chico" data-ed="${t.id}">✏️</button><button class="btn rojo chico" data-del="${t.id}">🗑</button></div></div>`).join('') : '<p class="vacio">Todavía no hay temporadas cargadas.</p>'}
-        <button class="btn grande" style="margin-top:1rem" id="nueva-t">＋ Agregar temporada</button></div>`;
+      <div class="caja"><h2>📅 Precios especiales: temporadas, feriados y días sueltos</h2>
+        <p class="ayuda">Poné un precio distinto para cualquier fecha: un solo día, un fin de semana largo, una semana o toda la temporada. Si dos fechas se pisan, gana la más corta (por ejemplo, un feriado dentro del verano).</p>
+        ${fechas.length ? fechas.map(t => `<div class="temporada"><div>${icono[t.tipo] || '📅'} <b>${esc(t.nombre)}</b>${t.minimo_noches ? ` · mín. ${t.minimo_noches} noches` : ''}<br>
+          <small style="color:var(--texto2)">${t.desde === t.hasta ? A.lindo(t.desde) : A.corto(t.desde) + ' al ' + A.corto(t.hasta)}${t.cabana_id ? ' · solo ' + esc(cabNombre(t.cabana_id)) : ''}</small><br>
+          <small>${precioTxt(t)}</small></div>
+          <div style="display:flex;gap:.3rem"><button class="btn sec chico" data-ed="${t.id}" aria-label="Editar">✏️</button><button class="btn rojo chico" data-del="${t.id}" aria-label="Borrar">🗑</button></div></div>`).join('') : '<p class="vacio">No hay fechas especiales cargadas.</p>'}
+        <div class="botones"><button class="btn" id="nueva-t">＋ Precio especial</button></div></div>`;
     $('fp').onsubmit = async e => {
       e.preventDefault(); const f = e.target; const b = f.querySelector('button'); b.disabled = true;
       try {
-        for (const c of S.cabanas) {
-          const p = Number(f['p' + c.id].value), mn = Number(f['m' + c.id].value);
-          if (p !== c.precio_base || mn !== c.minimo_noches) {
-            const { error: err } = await db.from('cabanas').update({ precio_base: p, minimo_noches: mn }).eq('id', c.id);
-            if (err) throw err; c.precio_base = p; c.minimo_noches = mn;
+        for (const c of S.cabanas.filter(c => c.activa)) {
+          const p2 = Number(f['p' + c.id].value), q = Number(f['q' + c.id].value), mn = Number(f['m' + c.id].value);
+          if (q < p2) throw new Error(`En ${c.nombre}, el precio para 4 no puede ser menor que para 2.`);
+          const extra = Math.round((q - p2) / 2);
+          if (p2 !== c.precio_base || extra !== c.extra_persona || mn !== c.minimo_noches) {
+            const { error: err } = await db.from('cabanas').update({ precio_base: p2, extra_persona: extra, minimo_noches: mn }).eq('id', c.id);
+            if (err) throw err; Object.assign(c, { precio_base: p2, extra_persona: extra, minimo_noches: mn });
           }
         }
-        const finde = Number(f.finde.value) || 0;
-        if (finde !== (S.ajustes.recargo_finde_pct || 0)) {
-          const { error: err } = await db.from('ajustes').update({ recargo_finde_pct: finde }).eq('id', true);
-          if (err) throw err; S.ajustes.recargo_finde_pct = finde;
-        }
+        const cambios = { recargo_finde_pct: Number(f.finde.value) || 0, descuento_semana_pct: Number(f.semana.value) || 0 };
+        const { error: err } = await db.from('ajustes').update(cambios).eq('id', true); if (err) throw err;
+        Object.assign(S.ajustes, cambios);
         aviso('Precios guardados ✓ Ya se ven en la web.'); VISTAS.precios();
       } catch (err) { error(err); b.disabled = false; }
     };
@@ -639,45 +715,49 @@
     $('vista').querySelectorAll('[data-ed]').forEach(b => b.onclick = () => formTemporada(S.temporadas.find(t => t.id === Number(b.dataset.ed))));
     $('vista').querySelectorAll('[data-del]').forEach(b => b.onclick = () => {
       const t = S.temporadas.find(x => x.id === Number(b.dataset.del));
-      confirmar(`¿Borrar la temporada "${esc(t.nombre)}"?`, 'Sí, borrar', async () => {
+      confirmar(`¿Borrar "${esc(t.nombre)}"?`, 'Sí, borrar', async () => {
         const { error: err } = await db.from('temporadas').delete().eq('id', t.id); if (err) return error(err);
-        S.temporadas = S.temporadas.filter(x => x.id !== t.id); aviso('Borrada ✓'); VISTAS.precios();
+        S.temporadas = S.temporadas.filter(x => x.id !== t.id); aviso('Borrado ✓'); VISTAS.precios();
       }, true);
     });
   };
   function formTemporada(t) {
-    const nueva = !t; t = t || { recargo_pct: 30 };
-    modal(`<h2>${nueva ? 'Nueva temporada' : 'Editar temporada'}</h2><form class="form" id="ft">
-      <label>Nombre<input name="nombre" value="${esc(t.nombre || '')}" placeholder="Ej: Enero, Semana Santa, Finde largo" required></label>
-      <div class="f2"><label>Desde<input type="date" name="desde" value="${t.desde || ''}" required></label><label>Hasta (incluido)<input type="date" name="hasta" value="${t.hasta || ''}" required></label></div>
-      <label>¿Cuánto cambia el precio?
-        <select name="tipo"><option value="sube" ${t.recargo_pct >= 0 ? 'selected' : ''}>Sube (más caro)</option><option value="baja" ${t.recargo_pct < 0 ? 'selected' : ''}>Baja (descuento)</option></select></label>
-      <label>Porcentaje %<input type="number" name="pct" value="${Math.abs(t.recargo_pct)}" min="0" max="300" step="5" required></label>
-      <p class="ayuda" id="vista-previa"></p>
+    const nueva = !t; t = t || { tipo: 'especial' };
+    const def = S.cabanas.find(c => c.activa) || {};
+    modal(`<h2>${nueva ? 'Precio especial' : 'Editar precio especial'}</h2><form class="form" id="ft">
+      <label>Nombre<input name="nombre" value="${esc(t.nombre || '')}" placeholder="Ej: Verano, Finde largo de Carnaval, Día del Padre" required></label>
+      <label>Tipo<select name="tipo"><option value="especial" ${t.tipo === 'especial' ? 'selected' : ''}>⭐ Día o días sueltos</option><option value="feriado" ${t.tipo === 'feriado' ? 'selected' : ''}>🎉 Feriado / finde largo</option><option value="temporada" ${t.tipo === 'temporada' ? 'selected' : ''}>☀️ Temporada</option></select></label>
+      <div class="f2"><label>Desde (primera noche)<input type="date" name="desde" value="${t.desde || ''}" required></label><label>Hasta (última noche)<input type="date" name="hasta" value="${t.hasta || ''}" required></label></div>
+      <p class="vacio" style="font-size:.85rem;margin-top:-.3rem">Para un solo día, poné la misma fecha en las dos.</p>
+      <div class="f2"><label>Precio por noche, 2 personas $<input type="number" name="p2" value="${t.precio || ''}" min="1000" step="500" placeholder="Vacío = precio común"></label>
+      <label>Precio por noche, 4 personas $<input type="number" name="p4" value="${t.precio && t.extra_persona != null ? p4(t.precio, t.extra_persona) : ''}" min="1000" step="500" placeholder="Opcional"></label></div>
       <div class="f2"><label>Mínimo de noches <small>(opcional)</small><input type="number" name="minimo" value="${t.minimo_noches || ''}" min="1" max="30"></label>
-      <label>¿Para qué cabaña?<select name="cabana"><option value="">Todas</option>${S.cabanas.map(c => `<option value="${c.id}" ${c.id === t.cabana_id ? 'selected' : ''}>${esc(c.nombre)}</option>`).join('')}</select></label></div>
+      <label>¿Para qué cabaña?<select name="cabana"><option value="">Todas</option>${S.cabanas.filter(c => c.activa).map(c => `<option value="${c.id}" ${c.id === t.cabana_id ? 'selected' : ''}>${esc(c.nombre)}</option>`).join('')}</select></label></div>
       <button class="btn grande">Guardar</button><button class="btn sec grande" type="button" data-cerrar>Cancelar</button></form>`, () => {
       $('modal-raiz').querySelector('[data-cerrar]').onclick = cerrar;
-      const f = $('ft');
-      const previa = () => { const p = (f.tipo.value === 'baja' ? -1 : 1) * (Number(f.pct.value) || 0);
-        $('vista-previa').innerHTML = 'Así queda por noche: ' + S.cabanas.filter(c => !f.cabana.value || c.id === Number(f.cabana.value)).map(c => `<b>${esc(c.nombre)} ${A.pesos(Math.round(c.precio_base * (1 + p / 100) / 500) * 500)}</b>`).join(' · '); };
-      ['tipo', 'pct', 'cabana'].forEach(n => f[n].addEventListener('input', previa)); previa();
-      f.onsubmit = async e => {
-        e.preventDefault(); const v = Object.fromEntries(new FormData(f));
-        if (v.hasta < v.desde) return aviso('"Hasta" tiene que ser después de "Desde".', true);
-        const fila = { nombre: v.nombre.trim(), desde: v.desde, hasta: v.hasta, recargo_pct: (v.tipo === 'baja' ? -1 : 1) * Number(v.pct),
+      $('ft').onsubmit = async e => {
+        e.preventDefault(); const v = Object.fromEntries(new FormData(e.target));
+        if (v.hasta < v.desde) return aviso('"Hasta" tiene que ser igual o después de "Desde".', true);
+        const precio = v.p2 ? Number(v.p2) : null, q = v.p4 ? Number(v.p4) : null;
+        if (q && !precio) return aviso('Poné también el precio para 2 personas.', true);
+        if (q && q < precio) return aviso('El precio para 4 no puede ser menor que para 2.', true);
+        const fila = { nombre: v.nombre.trim(), tipo: v.tipo, desde: v.desde, hasta: v.hasta, recargo_pct: 0, precio,
+                       extra_persona: q ? Math.round((q - precio) / 2) : null,
                        minimo_noches: v.minimo ? Number(v.minimo) : null, cabana_id: v.cabana ? Number(v.cabana) : null };
-        const q = nueva ? db.from('temporadas').insert(fila).select().single() : db.from('temporadas').update(fila).eq('id', t.id).select().single();
-        const { data, error: err } = await q; if (err) return error(err);
+        const qy = nueva ? db.from('temporadas').insert(fila).select().single() : db.from('temporadas').update(fila).eq('id', t.id).select().single();
+        const { data, error: err } = await qy; if (err) return error(err);
         if (nueva) S.temporadas.push(data); else Object.assign(t, data);
-        S.temporadas.sort((a, b) => a.desde.localeCompare(b.desde)); cerrar(); aviso('Temporada guardada ✓'); VISTAS.precios();
+        S.temporadas.sort((a, b) => a.desde.localeCompare(b.desde)); cerrar(); aviso('Guardado ✓ Ya se ve en la web.'); VISTAS.precios();
       };
     });
   }
 
   // ======================= MÁS =======================
   VISTAS.mas = () => {
-    const items = [['preguntas', '❓', 'Preguntas frecuentes', 'Lo que la gente pregunta siempre. Respondelo una vez acá.'],
+    const pendRes = (S.resenas || []).filter(r => !r.aprobada).length;
+    const items = [['sync', '🔄', 'Booking y Airbnb', 'Conectar los calendarios para que nunca se pisen las reservas.'],
+                   ['resenas', '⭐', 'Reseñas' + (pendRes ? ` (${pendRes} nuevas)` : ''), 'Opiniones de huéspedes: aprobalas para que salgan en la web.'],
+                   ['preguntas', '❓', 'Preguntas frecuentes', 'Lo que la gente pregunta siempre. Respondelo una vez acá.'],
                    ['estadisticas', '📊', 'Estadísticas', 'Visitas, clics a WhatsApp y de dónde viene la gente.'],
                    ['cabanas', '🏡', 'Cabañas', 'Nombre, descripción, capacidad y equipamiento.'],
                    ['ajustes', '⚙️', 'Datos de cobro y horarios', 'Alias, CBU, seña, entrada y salida, aviso en la web.']];
@@ -779,19 +859,33 @@
         <label>Alias<input name="alias" value="${esc(a.alias || '')}" placeholder="aromas.de.campo"></label>
         <label>CBU / CVU <small>(opcional)</small><input name="cbu" value="${esc(a.cbu || '')}" inputmode="numeric"></label>
         <label>Titular de la cuenta<input name="titular" value="${esc(a.titular || '')}"></label>
-        <div class="f2"><label>Seña %<input type="number" name="sena_pct" value="${a.sena_pct}" min="0" max="100" step="5"></label>
-        <label>Horas para pagar la seña<input type="number" name="horas_para_senar" value="${a.horas_para_senar}" min="1" max="240"></label></div>
+        <label>Seña %<input type="number" name="sena_pct" value="${a.sena_pct}" min="0" max="100" step="5"></label>
         <div class="f2"><label>Entrada (check-in)<input name="checkin" value="${esc(a.checkin)}"></label><label>Salida (check-out)<input name="checkout" value="${esc(a.checkout)}"></label></div>
         <label>WhatsApp de reservas <small>(con 549, sin espacios)</small><input name="whatsapp" value="${esc(a.whatsapp)}" inputmode="numeric"></label>
+        <h2 style="margin-top:.6rem">🔥 Descuento de último minuto</h2>
+        <p class="vacio" style="margin-top:-.4rem">Las noches libres que se acercan bajan solas de precio, para no dejarlas vacías. 0 = apagado.</p>
+        <div class="f2"><label>Descuento %<input type="number" name="ultimo_minuto_pct" value="${a.ultimo_minuto_pct || 0}" min="0" max="60" step="5"></label>
+        <label>Si faltan menos de… (días)<input type="number" name="ultimo_minuto_dias" value="${a.ultimo_minuto_dias || 3}" min="1" max="14"></label></div>
+        <h2 style="margin-top:.6rem">🚗 Mensaje de llegada</h2>
+        <label>Cómo llegar, qué traer, a quién llamar <small>(va en el recordatorio 2 días antes. No pongas claves.)</small>
+          <textarea name="info_llegada" rows="5" placeholder="Ej: Estamos en ... (link de Google Maps). Al llegar llamá a Rubén al ... Traé repelente y toallas de pileta.">${esc(a.info_llegada || '')}</textarea></label>
+        <label style="display:flex;gap:.6rem;align-items:center;font-weight:500"><input type="checkbox" name="resumen_semanal" ${a.resumen_semanal !== false ? 'checked' : ''} style="width:24px;height:24px"> Mandarme un resumen por email todos los lunes</label>
         <label>Email para avisos de reservas nuevas <small>(podés poner varios separados por coma)</small><input name="email_avisos" value="${esc(a.email_avisos || '')}"></label>
+        <h2 style="margin-top:.6rem">⭐ Google</h2>
+        <div class="f2"><label>Puntaje en Google<input type="number" name="google_puntaje" value="${a.google_puntaje ?? ''}" min="1" max="5" step="0.1"></label>
+        <label>Cantidad de opiniones<input type="number" name="google_cantidad" value="${a.google_cantidad ?? ''}" min="0"></label></div>
+        <label>Link a las opiniones de Google<input name="google_url" value="${esc(a.google_url || '')}"></label>
         <label>Aviso arriba de la web <small>(opcional, ej: "¡Últimas fechas para enero!")</small><input name="aviso" value="${esc(a.aviso || '')}" maxlength="140"></label>
         <button class="btn grande">Guardar</button></form>
       <div class="caja"><h2>Tu cuenta</h2><button class="btn sec" id="cambiar-pass">Cambiar mi contraseña</button></div>`;
     $('fa').onsubmit = async e => {
       e.preventDefault(); const v = Object.fromEntries(new FormData(e.target));
-      const fila = { alias: v.alias.trim() || null, cbu: v.cbu.trim() || null, titular: v.titular.trim() || null, sena_pct: Number(v.sena_pct),
-                     horas_para_senar: Number(v.horas_para_senar), checkin: v.checkin.trim() || '14 hs', checkout: v.checkout.trim() || '11 hs',
-                     whatsapp: v.whatsapp.replace(/\D/g, '') || '5491169495055', aviso: v.aviso.trim() || null, email_avisos: v.email_avisos.trim() || null };
+      const fila = { alias: v.alias.trim() || null, cbu: v.cbu.trim() || null, titular: v.titular.trim() || null, sena_pct: Number(v.sena_pct), checkin: v.checkin.trim() || '14 hs', checkout: v.checkout.trim() || '11 hs',
+                     whatsapp: v.whatsapp.replace(/\D/g, '') || '5491169495055', aviso: v.aviso.trim() || null, email_avisos: v.email_avisos.trim() || null,
+                     ultimo_minuto_pct: Number(v.ultimo_minuto_pct) || 0, ultimo_minuto_dias: Number(v.ultimo_minuto_dias) || 3,
+                     info_llegada: v.info_llegada.trim() || null, resumen_semanal: !!v.resumen_semanal,
+                     google_puntaje: v.google_puntaje ? Number(v.google_puntaje) : null, google_cantidad: v.google_cantidad ? Number(v.google_cantidad) : null,
+                     google_url: v.google_url.trim() || null };
       const { error: err } = await db.from('ajustes').update(fila).eq('id', true); if (err) return error(err);
       Object.assign(S.ajustes, fila); aviso('Guardado ✓');
     };
@@ -799,6 +893,97 @@
       $('modal-raiz').querySelector('[data-cerrar]').onclick = cerrar;
       $('fcp').onsubmit = async e => { e.preventDefault(); const { error: err } = await db.auth.updateUser({ password: e.target.p.value }); if (err) return error(err); cerrar(); aviso('Contraseña cambiada ✓'); };
     });
+  };
+
+  // ---------- Booking y Airbnb ----------
+  VISTAS.sync = () => {
+    const PLAT = { booking: 'Booking.com', airbnb: 'Airbnb' };
+    const hace = f => { if (!f) return 'nunca'; const m = Math.round((Date.now() - new Date(f)) / 60000); return m < 1 ? 'recién' : m < 60 ? `hace ${m} min` : m < 1440 ? `hace ${Math.round(m / 60)} h` : new Date(f).toLocaleDateString('es-AR'); };
+    $('vista').innerHTML = `<h1 class="titulo">Booking y Airbnb</h1>
+      <p class="ayuda">Para cada cabaña hay que hacer 2 cosas en cada plataforma: <b>1)</b> copiar <b>nuestro link</b> y pegarlo allá en "Importar calendario". <b>2)</b> copiar <b>el link de ellos</b> ("Exportar calendario") y pegarlo acá. Desde ese momento se sincroniza solo cada 30 minutos.</p>
+      <button class="btn grande" id="sync-ya" style="margin-bottom:1rem">🔄 Sincronizar ahora</button>
+      ${S.cabanas.filter(c => c.activa).map(c => `<div class="caja"><h2>🏡 ${esc(c.nombre)}</h2>${Object.entries(PLAT).map(([k, nom]) => {
+        const ce = S.calExt.find(x => x.cabana_id === c.id && x.plataforma === k);
+        const link = `${web()}/cal/${k}/${c.ical_token}.ics`;
+        return `<div class="plat"><h3>${nom}</h3>
+          <label>1. Nuestro link → pegalo en ${nom}</label>
+          <div class="link-copiar"><input readonly value="${link}" aria-label="Link para ${nom}"><button class="btn sec chico" data-copiar="${link}">Copiar</button></div>
+          <form class="form" data-cab="${c.id}" data-plat="${k}"><label>2. El link de ${nom} → pegalo acá
+            <input name="url" type="url" value="${esc(ce ? ce.url : '')}" placeholder="https://… .ics"></label>
+            <div class="botones" style="margin:0"><button class="btn chico">Guardar</button>${ce ? `<button type="button" class="btn rojo chico" data-quitar="${ce.id}">Desconectar</button>` : ''}</div></form>
+          ${ce ? `<p class="estado-sync ${ce.ultimo_error ? 'mal' : 'ok'}" style="margin-top:.5rem">${ce.ultimo_error ? '⚠️ ' + esc(ce.ultimo_error) : '✓ Conectado'} · última sincronización: ${hace(ce.ultima_sync)}${ce.eventos != null ? ` · ${ce.eventos} fechas leídas` : ''}</p>` : '<p class="estado-sync">Sin conectar</p>'}
+        </div>`; }).join('')}</div>`).join('')}`;
+    const v = $('vista');
+    v.querySelectorAll('[data-copiar]').forEach(b => b.onclick = () => navigator.clipboard.writeText(b.dataset.copiar).then(() => { b.textContent = '¡Copiado!'; setTimeout(() => b.textContent = 'Copiar', 1800); }));
+    v.querySelectorAll('form[data-cab]').forEach(f => f.onsubmit = async e => {
+      e.preventDefault(); const url = f.url.value.trim();
+      if (!/^https:\/\/.+/i.test(url)) return aviso('Pegá el link completo, empieza con https://', true);
+      const fila = { cabana_id: Number(f.dataset.cab), plataforma: f.dataset.plat, url };
+      const ce = S.calExt.find(x => x.cabana_id === fila.cabana_id && x.plataforma === fila.plataforma);
+      const q = ce ? db.from('calendarios_externos').update({ url, ultimo_error: null }).eq('id', ce.id).select().single() : db.from('calendarios_externos').insert(fila).select().single();
+      const { data, error: err } = await q; if (err) return error(err);
+      if (ce) Object.assign(ce, data); else S.calExt.push(data);
+      aviso('Guardado ✓ Sincronizando…'); sincronizar();
+    });
+    v.querySelectorAll('[data-quitar]').forEach(b => b.onclick = () => confirmar('¿Desconectar este calendario?', 'Sí, desconectar', async () => {
+      const { error: err } = await db.from('calendarios_externos').delete().eq('id', Number(b.dataset.quitar)); if (err) return error(err);
+      S.calExt = S.calExt.filter(x => x.id !== Number(b.dataset.quitar)); VISTAS.sync();
+    }, true));
+    $('sync-ya').onclick = sincronizar;
+  };
+  async function sincronizar() {
+    const b = $('sync-ya'); if (b) { b.disabled = true; b.textContent = '🔄 Sincronizando…'; }
+    try {
+      const r = await fetch(window.AROMAS_CONFIG.url + '/functions/v1/sincronizar', { method: 'POST', headers: { apikey: window.AROMAS_CONFIG.key, Authorization: 'Bearer ' + window.AROMAS_CONFIG.key } });
+      const d = await r.json();
+      const nuevas = (d.calendarios || []).reduce((n, c) => n + (c.nuevas || 0), 0), errores = (d.calendarios || []).filter(c => c.error).length;
+      aviso(errores ? `Hubo problemas con ${errores} calendario(s). Mirá el detalle abajo.` : `Sincronizado ✓ ${nuevas ? nuevas + ' fechas nuevas' : 'sin cambios'}`, !!errores);
+    } catch (e) { aviso('No se pudo sincronizar ahora. Se va a intentar solo en un rato.', true); }
+    await cargarTodo(); if (S.vista === 'sync') VISTAS.sync();
+  }
+
+  // ---------- Reseñas ----------
+  VISTAS.resenas = (verPub) => {
+    const lista = (S.resenas || []).filter(r => verPub ? r.aprobada : !r.aprobada);
+    const est = n => '★'.repeat(n) + '☆'.repeat(5 - n);
+    $('vista').innerHTML = `<h1 class="titulo">Reseñas</h1>
+      <p class="ayuda">Las reseñas que dejan los huéspedes llegan acá. Solo aparecen en la web las que vos publicás. Responderlas muestra que hay alguien atento del otro lado.</p>
+      <div class="filtros"><button class="${verPub ? '' : 'act'}" data-pub="0">Para revisar (${S.resenas.filter(r => !r.aprobada).length})</button><button class="${verPub ? 'act' : ''}" data-pub="1">Publicadas (${S.resenas.filter(r => r.aprobada).length})</button></div>
+      <div class="caja">${lista.length ? lista.map(r => `<div class="resena"><div class="estrellas" aria-label="${r.estrellas} estrellas">${est(r.estrellas)}</div>
+        <p style="margin:.3rem 0">"${esc(r.texto)}"</p><small class="vacio">${esc(r.nombre)}${r.ciudad ? ' · ' + esc(r.ciudad) : ''}${r.cabana_id ? ' · ' + esc(cabNombre(r.cabana_id)) : ''} · ${r.fuente} · ${new Date(r.creada).toLocaleDateString('es-AR')}</small>
+        ${r.respuesta ? `<p style="background:var(--beige);padding:.6rem;border-radius:10px;margin-top:.5rem">💬 <b>Respuesta:</b> ${esc(r.respuesta)}</p>` : ''}
+        <div class="botones">${r.aprobada ? `<button class="btn sec chico" data-ap="${r.id}" data-val="0">Ocultar de la web</button>` : `<button class="btn chico" data-ap="${r.id}" data-val="1">✓ Publicar en la web</button>`}
+        <button class="btn sec chico" data-resp="${r.id}">💬 Responder</button><button class="btn rojo chico" data-borrar="${r.id}">🗑</button></div></div>`).join('') : '<p class="vacio">No hay reseñas acá todavía.</p>'}
+      <button class="btn grande" style="margin-top:1rem" id="nueva-r">＋ Cargar una reseña de Google, Booking, etc.</button></div>`;
+    const v = $('vista');
+    v.querySelectorAll('[data-pub]').forEach(b => b.onclick = () => VISTAS.resenas(b.dataset.pub === '1'));
+    const actualizar = async (id, cambios, msg) => { const { error: err } = await db.from('resenas').update(cambios).eq('id', id); if (err) return error(err); Object.assign(S.resenas.find(x => x.id === id), cambios); aviso(msg); VISTAS.resenas(verPub); };
+    v.querySelectorAll('[data-ap]').forEach(b => b.onclick = () => actualizar(Number(b.dataset.ap), { aprobada: b.dataset.val === '1' }, b.dataset.val === '1' ? 'Publicada en la web ✓' : 'Oculta ✓'));
+    v.querySelectorAll('[data-resp]').forEach(b => b.onclick = () => { const r = S.resenas.find(x => x.id === Number(b.dataset.resp));
+      modal(`<h2>Responder a ${esc(r.nombre)}</h2><form class="form" id="fres"><label>Tu respuesta <small>(se ve en la web debajo de la reseña)</small><textarea name="t" rows="4">${esc(r.respuesta || '')}</textarea></label><button class="btn grande">Guardar</button><button class="btn sec grande" type="button" data-cerrar>Cancelar</button></form>`, () => {
+        $('modal-raiz').querySelector('[data-cerrar]').onclick = cerrar;
+        $('fres').onsubmit = e => { e.preventDefault(); cerrar(); actualizar(r.id, { respuesta: e.target.t.value.trim() || null }, 'Respuesta guardada ✓'); };
+      }); });
+    v.querySelectorAll('[data-borrar]').forEach(b => b.onclick = () => confirmar('¿Borrar esta reseña?', 'Sí, borrar', async () => {
+      const id = Number(b.dataset.borrar); const { error: err } = await db.from('resenas').delete().eq('id', id); if (err) return error(err);
+      S.resenas = S.resenas.filter(x => x.id !== id); VISTAS.resenas(verPub); }, true));
+    $('nueva-r').onclick = () => {
+      let estrellas = 5;
+      modal(`<h2>Cargar una reseña</h2><p class="ayuda">Para pasar acá opiniones reales que les dejaron en Google, Booking, Airbnb o por WhatsApp.</p><form class="form" id="fnr">
+        <div class="sel-estrellas" id="se">${[1, 2, 3, 4, 5].map(n => `<button type="button" data-n="${n}" class="on" aria-label="${n} estrellas">★</button>`).join('')}</div>
+        <label>Nombre<input name="nombre" required></label><label>Ciudad <small>(opcional)</small><input name="ciudad"></label>
+        <label>Qué dijo<textarea name="texto" rows="4" required></textarea></label>
+        <div class="f2"><label>Cabaña<select name="cab"><option value="">—</option>${S.cabanas.map(c => `<option value="${c.id}">${esc(c.nombre)}</option>`).join('')}</select></label>
+        <label>De dónde<select name="fuente">${['google', 'booking', 'airbnb', 'whatsapp', 'otra'].map(f => `<option>${f}</option>`).join('')}</select></label></div>
+        <button class="btn grande">Guardar y publicar</button><button class="btn sec grande" type="button" data-cerrar>Cancelar</button></form>`, () => {
+        $('modal-raiz').querySelector('[data-cerrar]').onclick = cerrar;
+        $('se').querySelectorAll('button').forEach(b => b.onclick = () => { estrellas = Number(b.dataset.n); $('se').querySelectorAll('button').forEach(x => x.classList.toggle('on', Number(x.dataset.n) <= estrellas)); });
+        $('fnr').onsubmit = async e => { e.preventDefault(); const v = Object.fromEntries(new FormData(e.target));
+          const { data, error: err } = await db.from('resenas').insert({ nombre: v.nombre.trim(), ciudad: v.ciudad.trim() || null, texto: v.texto.trim(), estrellas,
+            cabana_id: v.cab ? Number(v.cab) : null, fuente: v.fuente, aprobada: true }).select().single();
+          if (err) return error(err); S.resenas.unshift(data); cerrar(); aviso('Reseña publicada ✓'); VISTAS.resenas(true); };
+      });
+    };
   };
 
   arrancar();

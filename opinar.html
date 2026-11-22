@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="robots" content="noindex">
+  <title>Contanos cómo la pasaste — Aromas de Campo</title>
+  <link rel="icon" type="image/png" href="logo/favicon-dark.png">
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    :root { --verde: #7A8C72; --verde-osc: #4F6049; --crema: #F5EFE4; --oscuro: #1C2B1E; --borde: #E2D9C8; --texto2: #5E5E5E; --oro: #D9A21B; }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'Inter', sans-serif; min-height: 100vh; color: #1E1E1E; line-height: 1.55;
+           background: linear-gradient(rgba(17,26,18,.62), rgba(17,26,18,.78)), url('fotos/hero-poster.jpg') center/cover fixed;
+           display: flex; align-items: center; justify-content: center; padding: 1.2rem; }
+    .caja { background: #fff; border-radius: 22px; padding: 2rem 1.5rem; width: 100%; max-width: 480px; box-shadow: 0 24px 70px rgba(0,0,0,.35);
+            animation: entrar .6s cubic-bezier(.2,.8,.2,1) both; text-align: center; }
+    @keyframes entrar { from { opacity: 0; transform: translateY(22px) scale(.97); } to { opacity: 1; transform: none; } }
+    @keyframes subir { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: none; } }
+    @keyframes latido { 0% { transform: scale(1); } 40% { transform: scale(1.35); } 100% { transform: scale(1); } }
+    @keyframes brillo { 0% { background-position: -460px 0; } 100% { background-position: 460px 0; } }
+    @keyframes trazo { to { stroke-dashoffset: 0; } }
+    .caja > * { animation: subir .5s cubic-bezier(.2,.8,.2,1) both; }
+    .caja > *:nth-child(2) { animation-delay: .06s; } .caja > *:nth-child(3) { animation-delay: .12s; } .caja > *:nth-child(n+4) { animation-delay: .18s; }
+    img.logo { width: 90px; margin: 0 auto .6rem; display: block; }
+    h1 { font-family: 'Playfair Display', serif; font-size: 1.7rem; line-height: 1.2; }
+    .sub { color: var(--texto2); margin: .5rem 0 1.2rem; }
+    .estrellas { display: flex; justify-content: center; gap: .35rem; margin: .4rem 0 .3rem; }
+    .estrellas button { background: none; border: none; font-size: 2.6rem; color: #DDD4C3; cursor: pointer; transition: color .2s, transform .15s; line-height: 1; }
+    .estrellas button.on { color: var(--oro); }
+    .estrellas button.pop { animation: latido .35s ease; }
+    .estrellas button:focus-visible { outline: 3px solid var(--verde-osc); border-radius: 8px; }
+    .leyenda { min-height: 1.4em; color: var(--verde-osc); font-weight: 600; margin-bottom: 1rem; }
+    form { display: grid; gap: .8rem; text-align: left; }
+    label { display: grid; gap: .3rem; font-weight: 600; font-size: .92rem; }
+    label small { font-weight: 400; color: var(--texto2); }
+    input, textarea { font: inherit; font-size: 1rem; padding: .8rem; border: 1.5px solid var(--borde); border-radius: 12px; width: 100%; }
+    input:focus, textarea:focus { outline: 3px solid rgba(122,140,114,.35); border-color: var(--verde); }
+    .btn { background: var(--verde); color: #fff; border: none; padding: 1rem; border-radius: 14px; font: inherit; font-weight: 600; font-size: 1.05rem; cursor: pointer; transition: transform .15s, filter .2s; text-decoration: none; display: block; text-align: center; }
+    .btn:active { transform: scale(.97); } .btn:disabled { filter: brightness(.9); cursor: wait; }
+    .error { background: #FBEAEA; color: #8A1F1F; padding: .7rem; border-radius: 10px; font-size: .93rem; }
+    .sk { background: linear-gradient(90deg, #EDE5D6 0%, #F8F3EA 45%, #EDE5D6 90%); background-size: 920px 100%; animation: brillo 1.4s linear infinite; border-radius: 10px; }
+    .tilde { width: 80px; height: 80px; margin: 0 auto 1rem; }
+    .tilde circle { fill: var(--verde); stroke: var(--verde); stroke-dasharray: 240; stroke-dashoffset: 240; animation: trazo .55s ease forwards; }
+    .tilde path { fill: none; stroke: #fff; stroke-width: 5; stroke-linecap: round; stroke-linejoin: round; stroke-dasharray: 60; stroke-dashoffset: 60; animation: trazo .4s .45s ease forwards; }
+    @media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation: none !important; transition: none !important; } .tilde circle, .tilde path { stroke-dashoffset: 0; } }
+  </style>
+</head>
+<body>
+<main class="caja" id="caja" aria-live="polite">
+  <img class="logo" src="logo/aromas-color.png" alt="Aromas de Campo">
+  <div class="sk" style="height:30px;width:70%;margin:0 auto"></div>
+  <div class="sk" style="height:16px;width:85%;margin:1rem auto 0"></div>
+  <div class="sk" style="height:120px;margin-top:1.4rem"></div>
+</main>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="js/aromas.js"></script>
+<script>
+(async () => {
+  const A = window.Aromas, db = window.db, caja = document.getElementById('caja');
+  const codigo = (new URLSearchParams(location.search).get('c') || '').toUpperCase();
+  const logo = '<img class="logo" src="logo/aromas-color.png" alt="Aromas de Campo">';
+  const TEXTOS = ['', 'No nos gustó 😕', 'Podría mejorar', 'Estuvo bien', '¡Muy lindo! 😊', '¡Excelente! 🌿'];
+
+  function pedirCodigo(msg) {
+    caja.innerHTML = `${logo}<h1>Contanos cómo la pasaste</h1><p class="sub">Escribí el código de tu reserva (lo tenés en el mensaje que te mandamos).</p>
+      <form id="fc"><label>Código de reserva<input name="c" maxlength="10" required style="text-transform:uppercase;letter-spacing:.15em;text-align:center;font-weight:700"></label>
+      ${msg ? `<p class="error">${A.esc(msg)}</p>` : ''}<button class="btn">Continuar</button></form>`;
+    document.getElementById('fc').onsubmit = e => { e.preventDefault(); location.search = '?c=' + encodeURIComponent(e.target.c.value.trim().toUpperCase()); };
+  }
+  if (!db) { caja.innerHTML = `${logo}<h1>Muy pronto</h1><p class="sub">Estamos preparando esta página.</p>`; return; }
+  if (!codigo) return pedirCodigo();
+
+  const { data, error } = await db.rpc('datos_resena', { p_codigo: codigo });
+  if (error || !data.ok) return pedirCodigo(data ? data.error : 'No pudimos cargar tu reserva.');
+
+  let estrellas = 0;
+  caja.innerHTML = `${logo}<h1>¡Hola${data.nombre ? ' ' + A.esc(data.nombre) : ''}!</h1>
+    <p class="sub">¿Cómo la pasaste en la cabaña <b>${A.esc(data.cabana)}</b>?</p>
+    <div class="estrellas" role="radiogroup" aria-label="Calificación">${[1, 2, 3, 4, 5].map(n => `<button type="button" role="radio" aria-checked="false" aria-label="${n} ${n === 1 ? 'estrella' : 'estrellas'}" data-n="${n}">★</button>`).join('')}</div>
+    <p class="leyenda" id="ley">Tocá las estrellas</p>
+    <form id="fr">
+      <label>Contanos con tus palabras<textarea name="texto" rows="4" maxlength="1500" placeholder="Qué fue lo que más te gustó, qué mejorarías…"></textarea></label>
+      <label>Tu nombre <small>(como querés que aparezca)</small><input name="nombre" maxlength="60" value="${A.esc(data.nombre || '')}"></label>
+      <label>Ciudad <small>(opcional)</small><input name="ciudad" maxlength="60" placeholder="Ej: Rosario"></label>
+      <div id="err"></div>
+      <button class="btn">Enviar mi opinión</button>
+    </form>`;
+  const botones = caja.querySelectorAll('.estrellas button');
+  botones.forEach(b => b.onclick = () => {
+    estrellas = Number(b.dataset.n);
+    botones.forEach(x => { const on = Number(x.dataset.n) <= estrellas; x.classList.toggle('on', on); x.setAttribute('aria-checked', String(Number(x.dataset.n) === estrellas)); });
+    b.classList.remove('pop'); void b.offsetWidth; b.classList.add('pop');
+    document.getElementById('ley').textContent = TEXTOS[estrellas];
+  });
+  document.getElementById('fr').onsubmit = async e => {
+    e.preventDefault(); const v = Object.fromEntries(new FormData(e.target)), btn = e.target.querySelector('button');
+    const err = t => document.getElementById('err').innerHTML = `<p class="error">${A.esc(t)}</p>`;
+    if (!estrellas) return err('Elegí de 1 a 5 estrellas.');
+    if (v.texto.trim().length < 5) return err('Escribí unas palabras sobre tu estadía.');
+    btn.disabled = true; btn.textContent = 'Enviando…';
+    const { data: r, error: e2 } = await db.rpc('dejar_resena', { p_codigo: codigo, p_estrellas: estrellas, p_texto: v.texto, p_nombre: v.nombre, p_ciudad: v.ciudad || null });
+    if (e2 || !r.ok) { btn.disabled = false; btn.textContent = 'Enviar mi opinión'; return err((r && r.error) || 'No se pudo enviar. Probá de nuevo.'); }
+    caja.innerHTML = `<svg class="tilde" viewBox="0 0 80 80" aria-hidden="true"><circle cx="40" cy="40" r="38"/><path d="M24 41 l11 11 l21 -24"/></svg>
+      <h1>¡Gracias de corazón!</h1><p class="sub">Tu opinión nos ayuda muchísimo. Te esperamos de nuevo cuando quieras 🌿</p>
+      <a class="btn" href="reservas.html">Ver fechas para volver</a>`;
+  };
+})();
+</script>
+</body>
+</html>

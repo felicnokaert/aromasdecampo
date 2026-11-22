@@ -1,0 +1,8 @@
+{
+  "rewrites": [
+    { "source": "/cal/:para/:archivo", "destination": "/api/ical?para=:para&archivo=:archivo" }
+  ],
+  "headers": [
+    { "source": "/admin.html", "headers": [{ "key": "X-Robots-Tag", "value": "noindex" }] }
+  ]
+}

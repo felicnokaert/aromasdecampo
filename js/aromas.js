@@ -4,8 +4,8 @@
 // la seguridad la da la base de datos (RLS), no esconder esta clave.
 // =====================================================================
 window.AROMAS_CONFIG = {
-  url: 'https://XXXXXXXX.supabase.co',
-  key: 'PEGAR_CLAVE_PUBLICA'
+  url: 'https://censvpqswmnnvhjorlpk.supabase.co',
+  key: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNlbnN2cHFzd21ubnZoam9ybHBrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTUzNzQ5NjMsImV4cCI6MjExMDk1MDk2M30.VadmVJgt3_LEQjJEBqN1sktZXmbRTYC3VzGBrnl-4Z4'
 };
 
 (function () {
