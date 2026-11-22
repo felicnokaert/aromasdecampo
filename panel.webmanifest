@@ -1,0 +1,9 @@
+{
+  "name": "Aromas de Campo · Panel",
+  "short_name": "Aromas Panel",
+  "start_url": "/panel",
+  "display": "standalone",
+  "background_color": "#24301F",
+  "theme_color": "#24301F",
+  "icons": [{ "src": "/logo/icono-panel.png", "sizes": "512x512", "type": "image/png" }]
+}
