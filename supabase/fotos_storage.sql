@@ -8,3 +8,5 @@ drop policy if exists fotos_cambiar on storage.objects;
 create policy fotos_cambiar on storage.objects for update to authenticated using (bucket_id = 'fotos' and public.es_admin());
 drop policy if exists fotos_borrar on storage.objects;
 create policy fotos_borrar on storage.objects for delete to authenticated using (bucket_id = 'fotos' and public.es_admin());
+drop policy if exists fotos_ver on storage.objects;
+create policy fotos_ver on storage.objects for select to authenticated using (bucket_id = 'fotos' and public.es_admin());
