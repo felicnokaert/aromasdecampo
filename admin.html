@@ -98,7 +98,7 @@
     .barra-prog { height: 8px; background: var(--beige); border-radius: 8px; overflow: hidden; margin-top: .9rem; }
     .barra-prog i { display: block; height: 100%; width: 0; background: var(--verde); transition: width .4s; }
     @keyframes aparecer { from { opacity: 0; transform: translateY(8px); } }
-    .filtros { display: flex; gap: .4rem; overflow-x: auto; margin-bottom: .9rem; padding-bottom: .2rem; }
+    .filtros { display: flex; flex-wrap: wrap; gap: .4rem; overflow-x: auto; margin-bottom: .9rem; padding-bottom: .2rem; }
     .filtros button { white-space: nowrap; border: 1.5px solid var(--borde); background: #fff; border-radius: 999px; padding: .5rem .9rem; font-weight: 600; font-size: .9rem; }
     .filtros button.act { background: var(--oscuro); color: #fff; border-color: var(--oscuro); }
     .buscar { margin-bottom: .8rem; }
@@ -619,9 +619,10 @@
   // ======================= RESERVAS =======================
   VISTAS.reservas = () => {
     const hoy = A.hoy();
-    const filtros = { proximas: 'Próximas', pendientes: 'Falta seña', pasadas: 'Pasadas', canceladas: 'Canceladas', bloqueos: 'Bloqueos' };
+    const filtros = { proximas: 'Próximas', pendientes: 'Falta seña', confirmadas: 'Confirmadas', pasadas: 'Pasadas', canceladas: 'Canceladas', bloqueos: 'Bloqueos' };
     let lista = S.reservas.filter(r => ({
-      proximas: r.estado === 'confirmada' && r.salida >= hoy,
+      proximas: (r.estado === 'confirmada' || r.estado === 'pendiente') && r.salida >= hoy,
+      confirmadas: r.estado === 'confirmada' && r.salida >= hoy,
       pendientes: r.estado === 'pendiente',
       pasadas: r.estado === 'confirmada' && r.salida < hoy,
       canceladas: r.estado === 'cancelada',

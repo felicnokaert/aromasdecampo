@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <title>Aromas de Campo · Cabañas de tronco en Colón, Entre Ríos</title>
-  <meta name="description" content="Cabañas de tronco para hasta 4 personas en Colón, Entre Ríos. Pileta, parque y parrilla propia. Mirá precios en pesos y fechas libres, y reservá directo.">
+  <meta name="description" content="Cabañas de tronco para familias en Colón, Entre Ríos. Pileta, parque y parrilla propia. Mirá precios en pesos y fechas libres, y reservá directo.">
   <meta property="og:title" content="Aromas de Campo · Cabañas de tronco en Colón">
   <meta property="og:description" content="Cabañas de tronco con pileta y parque en Colón, Entre Ríos. Precios en pesos y fechas libres en la web.">
   <meta property="og:type" content="website">
@@ -404,8 +404,8 @@
 <div class="ficha">
   <div class="envoltura">
     <ul>
-      <li><b>Hasta 4</b><span>personas por cabaña</span></li>
-      <li><b>2 habitaciones</b><span>baño y cocina equipada</span></li>
+      <li><b>2 adultos + 2 chicos</b><span>por cabaña</span></li>
+      <li><b>2 habitaciones</b><span>matrimonial y dos de una plaza</span></li>
       <li><b>Pileta y parque</b><span>compartidos del complejo</span></li>
       <li><b>Parrilla propia</b><span>en cada cabaña</span></li>
     </ul>
@@ -417,15 +417,15 @@
     <div class="cabecera lado">
       <div>
         <p class="rotulo">01 <i>las cabañas</i></p>
-        <h2 id="t-cabanas" class="asoma">Tres cabañas <em>gemelas.</em></h2>
+        <h2 id="t-cabanas" class="asoma">Tres cabañas <em>de tronco.</em></h2>
       </div>
-      <p class="intro asoma">Sofía, Olivia y Emma son iguales: mismo tamaño, misma distribución, la misma comodidad. Hoy se alquilan Sofía y Olivia; Emma abre más adelante.</p>
+      <p class="intro asoma">Olivia, Sofía y Emma, rodeadas de parque y a unos pasos de la pileta. Hoy se alquilan Olivia y Sofía; Emma abre más adelante.</p>
     </div>
     <div class="cabanas" id="listaCabanas">
       <article class="cab"><div class="carrusel esqueleto"></div><div class="nombre"><h3 class="esqueleto" style="width:40%;height:2.2rem;border-radius:4px"></h3></div></article>
       <article class="cab"><div class="carrusel esqueleto"></div><div class="nombre"><h3 class="esqueleto" style="width:40%;height:2.2rem;border-radius:4px"></h3></div></article>
     </div>
-    <p class="equipamiento" id="equipamiento"><b>Cada cabaña:</b> 2 habitaciones · baño privado · cocina equipada · parrilla propia · WiFi · pileta del complejo</p>
+    <p class="equipamiento" id="equipamiento"><b>Cada cabaña:</b> cama matrimonial · 2 camas de una plaza para chicos · baño privado · cocina equipada · parrilla propia · WiFi · pileta del complejo</p>
     <p class="equipamiento" style="margin-top:0;border:0;padding-top:.4rem"><b>Para tener en cuenta:</b> alquilamos solo el alojamiento, así que traé ropa de cama y toallas. No se aceptan mascotas.</p>
   </div>
 </section>
@@ -734,7 +734,7 @@
     cabs = cabs.filter(function (c) { return c.activa !== false; });
     function tarjetaProxima(nombre, foto) {
       return '<article class="cab proxima asoma"><div class="carrusel"><div class="pista"><img src="' + A.esc(foto) + '" alt="Cabaña ' + A.esc(nombre) + ', próximamente" loading="lazy"></div><span class="estampa">Próximamente</span></div>' +
-        '<div class="nombre"><h3>' + A.esc(nombre) + '</h3></div><p>La tercera gemela. Todavía no se alquila; cuando abra, la vas a ver acá con sus fechas.</p></article>';
+        '<div class="nombre"><h3>' + A.esc(nombre) + '</h3></div><p>La tercera cabaña. Todavía no se alquila; cuando abra, la vas a ver acá con sus fechas.</p></article>';
     }
     var html = cabs.map(function (c) {
       var propias = fotos.filter(function (f) { return f.cabana_id === c.id; });

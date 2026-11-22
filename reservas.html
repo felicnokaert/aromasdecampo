@@ -220,6 +220,7 @@
   </section>
 
   <p class="paso">1 · ¿Cuántos van?</p>
+  <p style="margin:-.3rem 0 .6rem;color:var(--texto2);font-size:.95rem">Cada cabaña es para 2 adultos y 2 chicos: cama matrimonial y dos camas de una plaza.</p>
   <div class="personas" id="personas" role="radiogroup" aria-label="Cantidad de personas">
     <button data-p="1" role="radio">1 persona</button><button data-p="2" role="radio" class="act">2 personas</button><button data-p="3" role="radio">3 personas</button><button data-p="4" role="radio">4 personas</button>
   </div>
@@ -535,7 +536,7 @@
     const aj = estado.ajustes || {};
     $('info-cab').innerHTML = `<h3 style="font-size:1.3rem">Cabaña ${A.esc(c.nombre)}</h3>
       <p style="color:var(--texto2);margin-top:.3rem">${A.esc(c.descripcion || '')}</p>
-      <p style="margin-top:.6rem">Hasta <strong>${c.capacidad} personas</strong> · ${c.habitaciones} habitaciones · mínimo ${c.minimo_noches} noches (3 en temporada alta). Lo ideal: de 4 noches a dos semanas
+      <p style="margin-top:.6rem">Para <strong>2 adultos y 2 chicos</strong> · cama matrimonial y dos de una plaza · mínimo ${c.minimo_noches} noches (3 en temporada alta). Lo ideal: de 4 noches a dos semanas
         ${aj.checkin ? ` · 🕑 Entrada ${A.esc(aj.checkin)} · salida ${A.esc(aj.checkout)}` : ''}</p>
       <div class="equip">${(c.equipamiento || []).map(e => `<span>${A.esc(e)}</span>`).join('')}</div>`;
   }
