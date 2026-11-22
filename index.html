@@ -4,11 +4,11 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Aromas de Campo — Cabañas de Troncos en Colón, Entre Ríos</title>
-  <meta name="description" content="Aromas de Campo: 3 cabañas de tronco en Colón, Entre Ríos. Pileta, parrilla, naturaleza y el río a minutos. Reservá por WhatsApp.">
+  <meta name="description" content="Aromas de Campo: Cabañas de tronco en Colón, Entre Ríos. Pileta, parrilla, naturaleza y el río a minutos. Reservá por WhatsApp.">
 
   <!-- Open Graph -->
   <meta property="og:title" content="Aromas de Campo — Cabañas de Troncos en Colón, Entre Ríos">
-  <meta property="og:description" content="3 cabañas de tronco rodeadas de naturaleza en Colón, Entre Ríos. Pileta, parrilla y el río Uruguay a minutos.">
+  <meta property="og:description" content="Cabañas de tronco rodeadas de naturaleza en Colón, Entre Ríos. Pileta, parrilla y el río Uruguay a minutos.">
   <meta property="og:type" content="website">
   <meta property="og:url" content="https://aromasdecampo.vercel.app">
   <meta property="og:image" content="fotos/hero-poster.jpg">
@@ -228,10 +228,14 @@
     }
 
     .nav-links {
-      display: flex;
+      display: none;               /* en celular y tablet se usa el menú de tres rayitas */
       align-items: center;
-      gap: 2rem;
+      gap: 1.6rem;
       list-style: none;
+      white-space: nowrap;
+    }
+    @media (min-width: 1100px) {
+      .nav-links { display: flex; }
     }
 
     .nav-links a {
@@ -337,7 +341,7 @@
       color: var(--verde-salvia);
     }
 
-    @media (min-width: 768px) {
+    @media (min-width: 1100px) {
       .hamburger { display: none; }
       .nav-mobile { display: none !important; }
     }
@@ -1183,6 +1187,7 @@
       transition: transform 0.2s ease, box-shadow 0.2s ease;
     }
 
+    body.menu-abierto .wa-flotante { opacity: 0; pointer-events: none; }
     .wa-flotante:hover {
       transform: scale(1.08);
       box-shadow: 0 6px 28px rgba(37,211,102,0.55);
@@ -1798,7 +1803,7 @@
     "@context": "https://schema.org",
     "@type": "LodgingBusiness",
     "name": "Aromas de Campo",
-    "description": "3 cabañas de tronco en Colón, Entre Ríos. Pileta, parrilla, naturaleza pura y el río Uruguay a minutos.",
+    "description": "Cabañas de tronco en Colón, Entre Ríos. Pileta, parrilla, naturaleza pura y el río Uruguay a minutos.",
     "url": "https://aromasdecampo.vercel.app",
     "telephone": "+5491169495055",
     "sameAs": [
@@ -1819,7 +1824,7 @@
       {"@type": "LocationFeatureSpecification", "name": "Parrilla privada", "value": true},
       {"@type": "LocationFeatureSpecification", "name": "Estacionamiento", "value": true}
     ],
-    "numberOfRooms": 3,
+    "numberOfRooms": 2,
     "petsAllowed": false,
     "priceRange": "$$",
     "hasMap": "https://maps.google.com/maps?q=Aromas+de+campo,+Col%C3%B3n,+Entre+R%C3%ADos"
@@ -1852,7 +1857,7 @@
       <li><a href="#testimonios">Opiniones</a></li>
       <li><a href="#faq">FAQ</a></li>
       <li><a href="guia.html">Guía de Colón</a></li>
-        <li><a href="reservas.html">Precios y reservas</a></li>
+      <li><a href="reservas.html">Precios y reservas</a></li>
     </ul>
 
     <!-- CTA desktop -->
@@ -1926,7 +1931,7 @@
     </h1>
 
     <p class="hero-subtitulo fade-in delay-2">
-      3 cabañas de tronco en Colón, Entre Ríos. Pileta, parrilla, naturaleza pura y el río a minutos.
+      Cabañas de tronco en Colón, Entre Ríos. Pileta, parrilla, naturaleza pura y el río a minutos.
     </p>
 
     <div class="hero-botones fade-in delay-3">
@@ -1953,7 +1958,7 @@
 <section id="stats" aria-label="Datos del complejo">
   <div class="stats-grid">
     <div class="stat-item fade-in">
-      <span class="stat-numero" data-target="3">0</span>
+      <span class="stat-numero" data-target="2" data-cabanas>0</span>
       <span class="stat-label">Cabañas disponibles</span>
     </div>
     <div class="stat-item fade-in delay-2">
@@ -2735,6 +2740,7 @@
     const estaAbierto = hamburger.classList.contains('open');
     hamburger.classList.toggle('open');
     navMobile.classList.toggle('open');
+    document.body.classList.toggle('menu-abierto', !estaAbierto);
     hamburger.setAttribute('aria-expanded', !estaAbierto);
     document.body.style.overflow = estaAbierto ? '' : 'hidden';
   });
@@ -2742,6 +2748,7 @@
   function cerrarMenu() {
     hamburger.classList.remove('open');
     navMobile.classList.remove('open');
+    document.body.classList.remove('menu-abierto');
     hamburger.setAttribute('aria-expanded', 'false');
     document.body.style.overflow = '';
   }
@@ -2938,18 +2945,18 @@
     document.querySelectorAll('.card-precio[data-cabana]').forEach(function (el) {
       if (activas.indexOf(el.dataset.cabana) < 0) { var card = el.closest('.card-cabana'); if (card) card.style.display = 'none'; }
     });
-    var statCab = document.querySelector('.stat-numero[data-target="3"]');
-    if (statCab && cabs.length) statCab.dataset.target = String(cabs.length);
+    var statCab = document.querySelector('.stat-numero[data-cabanas]');
+    if (statCab && cabs.length) { statCab.dataset.target = String(cabs.length); if (statCab.textContent !== '0') statCab.textContent = String(cabs.length); }
     // puntaje real de Google
     if (aj && aj.google_puntaje && aj.google_cantidad) {
       var g = document.createElement('a');
       g.href = aj.google_url || '#'; g.target = '_blank'; g.rel = 'noopener';
       g.className = 'hero-trust fade-in visible';
       g.style.cssText = 'display:inline-block;margin-top:.5rem;color:inherit;text-decoration:none;opacity:.95';
-      g.textContent = '★ ' + String(aj.google_puntaje).replace('.', ',') + ' en Google · ' + aj.google_cantidad + ' opiniones';
+      g.textContent = '★ ' + Number(aj.google_puntaje).toFixed(1).replace('.', ',') + ' en Google · ' + aj.google_cantidad + ' opiniones';
       var trust = document.querySelector('p.hero-trust'); if (trust) trust.insertAdjacentElement('afterend', g);
       if (!res.length) {
-        document.getElementById('resumen-resenas').innerHTML = '★ ' + String(aj.google_puntaje).replace('.', ',') + ' de promedio en Google, con ' + aj.google_cantidad + ' opiniones de huéspedes reales.';
+        document.getElementById('resumen-resenas').innerHTML = '★ ' + Number(aj.google_puntaje).toFixed(1).replace('.', ',') + ' de promedio en Google, con ' + aj.google_cantidad + ' opiniones de huéspedes reales.';
         document.getElementById('testi-grid').innerHTML = '<p style="grid-column:1/-1;text-align:center"><a class="btn btn-primario" target="_blank" rel="noopener" href="' + A.esc(aj.google_url || '#') + '">Leer las opiniones en Google</a></p>';
         document.getElementById('testimonios').hidden = false;
       }
@@ -2958,7 +2965,7 @@
     if (res.length) {
       var nombreCab = function (id) { var c = cabs.find(function (k) { return k.id === id; }); return c ? 'Cabaña ' + c.nombre : ''; };
       var prom = res.reduce(function (a, x) { return a + x.estrellas; }, 0) / res.length;
-      document.getElementById('resumen-resenas').textContent = (aj && aj.google_puntaje ? '★ ' + String(aj.google_puntaje).replace('.', ',') + ' en Google (' + aj.google_cantidad + ' opiniones) · ' : '') + '★ ' + prom.toFixed(1).replace('.', ',') + ' en nuestra web (' + res.length + ')';
+      document.getElementById('resumen-resenas').textContent = (aj && aj.google_puntaje ? '★ ' + Number(aj.google_puntaje).toFixed(1).replace('.', ',') + ' en Google (' + aj.google_cantidad + ' opiniones) · ' : '') + '★ ' + prom.toFixed(1).replace('.', ',') + ' en nuestra web (' + res.length + ')';
       document.getElementById('testi-grid').innerHTML = res.slice(0, 6).map(function (x, i) {
         return '<div class="testi-card fade-in visible" style="animation-delay:' + (i * 80) + 'ms"><div class="testi-estrellas" aria-label="' + x.estrellas + ' estrellas">' +
           '★★★★★'.slice(0, x.estrellas) + '<span style="opacity:.3">' + '★★★★★'.slice(x.estrellas) + '</span></div><p class="testi-texto">' + A.esc(x.texto) + '</p>' +
