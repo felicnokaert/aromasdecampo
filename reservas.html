@@ -348,7 +348,7 @@
         <div class="cab-img">${c.foto ? `<img src="${A.esc(c.foto)}" alt="Cabaña ${A.esc(c.nombre)}" loading="lazy">` : ''}
           ${c.etiqueta ? `<span class="cab-tag">${A.esc(c.etiqueta)}</span>` : ''}<span class="cab-check">✓</span></div>
         <div class="cab-txt"><h3>${A.esc(c.nombre)}</h3>
-          <p class="meta">Hasta ${c.capacidad} personas · ${c.habitaciones} habitaciones</p>
+          <p class="meta">2 adultos y 2 chicos · cama matrimonial y dos de una plaza</p>
           <p class="desde">desde ${A.pesos(desde)} <span>/ noche</span></p></div></button>`;
     }).join('');
     setTimeout(() => $('cabanas').classList.remove('primera'), 900);
