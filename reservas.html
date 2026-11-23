@@ -312,6 +312,16 @@
     cal.data.forEach(d => { (estado.dias[d.cabana_id] ||= {})[d.fecha] = d; });
 
     const pedida = new URLSearchParams(location.search).get('cabana');
+    // política de cancelación: sale de la pregunta frecuente "¿Puedo cancelar?" (se edita en el panel)
+    db.from('preguntas').select('pregunta,respuesta').eq('visible', true).then(({ data }) => {
+      const p = (data || []).find(x => /cancel/i.test(x.pregunta)); if (!p) return;
+      window.__politica = p.respuesta;
+      const t = document.getElementById('textoCancel'); if (t) t.textContent = p.respuesta;
+    });
+    document.addEventListener('click', e => {
+      if (e.target.id !== 'verCancel') return;
+      const t = document.getElementById('textoCancel'); if (t && window.__politica) { t.textContent = window.__politica; t.hidden = !t.hidden; }
+    });
     const nochesBuscadas = Number(new URLSearchParams(location.search).get('noches')) || 0;
     if (nochesBuscadas >= 2) setTimeout(() => {
       const h = document.querySelector('main') || document.body, n = document.createElement('p');
@@ -463,7 +473,8 @@
         <label>¿Algo que quieras contarnos? (opcional)<textarea name="mensaje" rows="2" maxlength="800" placeholder="Horario de llegada, consultas…"></textarea></label>
         <div id="form-error"></div>
         <button class="btn" type="submit">Reservar estas fechas</button>
-        <p class="nota">Todavía no pagás nada. Te mostramos los datos para transferir la seña. <b>La reserva se confirma cuando recibimos la seña</b>: hasta ese momento las fechas siguen disponibles para otras personas.</p>
+        <p class="nota">Todavía no pagás nada. Te mostramos los datos para transferir la seña. <b>La reserva se confirma cuando nos mandás el comprobante de la seña</b>: hasta ese momento las fechas siguen disponibles para otras personas. <button type="button" id="verCancel" style="background:none;border:0;padding:0;color:inherit;text-decoration:underline;cursor:pointer">Ver política de cancelación</button></p>
+        <div id="textoCancel" class="nota" hidden style="margin-top:.5rem;white-space:pre-line"></div>
       </form>`;
     contar(r); $('form').onsubmit = enviar;
   }
@@ -521,8 +532,10 @@
         ${hayDatos ? filaPago('Alias', aj.alias) + filaPago('CBU / CVU', aj.cbu) + (aj.titular ? `<div><span>Titular: ${A.esc(aj.titular)}</span></div>` : '')
                    : '<div><span>Te pasamos los datos para la seña por WhatsApp.</span></div>'}
       </div>
-      <p class="nota" style="margin-bottom:1rem"><b>Para asegurar tus fechas</b> transferí la seña y mandanos el comprobante por WhatsApp. La reserva queda confirmada cuando la recibimos.</p>
+      <p class="nota" style="margin-bottom:1rem"><b>Para asegurar tus fechas</b> transferí la seña y mandanos el comprobante por WhatsApp. Rubén confirma la reserva cuando lo recibe. <b>Sin comprobante no podemos confirmarla</b> y las fechas siguen disponibles para otras personas.</p>
+      
       <a class="btn-wa" style="justify-content:center;width:100%;padding:1rem;font-size:1rem" target="_blank" rel="noopener" href="${waLink(msg)}" aria-label="WhatsApp enviar comprobante">Enviar comprobante por WhatsApp</a>
+      ${window.__politica ? `<details style="margin-top:1rem"><summary style="cursor:pointer;font-weight:600">Política de cancelación</summary><p class="nota" style="white-space:pre-line;margin-top:.5rem">${A.esc(window.__politica)}</p></details>` : ''}
     </div>`;
     $('resumen').querySelectorAll('[data-copiar]').forEach(b => b.onclick = () => {
       navigator.clipboard && navigator.clipboard.writeText(b.dataset.copiar).then(() => { b.textContent = '¡Copiado!'; setTimeout(() => b.textContent = 'Copiar', 1800); });
