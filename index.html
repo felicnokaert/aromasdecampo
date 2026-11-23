@@ -213,6 +213,11 @@
     .filtros::-webkit-scrollbar { display: none; }
     .filtros button { flex: none; padding: .55rem 1rem; border-radius: 999px; border: 1.5px solid var(--linea); font-size: .93rem; font-weight: 500; transition: all .25s; }
     .filtros button[aria-pressed=true] { background: var(--tinta); color: var(--papel); border-color: var(--tinta); }
+    .paginas { display: flex; align-items: center; justify-content: center; gap: 1.1rem; margin-top: 1.6rem; }
+    .paginas button { width: 52px; height: 52px; border-radius: 50%; border: 1.5px solid var(--tinta); background: transparent; color: var(--tinta); font-size: 1.35rem; cursor: pointer; transition: background .2s, color .2s, opacity .2s; }
+    .paginas button:hover:not(:disabled) { background: var(--tinta); color: var(--papel); }
+    .paginas button:disabled { opacity: .25; cursor: default; }
+    .paginas span { font-family: Figtree, sans-serif; font-size: 1rem; min-width: 7.5em; text-align: center; }
     .mosaico { columns: 2; column-gap: .6rem; }
     @media (min-width: 900px) { .mosaico { columns: 3; column-gap: 1rem; } }
     .mosaico figure { break-inside: avoid; margin-bottom: .7rem; position: relative; overflow: hidden; border-radius: 4px; cursor: zoom-in; background: var(--papel-2); }
@@ -469,7 +474,11 @@
     </div>
     <div class="filtros" id="filtros" role="group" aria-label="Filtrar fotos"></div>
     <div class="mosaico" id="mosaico"></div>
-    <div style="text-align:center;margin-top:1.6rem"><button class="boton" id="masFotos" hidden></button></div>
+    <nav class="paginas" id="paginasFotos" aria-label="Páginas de fotos" hidden>
+      <button type="button" id="fotoAnt" aria-label="Fotos anteriores">&#8592;</button>
+      <span id="fotoPag" aria-live="polite"></span>
+      <button type="button" id="fotoSig" aria-label="Fotos siguientes">&#8594;</button>
+    </nav>
   </div>
 </section>
 
@@ -782,30 +791,39 @@
     var lugares = ['todas'].concat(Object.keys(LUGARES).filter(function (l) { return fotos.some(function (f) { return f.lugar === l; }); }));
     var nombres = {}; cabs.forEach(function (c) { nombres[c.id] = c.nombre; });
     filtrosEl.innerHTML = lugares.map(function (l, i) { return '<button aria-pressed="' + (i === 0) + '" data-l="' + l + '">' + (l === 'todas' ? 'Todas (' + fotos.length + ')' : LUGARES[l]) + '</button>'; }).join('');
-    var POR_TANDA = 12, mostradas = POR_TANDA, filtroActual = 'todas';
-    function pintarFotos(l, sumar) {
-      if (!sumar) mostradas = POR_TANDA;
-      filtroActual = l;
+    var POR_PAGINA = 15, pagina = 0, filtroActual = 'todas';
+    function pintarFotos(l, pag, subir) {
+      filtroActual = l; pagina = pag || 0;
       var lista = l === 'todas' ? fotos : fotos.filter(function (f) { return f.lugar === l; });
-      var desde = sumar ? mosaico.children.length : 0;
-      var html = lista.slice(desde, mostradas).map(function (f, j) { var i = desde + j;
+      var total = Math.max(1, Math.ceil(lista.length / POR_PAGINA));
+      if (pagina >= total) pagina = total - 1;
+      var desde = pagina * POR_PAGINA;
+      mosaico.innerHTML = lista.slice(desde, desde + POR_PAGINA).map(function (f, j) { var i = desde + j;
         var pie = [f.descripcion, nombres[f.cabana_id] ? 'Cabaña ' + nombres[f.cabana_id] : ''].filter(Boolean).join(' · ');
-        return '<figure class="entra" style="animation-delay:' + Math.min(j * 50, 500) + 'ms" data-i="' + i + '" tabindex="0" role="button" aria-label="Ver foto: ' + A.esc(pie || 'foto') + '">' +
+        return '<figure class="entra" style="animation-delay:' + Math.min(j * 40, 400) + 'ms" data-i="' + i + '" tabindex="0" role="button" aria-label="Ver foto: ' + A.esc(pie || 'foto') + '">' +
           '<img src="' + A.esc(A.foto(f.miniatura || f.ruta)) + '" alt="' + A.esc(pie || 'Foto de Aromas de Campo') + '" loading="lazy">' + (pie ? '<figcaption>' + A.esc(pie) + '</figcaption>' : '') + '</figure>';
       }).join('');
-      if (sumar) mosaico.insertAdjacentHTML('beforeend', html); else mosaico.innerHTML = html;
-      var resto = lista.length - mostradas, bm = $('#masFotos');
-      bm.hidden = resto <= 0;
-      if (resto > 0) bm.textContent = 'Ver más fotos (' + resto + ' más)';
+      $('#paginasFotos').hidden = total <= 1;
+      $('#fotoPag').textContent = 'Página ' + (pagina + 1) + ' de ' + total;
+      $('#fotoAnt').disabled = pagina === 0;
+      $('#fotoSig').disabled = pagina >= total - 1;
+      if (subir) { var t = filtrosEl.getBoundingClientRect().top; if (t < 0) window.scrollBy({ top: t - 80, behavior: 'smooth' }); }
       mosaico.onclick = function (e) { var fig = e.target.closest('figure'); if (fig) abrirVisor(lista, +fig.dataset.i); };
       mosaico.onkeydown = function (e) { var fig = e.target.closest('figure'); if (fig && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); abrirVisor(lista, +fig.dataset.i); } };
     }
     filtrosEl.addEventListener('click', function (e) {
       var b = e.target.closest('button'); if (!b) return;
       filtrosEl.querySelectorAll('button').forEach(function (x) { x.setAttribute('aria-pressed', x === b); });
-      pintarFotos(b.dataset.l);
+      pintarFotos(b.dataset.l, 0);
     });
-    $('#masFotos').addEventListener('click', function () { mostradas += POR_TANDA; pintarFotos(filtroActual, true); A.track && A.track('video', 'mas_fotos'); });
+    $('#fotoAnt').addEventListener('click', function () { pintarFotos(filtroActual, pagina - 1, true); });
+    $('#fotoSig').addEventListener('click', function () { pintarFotos(filtroActual, pagina + 1, true); A.track && A.track('video', 'mas_fotos'); });
+    /* deslizar con el dedo sobre las fotos también cambia de página */
+    (function () { var x0 = null, y0 = 0;
+      mosaico.addEventListener('touchstart', function (e) { x0 = e.touches[0].clientX; y0 = e.touches[0].clientY; }, { passive: true });
+      mosaico.addEventListener('touchend', function (e) { if (x0 === null) return; var dx = e.changedTouches[0].clientX - x0, dy = e.changedTouches[0].clientY - y0; x0 = null;
+        if (Math.abs(dx) > 70 && Math.abs(dx) > Math.abs(dy) * 1.5) { var b = $(dx < 0 ? '#fotoSig' : '#fotoAnt'); if (!b.disabled) b.click(); } });
+    })();
     pintarFotos('todas');
 
     /* estadías: descuento real si Rubén lo carga */
