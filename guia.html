@@ -2,173 +2,174 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Guía de Colón, Entre Ríos: qué hacer cerca de las cabañas — Aromas de Campo</title>
-  <meta name="description" content="Termas, playas sobre el río Uruguay, el Parque Nacional El Palmar, el Molino Forclaz y más. Qué hacer en Colón, Entre Ríos, cerca de las cabañas de tronco Aromas de Campo.">
-  <meta property="og:title" content="Guía de Colón, Entre Ríos — Aromas de Campo">
-  <meta property="og:description" content="Termas, playas, El Palmar y paseos para armar tus días en Colón.">
-  <meta property="og:image" content="fotos/hero-poster.jpg">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>Qué hacer en Colón, San José y Villa Elisa · Aromas de Campo</title>
+  <meta name="description" content="Termas, playas, historia y naturaleza a minutos de Aromas de Campo: Colón, San José, Villa Elisa, Liebig y El Palmar. Con descuentos para huéspedes.">
+  <meta name="theme-color" content="#24301F">
   <link rel="icon" type="image/png" href="logo/favicon-dark.png">
-  <link href="https://fonts.googleapis.com/css2?family=Gloock&family=Figtree:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Gloock&family=Newsreader:ital,opsz@1,6..72&family=Figtree:wght@400;500;600;700&display=swap" rel="stylesheet">
   <style>
-    :root { --verde: #3A4A2F; --verde-osc: #8C5329; --beige: #C8B89A; --crema: #F2EADB; --oscuro: #24301F; --blanco: #FFFCF6; --texto2: #5C564B; --borde: #DCCFB7; --wa: #25D366; }
-    * { box-sizing: border-box; margin: 0; padding: 0; }
-    body { font-family: 'Figtree', system-ui, sans-serif; background: var(--crema); color: #1E1E1E; line-height: 1.6; }
-    h1, h2, h3 { font-family: 'Gloock', Georgia, serif; font-weight: 400; line-height: 1.2; }
+    :root { --papel: #F2EADB; --papel-2: #E9DEC9; --tinta: #221F1A; --tinta-2: #5C564B; --monte: #24301F; --madera: #8C5329; --sol: #D2662A; --sol-osc: #A9491A; --linea: rgba(34,31,26,.16);
+            --display: 'Gloock', Georgia, serif; --serif: 'Newsreader', Georgia, serif; --ui: 'Figtree', system-ui, sans-serif; --pad: clamp(1.1rem, 4vw, 2.5rem); }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    [hidden] { display: none !important; }
+    body { font-family: var(--ui); background: var(--papel); color: var(--tinta); font-size: 17px; line-height: 1.55; overflow-x: hidden; }
     a { color: inherit; }
-    .top { position: sticky; top: 0; z-index: 50; background: rgba(250,250,247,.95); backdrop-filter: blur(8px); border-bottom: 1px solid var(--borde); }
-    .top-in { max-width: 1100px; margin: auto; padding: .7rem 1.2rem; display: flex; justify-content: space-between; align-items: center; gap: 1rem; }
-    .top img { height: 46px; }
-    .top nav { display: flex; gap: .8rem; align-items: center; font-size: .92rem; }
-    .top nav a { text-decoration: none; color: var(--texto2); }
-    .btn { display: inline-flex; align-items: center; gap: .4rem; background: var(--verde); color: #fff !important; padding: .75rem 1.2rem; border-radius: 999px; font-weight: 600; text-decoration: none; transition: transform .15s, box-shadow .25s; }
-    .btn:hover { box-shadow: 0 8px 20px rgba(94,111,87,.35); transform: translateY(-1px); }
-    .btn:active { transform: scale(.97); }
-    .hero { position: relative; min-height: 52vh; display: flex; align-items: flex-end; color: #fff;
-            background: linear-gradient(180deg, rgba(17,26,18,.15), rgba(17,26,18,.82)), url('fotos/hero-poster.jpg') center/cover; }
-    .hero-in { max-width: 1100px; margin: auto; padding: 3rem 1.2rem 2.4rem; width: 100%; }
-    .hero h1 { font-size: clamp(2rem, 5vw, 3.2rem); animation: subir .8s cubic-bezier(.2,.8,.2,1) both; }
-    .hero p { max-width: 620px; margin-top: .7rem; opacity: .92; animation: subir .8s .12s cubic-bezier(.2,.8,.2,1) both; }
-    main { max-width: 1100px; margin: auto; padding: 2.2rem 1.2rem 3rem; }
-    .intro { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: .8rem; margin-bottom: 2.4rem; }
-    .dato { background: var(--blanco); border-radius: 16px; padding: 1rem 1.1rem; box-shadow: 0 2px 10px rgba(60,50,30,.06); }
-    .dato b { display: block; font-size: 1.4rem; font-family: 'Gloock', Georgia, serif; font-weight: 400; color: var(--verde-osc); }
-    .dato span { color: var(--texto2); font-size: .9rem; }
-    .seccion { margin-top: 2.6rem; }
-    .seccion > h2 { font-size: 1.8rem; margin-bottom: .3rem; }
-    .seccion > p { color: var(--texto2); margin-bottom: 1.1rem; }
-    .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(270px, 1fr)); gap: 1rem; }
-    .lugar { background: var(--blanco); border-radius: 18px; padding: 1.3rem 1.3rem 1.1rem; box-shadow: 0 2px 12px rgba(60,50,30,.07);
-             transition: transform .25s cubic-bezier(.2,.8,.2,1), box-shadow .25s; display: flex; flex-direction: column; }
-    .lugar:hover { transform: translateY(-4px); box-shadow: 0 12px 28px rgba(60,50,30,.12); }
-    .lugar .ico { font-size: 2rem; }
-    .lugar h3 { font-size: 1.25rem; margin: .4rem 0 .3rem; }
-    .lugar .dist { font-size: .8rem; font-weight: 600; color: var(--verde-osc); background: #E8EEE4; border-radius: 999px; padding: .15rem .6rem; display: inline-block; margin-bottom: .5rem; }
-    .lugar p { color: #444; font-size: .95rem; flex: 1; }
-    .lugar a.mapa { margin-top: .8rem; font-size: .88rem; font-weight: 600; color: var(--verde-osc); text-decoration: none; }
-    .lugar a.mapa:hover { text-decoration: underline; }
-    .plan { background: var(--oscuro); color: #E9E9E1; border-radius: 22px; padding: 2rem 1.5rem; margin-top: 3rem; }
-    .plan h2 { color: #fff; font-size: 1.7rem; }
-    .dias { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1rem; margin-top: 1.2rem; }
-    .dias div { background: rgba(255,255,255,.06); border-radius: 14px; padding: 1rem; }
-    .dias b { color: var(--beige); display: block; margin-bottom: .3rem; }
-    .cta { text-align: center; margin-top: 3rem; }
-    .cta h2 { font-size: 1.9rem; margin-bottom: .6rem; }
-    .cta p { color: var(--texto2); margin-bottom: 1.2rem; }
-    footer { background: #111A12; color: #C9C9C0; text-align: center; padding: 2rem 1rem; font-size: .9rem; }
+    button { font: inherit; color: inherit; cursor: pointer; background: none; border: 0; }
+    :focus-visible { outline: 3px solid var(--sol); outline-offset: 3px; border-radius: 4px; }
+    .env { max-width: 1180px; margin: 0 auto; padding: 0 var(--pad); }
+    .barra { position: sticky; top: 0; z-index: 50; background: rgba(242,234,219,.94); backdrop-filter: blur(10px); box-shadow: 0 1px 0 var(--linea); }
+    .barra .env { display: flex; justify-content: space-between; align-items: center; height: 64px; gap: 1rem; }
+    .marca { display: flex; align-items: center; gap: .6rem; text-decoration: none; font-family: var(--display); font-size: 1.2rem; }
+    .marca img { width: 38px; height: 38px; filter: invert(1) brightness(.25) sepia(.4); }
+    .marca { white-space: nowrap; } .barra .boton { white-space: nowrap; padding: .55rem 1rem; font-size: .9rem; }
+    @media (max-width: 420px) { .marca { font-size: 1.05rem; } .marca img { width: 32px; height: 32px; } }
+    .boton { display: inline-flex; align-items: center; gap: .5rem; font-weight: 600; text-decoration: none; padding: .7rem 1.2rem; border-radius: 999px; background: var(--sol); color: #fff; border: 1.5px solid var(--sol); font-size: .95rem; }
+    .boton.linea { background: transparent; color: inherit; border-color: currentColor; }
+    .portada { position: relative; color: #fff; min-height: 58vh; display: flex; align-items: flex-end; background: var(--monte) url('fotos/galeria-5.jpg') center/cover; }
+    .portada::after { content: ''; position: absolute; inset: 0; background: linear-gradient(180deg, rgba(18,22,14,.25), rgba(18,22,14,.88)); }
+    .portada .env { position: relative; z-index: 1; padding-bottom: 2.5rem; width: 100%; text-shadow: 0 1px 14px rgba(0,0,0,.4); }
+    .rotulo { font-family: var(--serif); font-style: italic; font-size: 1.1rem; opacity: .9; }
+    h1 { font-family: var(--display); font-weight: 400; font-size: clamp(2.4rem, 8vw, 5rem); line-height: 1; margin: .4rem 0 .8rem; max-width: 14ch; }
+    h1 em, h2 em { font-family: var(--serif); font-style: italic; color: #F5C99C; }
+    .portada p { max-width: 36rem; opacity: .92; }
+    .datos { display: grid; grid-template-columns: repeat(2, 1fr); border-bottom: 1px solid var(--linea); }
+    .datos div { padding: 1.2rem 1rem 1.2rem 0; border-top: 1px solid var(--linea); }
+    .datos div:nth-child(odd) { border-right: 1px solid var(--linea); } .datos div:nth-child(even) { padding-left: 1rem; }
+    .datos b { display: block; font-family: var(--display); font-weight: 400; font-size: 1.5rem; line-height: 1.1; }
+    .datos span { font-size: .9rem; color: var(--tinta-2); }
+    @media (min-width: 860px) { .datos { grid-template-columns: repeat(4, 1fr); } .datos div { border-top: 0; padding: 1.6rem 1.2rem; border-right: 1px solid var(--linea); } .datos div:first-child { padding-left: 0; } .datos div:last-child { border-right: 0; } .datos div:nth-child(even) { padding-left: 1.2rem; } }
+    section { padding: clamp(3rem, 8vw, 5.5rem) 0; }
+    h2 { font-family: var(--display); font-weight: 400; font-size: clamp(2rem, 5.5vw, 3.4rem); line-height: 1.03; max-width: 16ch; }
+    h2 em { color: var(--sol-osc); }
+    .intro { font-family: var(--serif); font-size: 1.2rem; color: var(--tinta-2); max-width: 36rem; margin: .8rem 0 1.6rem; }
+    .filtros { display: flex; gap: .5rem; overflow-x: auto; padding-bottom: .4rem; margin-bottom: 1.6rem; scrollbar-width: none; position: sticky; top: 64px; background: var(--papel); z-index: 5; padding-top: .6rem; }
+    .filtros::-webkit-scrollbar { display: none; }
+    .filtros button { flex: none; padding: .55rem 1rem; border-radius: 999px; border: 1.5px solid var(--linea); font-size: .93rem; font-weight: 500; }
+    .filtros button[aria-pressed=true] { background: var(--tinta); color: var(--papel); border-color: var(--tinta); }
+    .lista { display: grid; gap: 0; border-top: 1px solid var(--linea); }
+    @media (min-width: 900px) { .lista { grid-template-columns: 1fr 1fr; column-gap: 3rem; } }
+    .lugar { padding: 1.4rem 0; border-bottom: 1px solid var(--linea); display: grid; gap: .45rem; animation: entrar .5s cubic-bezier(.2,.8,.2,1) both; }
+    @keyframes entrar { from { opacity: 0; transform: translateY(10px); } }
+    .lugar .arriba { display: flex; justify-content: space-between; gap: 1rem; align-items: baseline; }
+    .lugar h3 { font-family: var(--display); font-weight: 400; font-size: 1.45rem; line-height: 1.15; }
+    .lugar .dist { flex: none; font-size: .82rem; font-weight: 600; color: var(--madera); white-space: nowrap; }
+    .lugar .donde { font-size: .85rem; color: var(--tinta-2); }
+    .lugar p.desc { color: #3b372f; }
+    .cupon { display: flex; gap: .6rem; align-items: flex-start; background: #fff7ea; border: 1.5px dashed var(--sol); border-radius: 10px; padding: .7rem .9rem; font-size: .93rem; }
+    .cupon b { color: var(--sol-osc); }
+    .lugar .acc { display: flex; gap: 1rem; flex-wrap: wrap; font-size: .9rem; font-weight: 600; }
+    .lugar .acc a { color: var(--monte); }
+    .marca-dest { font-size: .72rem; letter-spacing: .08em; text-transform: uppercase; color: var(--sol-osc); font-weight: 700; }
+    .vacio { color: var(--tinta-2); padding: 2rem 0; }
+    .semana { background: var(--monte); color: var(--papel); }
+    .semana h2 em { color: #F5C99C; }
+    .dias { list-style: none; counter-reset: d; margin-top: 1.6rem; border-top: 1px solid rgba(242,234,219,.2); }
+    .dias li { counter-increment: d; display: grid; grid-template-columns: 4.2rem 1fr; gap: .8rem; padding: .9rem 0; border-bottom: 1px solid rgba(242,234,219,.2); }
+    .dias li::before { content: 'Día ' counter(d); font-size: .8rem; opacity: .6; padding-top: .2rem; }
+    .dias b { display: block; }
+    .dias small { opacity: .75; }
+    .cierre { text-align: left; }
+    .cierre .acciones { display: flex; gap: .7rem; flex-wrap: wrap; margin-top: 1.4rem; }
+    footer { background: var(--monte); color: rgba(242,234,219,.75); padding: 2rem 0 calc(2rem + env(safe-area-inset-bottom)); font-size: .88rem; }
     footer a { color: #fff; }
-    .nota { font-size: .82rem; color: var(--texto2); margin-top: 1.6rem; text-align: center; }
-    @keyframes subir { from { opacity: 0; transform: translateY(18px); } to { opacity: 1; transform: none; } }
-    .revelar { opacity: 0; transform: translateY(22px); transition: opacity .7s cubic-bezier(.2,.8,.2,1), transform .7s cubic-bezier(.2,.8,.2,1); }
-    .revelar.visible { opacity: 1; transform: none; }
-    :focus-visible { outline: 3px solid var(--verde-osc); outline-offset: 2px; }
-    @media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation: none !important; transition: none !important; } .revelar { opacity: 1; transform: none; } }
+    .esq { background: linear-gradient(100deg, var(--papel-2) 30%, #F6F0E4 50%, var(--papel-2) 70%); background-size: 300% 100%; animation: brillo 1.4s infinite; height: 7rem; border-radius: 6px; margin: 1rem 0; }
+    @keyframes brillo { from { background-position: 100% 0; } to { background-position: 0 0; } }
+    @media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation: none !important; transition: none !important; } }
   </style>
 </head>
 <body>
-<header class="top"><div class="top-in">
-  <a href="index.html" aria-label="Inicio"><img src="logo/aromas-color.png" alt="Aromas de Campo"></a>
-  <nav><a href="index.html">Inicio</a><a class="btn" href="reservas.html" style="padding:.55rem 1rem">Ver fechas</a></nav>
+<header class="barra"><div class="env">
+  <a class="marca" href="index.html"><img src="logo/aromas-blanco.png" alt="">Aromas de Campo</a>
+  <a class="boton" href="reservas.html">Precios y fechas</a>
 </div></header>
 
-<section class="hero"><div class="hero-in">
-  <h1>Guía de Colón</h1>
-  <p>Termas frente al río, playas de arena, palmeras centenarias y pueblos con historia. Todo lo que podés hacer cerca de las cabañas, para armar tus días en Colón.</p>
-</div></section>
+<div class="portada"><div class="env">
+  <p class="rotulo">Guía para huéspedes</p>
+  <h1>Qué hacer <em>cerca de las cabañas.</em></h1>
+  <p>Termas, playas, historia y naturaleza en Colón, San José, Villa Elisa y alrededores. Donde veas un cupón, es un descuento para huéspedes de Aromas de Campo.</p>
+</div></div>
 
-<main>
-  <div class="intro revelar">
-    <div class="dato"><b>5 minutos</b><span>desde las cabañas al centro, las playas y las termas de Colón</span></div>
-    <div class="dato"><b>~320 km</b><span>desde Buenos Aires, por Autopista y Ruta Nacional 14</span></div>
-    <div class="dato"><b>5 playas</b><span>sobre el río Uruguay, cerca de 14 km de costa</span></div>
-    <div class="dato"><b>~50 km</b><span>hasta el Parque Nacional El Palmar</span></div>
-    <div class="dato"><b>Todo el año</b><span>termas en invierno, río y playa en verano</span></div>
+<div class="env">
+  <div class="datos">
+    <div><b>5 minutos</b><span>al centro, las playas y las termas de Colón</span></div>
+    <div><b>~320 km</b><span>desde Buenos Aires, por Ruta Nacional 14</span></div>
+    <div><b>~10 km de costa</b><span>de playas sobre el río Uruguay</span></div>
+    <div><b>~50 km</b><span>al Parque Nacional El Palmar</span></div>
   </div>
+</div>
 
-  <section class="seccion">
-    <h2 class="revelar">💧 Termas y río</h2>
-    <p class="revelar">Para descansar de verdad.</p>
-    <div class="grid">
-      <article class="lugar revelar"><span class="ico">♨️</span><h3>Termas de Colón</h3><span class="dist">En la ciudad</span>
-        <p>Complejo de piletas de aguas termales con spa y parque acuático, frente al río Uruguay. Ideal en cualquier época del año.</p>
-        <a class="mapa" target="_blank" rel="noopener" href="https://www.google.com/maps/search/?api=1&query=Termas+de+Col%C3%B3n+Entre+R%C3%ADos">Ver en el mapa →</a></article>
-      <article class="lugar revelar"><span class="ico">🏖️</span><h3>Playas del río Uruguay</h3><span class="dist">En la ciudad</span>
-        <p>Cinco playas de arena a lo largo de la costa, con atardeceres sobre el río. Kayak, lanchas, pesca y mate en la costanera.</p>
-        <a class="mapa" target="_blank" rel="noopener" href="https://www.google.com/maps/search/?api=1&query=Playa+Norte+Col%C3%B3n+Entre+R%C3%ADos">Ver en el mapa →</a></article>
-      <article class="lugar revelar"><span class="ico">🌊</span><h3>Termas de Villa Elisa</h3><span class="dist">~30 minutos</span>
-        <p>Termas de aguas saladas, otra opción tranquila para un día de relax cerca de Colón.</p>
-        <a class="mapa" target="_blank" rel="noopener" href="https://www.google.com/maps/search/?api=1&query=Termas+Villa+Elisa+Entre+R%C3%ADos">Ver en el mapa →</a></article>
-    </div>
-  </section>
+<section id="lugares">
+  <div class="env">
+    <h2>Lugares para <em>conocer.</em></h2>
+    <p class="intro">Elegí qué tenés ganas de hacer. Tocá "Cómo llegar" y se abre el mapa en tu celular.</p>
+    <div class="filtros" id="filtros" role="group" aria-label="Filtrar lugares"></div>
+    <div class="lista" id="lista"><div class="esq"></div><div class="esq"></div><div class="esq"></div></div>
+  </div>
+</section>
 
-  <section class="seccion">
-    <h2 class="revelar">🌴 Naturaleza</h2>
-    <p class="revelar">Lo que vinieron a buscar.</p>
-    <div class="grid">
-      <article class="lugar revelar"><span class="ico">🌴</span><h3>Parque Nacional El Palmar</h3><span class="dist">~50 km al norte</span>
-        <p>Uno de los últimos bosques de palmeras yatay. Senderos, miradores, arroyos y fauna como carpinchos. Llevá agua y repelente.</p>
-        <a class="mapa" target="_blank" rel="noopener" href="https://www.google.com/maps/search/?api=1&query=Parque+Nacional+El+Palmar">Ver en el mapa →</a></article>
-      <article class="lugar revelar"><span class="ico">🏞️</span><h3>Pueblo Liebig</h3><span class="dist">Cerca de Colón</span>
-        <p>Pueblo nacido alrededor de una antigua fábrica de extracto de carne, con herencia inglesa y una larga playa sobre el río.</p>
-        <a class="mapa" target="_blank" rel="noopener" href="https://www.google.com/maps/search/?api=1&query=Pueblo+Liebig+Entre+R%C3%ADos">Ver en el mapa →</a></article>
-      <article class="lugar revelar"><span class="ico">🌳</span><h3>Parque Quirós</h3><span class="dist">En la ciudad</span>
-        <p>Espacio verde de la ciudad para caminar, andar en bici o hacer un picnic a la sombra.</p>
-        <a class="mapa" target="_blank" rel="noopener" href="https://www.google.com/maps/search/?api=1&query=Parque+Quir%C3%B3s+Col%C3%B3n">Ver en el mapa →</a></article>
-    </div>
-  </section>
+<section class="semana">
+  <div class="env">
+    <h2>Una semana <em>en Colón.</em></h2>
+    <p class="intro" style="color:rgba(242,234,219,.75)">Con 2 o 3 noches conocés lo justo. Con una semana te da para todo, sin correr.</p>
+    <ol class="dias">
+      <li><div><b>Llegada</b><small>Pileta, parrilla y atardecer en la costanera.</small></div></li>
+      <li><div><b>Termas</b><small>Un día entero en las termas de Colón o de San José.</small></div></li>
+      <li><div><b>Río</b><small>Playas sobre el río Uruguay y Parque Quirós.</small></div></li>
+      <li><div><b>El Palmar</b><small>Parque Nacional El Palmar, a unos 50 km. Mejor temprano.</small></div></li>
+      <li><div><b>Pueblos</b><small>Pueblo Liebig y el Molino Forclaz.</small></div></li>
+      <li><div><b>Historia</b><small>Museo de la Colonia San José y el Palacio San José.</small></div></li>
+      <li><div><b>A tu ritmo</b><small>Villa Elisa, sus termas y su tren histórico, o reposera y libro.</small></div></li>
+    </ol>
+  </div>
+</section>
 
-  <section class="seccion">
-    <h2 class="revelar">🏛️ Historia y sabores</h2>
-    <p class="revelar">Para los días de paseo.</p>
-    <div class="grid">
-      <article class="lugar revelar"><span class="ico">⚙️</span><h3>Molino Forclaz</h3><span class="dist">Entre Colón y San José</span>
-        <p>Molino del siglo XIX construido por inmigrantes suizos. Hoy es museo, con visitas guiadas y pan artesanal.</p>
-        <a class="mapa" target="_blank" rel="noopener" href="https://www.google.com/maps/search/?api=1&query=Molino+Forclaz">Ver en el mapa →</a></article>
-      <article class="lugar revelar"><span class="ico">🏰</span><h3>Palacio San José</h3><span class="dist">Cerca de Concepción del Uruguay</span>
-        <p>La residencia del General Urquiza, hoy museo histórico. Un viaje a la organización del país.</p>
-        <a class="mapa" target="_blank" rel="noopener" href="https://www.google.com/maps/search/?api=1&query=Palacio+San+Jos%C3%A9+Urquiza">Ver en el mapa →</a></article>
-      <article class="lugar revelar"><span class="ico">🍷</span><h3>Bodega Vulliez Sermet</h3><span class="dist">Zona de Colón</span>
-        <p>Recorridos y catas de vino de la zona, con la tradición de los colonos.</p>
-        <a class="mapa" target="_blank" rel="noopener" href="https://www.google.com/maps/search/?api=1&query=Bodega+Vulliez+Sermet">Ver en el mapa →</a></article>
-      <article class="lugar revelar"><span class="ico">🛍️</span><h3>Calle 12 de Abril y Mercado de Artesanías</h3><span class="dist">Centro</span>
-        <p>El centro para caminar de noche: locales, artesanías regionales, quesos y dulces para llevar.</p>
-        <a class="mapa" target="_blank" rel="noopener" href="https://www.google.com/maps/search/?api=1&query=Calle+12+de+Abril+Col%C3%B3n+Entre+R%C3%ADos">Ver en el mapa →</a></article>
-    </div>
-  </section>
+<section class="cierre">
+  <div class="env">
+    <h2>¿Cuándo <em>venís?</em></h2>
+    <p class="intro">Mirá los precios en pesos y las fechas libres. A 5 minutos de todo esto.</p>
+    <div class="acciones"><a class="boton" href="reservas.html">Ver precios y fechas →</a><a class="boton linea" href="index.html">Conocer las cabañas</a></div>
+  </div>
+</section>
 
-  <section class="plan revelar">
-    <h2>Una semana en Colón</h2>
-    <p style="color:var(--texto2);margin:.4rem 0 1rem">Con 2 o 3 noches conocés lo justo. Con una semana te da para todo, sin correr. Y si podés quedarte dos, mejor.</p>
-    <div class="dias">
-      <div><b>Día 1 · Llegada</b>Pileta, parrilla y atardecer en la costanera.</div>
-      <div><b>Día 2 · Termas</b>Un día entero en las Termas de Colón.</div>
-      <div><b>Día 3 · Río</b>Playas sobre el río Uruguay y Parque Quirós.</div>
-      <div><b>Día 4 · El Palmar</b>Parque Nacional El Palmar, a unos 50 km.</div>
-      <div><b>Día 5 · Pueblos</b>Pueblo Liebig y el Molino Forclaz.</div>
-      <div><b>Día 6 · Historia y vino</b>Palacio San José y la Bodega Vulliez Sermet.</div>
-      <div><b>Día 7 · A tu ritmo</b>Calle 12 de Abril, Villa Elisa o no hacer nada en la reposera.</div>
-    </div>
-  </section>
-
-  <section class="cta revelar">
-    <h2>¿Cuándo venís?</h2>
-    <p>Mirá las fechas libres y el precio exacto. Reservás directo, en pesos y sin comisiones.</p>
-    <a class="btn" href="reservas.html">Ver disponibilidad y precios</a>
-  </section>
-  <p class="nota">Antes de ir, chequeá horarios y precios de cada lugar en sus canales oficiales.</p>
-</main>
-
-<footer>
-  <p>Aromas de Campo · Cabañas de tronco en Colón, Entre Ríos</p>
-  <p style="margin-top:.4rem"><a href="index.html">Inicio</a> · <a href="reservas.html">Reservas</a> · <a href="https://instagram.com/aromasdecampo22" target="_blank" rel="noopener">Instagram</a></p>
-</footer>
+<footer><div class="env">© <span id="anio">2026</span> Aromas de Campo · Colón, Entre Ríos · <a href="https://wa.me/5491169495055" target="_blank" rel="noopener">WhatsApp</a> · <a href="https://instagram.com/aromasdecampo22" target="_blank" rel="noopener">Instagram</a><br>
+<small>Datos de referencia: horarios y precios de cada lugar pueden cambiar; consultalos antes de ir.</small></div></footer>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="js/aromas.js"></script>
 <script>
-  const io = new IntersectionObserver(es => es.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); io.unobserve(e.target); } }), { threshold: .12 });
-  document.querySelectorAll('.revelar').forEach((el, i) => { el.style.transitionDelay = (i % 4) * 70 + 'ms'; io.observe(el); });
-  if (window.Aromas) { Aromas.track('visita', 'guia'); Aromas.escucharWhatsApp(); }
+(function () {
+  var A = window.Aromas, db = window.db;
+  document.getElementById('anio').textContent = new Date().getFullYear();
+  var CAT = { todos: 'Todo', cupon: '🎟 Con descuento', termas: 'Termas', playas: 'Playas', paseos: 'Paseos', historia: 'Historia', naturaleza: 'Naturaleza', comer: 'Para comer', compras: 'Compras' };
+  if (!db) return;
+  A.track('visita', 'guia'); A.escucharWhatsApp && A.escucharWhatsApp();
+  db.from('lugares').select('*').eq('visible', true).order('orden').then(function (r) {
+    var todos = r.data || [], lista = document.getElementById('lista'), filtros = document.getElementById('filtros');
+    var hay = function (c) { return c === 'todos' || (c === 'cupon' ? todos.some(function (l) { return l.cupon; }) : todos.some(function (l) { return l.categoria === c; })); };
+    var cats = Object.keys(CAT).filter(hay);
+    filtros.innerHTML = cats.map(function (c, i) { return '<button data-c="' + c + '" aria-pressed="' + (i === 0) + '">' + CAT[c] + '</button>'; }).join('');
+    function mapa(l) { return l.maps_url || 'https://www.google.com/maps/search/?api=1&query=' + encodeURIComponent(l.nombre + ', ' + (l.direccion || l.localidad || '') + ', Entre Ríos'); }
+    function pintar(c) {
+      var ls = todos.filter(function (l) { return c === 'todos' || (c === 'cupon' ? l.cupon : l.categoria === c); });
+      if (c === 'todos') ls = ls.slice().sort(function (a, b) { return (b.destacado - a.destacado) || (!!b.cupon - !!a.cupon) || a.orden - b.orden; });
+      lista.innerHTML = ls.length ? ls.map(function (l, i) {
+        return '<article class="lugar" style="animation-delay:' + Math.min(i * 40, 400) + 'ms">' +
+          (l.destacado ? '<span class="marca-dest">Imperdible</span>' : '') +
+          '<div class="arriba"><h3>' + A.esc(l.nombre) + '</h3>' + (l.distancia ? '<span class="dist">' + A.esc(l.distancia) + '</span>' : '') + '</div>' +
+          '<span class="donde">' + A.esc([CAT[l.categoria], l.localidad].filter(Boolean).join(' · ')) + '</span>' +
+          (l.descripcion ? '<p class="desc">' + A.esc(l.descripcion) + '</p>' : '') +
+          (l.cupon ? '<div class="cupon"><span aria-hidden="true">🎟</span><span><b>Descuento para huéspedes.</b> ' + A.esc(l.cupon) + '</span></div>' : '') +
+          '<div class="acc"><a target="_blank" rel="noopener" href="' + A.esc(mapa(l)) + '">Cómo llegar ↗</a>' +
+          (l.telefono ? '<a href="https://wa.me/' + A.esc(String(l.telefono).replace(/\D/g, '')) + '" target="_blank" rel="noopener">WhatsApp ↗</a>' : '') + '</div></article>';
+      }).join('') : '<p class="vacio">Todavía no hay lugares en esta categoría.</p>';
+    }
+    filtros.addEventListener('click', function (e) { var b = e.target.closest('button'); if (!b) return;
+      filtros.querySelectorAll('button').forEach(function (x) { x.setAttribute('aria-pressed', x === b); }); pintar(b.dataset.c); A.track('guia_filtro', b.dataset.c); });
+    pintar('todos');
+  });
+})();
 </script>
 </body>
 </html>

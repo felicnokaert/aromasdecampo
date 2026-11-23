@@ -87,6 +87,8 @@
     .chip.confirmada { background: #DCEBD5; color: #2F5A27; }
     .chip.cancelada { background: #EEE; color: #777; }
     .chip.bloqueo { background: var(--azul-claro); color: var(--azul); }
+    .form label.check { display: flex !important; flex-direction: row !important; align-items: center; gap: .6rem; font-weight: 500; }
+    .form label.check input { width: 22px; height: 22px; flex: none; }
     .con-ojo { position: relative; display: block; }
     .con-ojo input { padding-right: 3.2rem; }
     .ojo { position: absolute; right: .3rem; top: 50%; transform: translateY(-50%); width: 44px; height: 44px; border: none; background: none; color: var(--texto2); display: grid; place-items: center; border-radius: 8px; }
@@ -420,7 +422,7 @@
   function ir(v) {
     if (!VISTAS[v]) v = 'inicio';
     S.vista = v; location.hash = v;
-    document.querySelectorAll('nav.abajo button').forEach(b => b.classList.toggle('act', b.dataset.v === v || (['preguntas','cabanas','ajustes','estadisticas','sync','resenas','fotos','textos'].includes(v) && b.dataset.v === 'mas')));
+    document.querySelectorAll('nav.abajo button').forEach(b => b.classList.toggle('act', b.dataset.v === v || (['preguntas','cabanas','ajustes','estadisticas','sync','resenas','fotos','textos','lugares'].includes(v) && b.dataset.v === 'mas')));
     window.scrollTo({ top: 0, behavior: 'smooth' });
     const vi = $('vista'); vi.classList.remove('vista-anim'); void vi.offsetWidth; vi.classList.add('vista-anim');
     VISTAS[v]();
@@ -977,11 +979,62 @@
     };
   };
 
+  // ======================= LUGARES Y DESCUENTOS =======================
+  const CATS_L = { termas: 'Termas', playas: 'Playas', paseos: 'Paseos', historia: 'Historia', naturaleza: 'Naturaleza', comer: 'Para comer', compras: 'Compras' };
+  VISTAS.lugares = async () => {
+    const { data, error: err } = await db.from('lugares').select('*').order('orden'); if (err) return error(err);
+    S.lugares = data || [];
+    const v = $('vista');
+    v.innerHTML = `<h1 class="titulo">Lugares y descuentos</h1>
+      <p class="ayuda">Son los lugares de la Guía de Colón de la web. Sumá restaurantes y comercios, y si tienen un cupón para tus huéspedes, escribilo: sale destacado.</p>
+      <button class="btn grande" id="nuevo-l" style="width:100%;margin-bottom:1rem">+ Agregar un lugar</button>
+      ${Object.entries(CATS_L).map(([k, t]) => { const ls = S.lugares.filter(l => l.categoria === k); return ls.length ? `<h2 style="margin:1rem 0 .4rem;font-size:1.1rem">${t} (${ls.length})</h2>` +
+        ls.map(l => `<div class="caja" style="margin-bottom:.5rem;${l.visible ? '' : 'opacity:.55'}"><div style="display:flex;justify-content:space-between;gap:.6rem;align-items:flex-start">
+          <div><b>${esc(l.nombre)}</b>${l.destacado ? ' <small style="color:var(--sol)">· Imperdible</small>' : ''}${l.visible ? '' : ' <small>· oculto</small>'}
+          <div style="font-size:.85rem;color:var(--texto2)">${esc([l.localidad, l.distancia].filter(Boolean).join(' · '))}</div>
+          ${l.cupon ? `<div style="font-size:.85rem;margin-top:.3rem">🎟 ${esc(l.cupon)}</div>` : ''}</div>
+          <button class="btn sec chico" data-edit-l="${l.id}">Editar</button></div></div>`).join('') : ''; }).join('')}`;
+    $('nuevo-l').onclick = () => formLugar({ categoria: 'comer', visible: true });
+    v.querySelectorAll('[data-edit-l]').forEach(b => b.onclick = () => formLugar(S.lugares.find(l => l.id === Number(b.dataset.editL))));
+  };
+  function formLugar(l) {
+    modal(`<h2>${l.id ? 'Editar lugar' : 'Nuevo lugar'}</h2><form class="form" id="fl">
+      <label>Nombre<input name="nombre" value="${esc(l.nombre || '')}" required placeholder="Ej: Parrilla El Fogón"></label>
+      <div class="f2"><label>Tipo<select name="categoria">${Object.entries(CATS_L).map(([k, t]) => `<option value="${k}" ${k === l.categoria ? 'selected' : ''}>${t}</option>`).join('')}</select></label>
+      <label>Localidad<input name="localidad" value="${esc(l.localidad || '')}" placeholder="Colón"></label></div>
+      <label>Qué es / por qué ir<textarea name="descripcion" rows="3" placeholder="Ej: Parrilla de campo, porciones abundantes.">${esc(l.descripcion || '')}</textarea></label>
+      <div class="f2"><label>Dirección<input name="direccion" value="${esc(l.direccion || '')}"></label><label>Distancia <small>(ej: 5 min)</small><input name="distancia" value="${esc(l.distancia || '')}"></label></div>
+      <label>WhatsApp del lugar <small>(opcional)</small><input name="telefono" inputmode="tel" value="${esc(l.telefono || '')}"></label>
+      <label>🎟 Descuento o cupón para huéspedes <small>(opcional)</small><textarea name="cupon" rows="2" placeholder="Ej: 10% presentando la reserva de Aromas de Campo · Código AROMAS10">${esc(l.cupon || '')}</textarea></label>
+      <label>Link de Google Maps <small>(opcional: si no, se busca por nombre)</small><input name="maps_url" value="${esc(l.maps_url || '')}" placeholder="https://maps.app.goo.gl/..."></label>
+      <label class="check"><input type="checkbox" name="destacado" ${l.destacado ? 'checked' : ''}> Imperdible (sale primero)</label>
+      <label class="check"><input type="checkbox" name="visible" ${l.visible !== false ? 'checked' : ''}> Se ve en la web</label>
+      <button class="btn grande">Guardar</button>
+      ${l.id ? '<button class="btn sec grande" type="button" id="borrar-l" style="color:#B3261E">Borrar lugar</button>' : ''}
+      <button class="btn sec grande" type="button" data-cerrar>Cancelar</button></form>`, () => {
+      $('fl').onsubmit = async e => {
+        e.preventDefault(); const f = e.target, val = n => f[n].value.trim() || null;
+        const fila = { nombre: val('nombre'), categoria: f.categoria.value, localidad: val('localidad'), descripcion: val('descripcion'), direccion: val('direccion'),
+          distancia: val('distancia'), telefono: val('telefono'), cupon: val('cupon'), maps_url: val('maps_url'), destacado: f.destacado.checked, visible: f.visible.checked };
+        if (fila.maps_url && !/^https?:\/\//.test(fila.maps_url)) return aviso('El link de Maps tiene que empezar con https://', true);
+        if (!l.id) fila.orden = Math.max(0, ...S.lugares.map(x => x.orden)) + 1;
+        const { error: er } = l.id ? await db.from('lugares').update(fila).eq('id', l.id) : await db.from('lugares').insert(fila);
+        if (er) return error(er);
+        cerrar(); aviso('Guardado ✓ Ya está en la guía de la web.'); VISTAS.lugares();
+      };
+      if (l.id) $('borrar-l').onclick = () => confirmar(`¿Borrar "${l.nombre}" de la guía?`, 'Sí, borrar', async () => {
+        const { error: er } = await db.from('lugares').delete().eq('id', l.id); if (er) return error(er);
+        aviso('Lugar borrado'); VISTAS.lugares();
+      }, true);
+    });
+  }
+
   // ======================= MÁS =======================
   VISTAS.mas = () => {
     const pendRes = (S.resenas || []).filter(r => !r.aprobada).length;
     const items = [['fotos', '📷', 'Fotos', 'Subí fotos de cada cabaña y del complejo, de adentro y de afuera.'],
                    ['textos', '✏️', 'Textos de la web', 'Cambiá los títulos y textos de la página de inicio.'],
+                   ['lugares', '📍', 'Lugares y descuentos', 'La guía de Colón: lugares, restaurantes y cupones para huéspedes.'],
                    ['sync', '🔄', 'Booking y Airbnb', 'Conectar los calendarios para que nunca se pisen las reservas.'],
                    ['resenas', '⭐', 'Reseñas' + (pendRes ? ` (${pendRes} nuevas)` : ''), 'Opiniones de huéspedes: aprobalas para que salgan en la web.'],
                    ['preguntas', '❓', 'Preguntas frecuentes', 'Lo que la gente pregunta siempre. Respondelo una vez acá.'],
