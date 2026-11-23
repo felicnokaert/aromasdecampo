@@ -531,7 +531,7 @@
   </div>
 </section>
 
-<section class="cierre" aria-labelledby="t-cierre">
+<section class="cierre" id="cierre" aria-labelledby="t-cierre">
   <div class="envoltura">
     <h2 id="t-cierre" data-t="cierre_titulo">¿Cuántas noches <em>te quedás?</em></h2>
     <p data-t="cierre_texto">Elegí las fechas y mirá el precio total al instante. La reserva queda firme con la seña.</p>
@@ -852,6 +852,15 @@
       if (aj.google_url) { lg.textContent = 'Leer las opiniones en Google ↗'; lg.className = 'boton boton-tinta'; }
     }
 
+    /* ?ver=clave: venir desde el panel y resaltar el texto */
+    var ver = new URLSearchParams(location.search).get('ver');
+    var marcado = ver && document.querySelector('[data-t="' + ver.replace(/[^a-z_]/g, '') + '"]');
+    if (marcado) setTimeout(function () {
+      marcado.scrollIntoView({ block: 'center' }); marcado.classList.add('visto');
+      marcado.style.transition = 'box-shadow .4s'; marcado.style.boxShadow = '0 0 0 4px #D2662A'; marcado.style.borderRadius = '6px';
+      setTimeout(function () { marcado.style.boxShadow = ''; }, 4000);
+      setTimeout(function () { marcado.scrollIntoView({ block: 'center' }); }, 900);
+    }, 600);
     /* preguntas */
     var lista = $('#faqLista');
     lista.innerHTML = faq.map(function (p) {

@@ -64,7 +64,7 @@ begin
   end loop;
   -- un finde largo no se corta: si la estadía toca una de sus noches, tiene que incluirlas todas
   select feriado_completo into v_completo from public.ajustes where id;
-  if coalesce(v_completo, true) then
+  if coalesce(v_completo, true) and v_noches < 5 then   -- estadías de 5 noches o más pueden tocar una parte
     select * into f from public.temporadas x
      where x.tipo = 'feriado' and (x.cabana_id is null or x.cabana_id = p_cabana)
        and x.desde < p_salida and x.hasta >= p_entrada

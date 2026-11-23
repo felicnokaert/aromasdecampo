@@ -91,6 +91,17 @@
     .con-ojo input { padding-right: 3.2rem; }
     .ojo { position: absolute; right: .3rem; top: 50%; transform: translateY(-50%); width: 44px; height: 44px; border: none; background: none; color: var(--texto2); display: grid; place-items: center; border-radius: 8px; }
     .ojo:active { background: var(--beige); }
+    .previa { background: #F2EADB; border-radius: 12px; padding: 1.6rem 1.1rem 1.1rem; position: relative; margin-bottom: .5rem; border: 1px solid var(--borde); }
+    .previa.oscura { background: #24301F; color: #F2EADB; } .previa.oscura em { color: #F5C99C; }
+    .previa.naranja { background: #D2662A; color: #fff; } .previa.naranja em { color: #24301F; }
+    .previa.portada-p { background: linear-gradient(180deg, rgba(20,24,16,.35), rgba(20,24,16,.85)), url('fotos/hero-poster.jpg') center/cover; color: #fff; } .previa.portada-p em { color: #F5C99C; }
+    .previa-tag { position: absolute; top: .5rem; left: .7rem; font-size: .68rem; letter-spacing: .08em; text-transform: uppercase; font-weight: 700; opacity: .6; }
+    .previa .p-tit { font-family: 'Gloock', Georgia, serif; font-weight: 400; font-size: 1.7rem; line-height: 1.05; margin: .3rem 0 .5rem; }
+    .previa em { font-style: italic; color: #A9491A; }
+    .previa .p-txt { font-size: .92rem; opacity: .85; margin-bottom: .4rem; }
+    .previa .p-lug { font-style: italic; opacity: .85; font-size: .9rem; }
+    .ver-web { display: inline-block; margin: 0 0 1rem .2rem; font-weight: 600; color: var(--verde-osc); }
+    .grupo-tx[hidden] { display: none; }
     .grilla-fotos { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: .7rem; }
     .foto-adm { position: relative; background: #fff; border-radius: 12px; overflow: hidden; border: 1.5px solid var(--borde); animation: aparecer .35s ease both; }
     .foto-adm img { width: 100%; aspect-ratio: 1; object-fit: cover; display: block; }
@@ -908,22 +919,44 @@
   };
 
   // ======================= TEXTOS DE LA WEB =======================
-  VISTAS.textos = async () => {
+  // Cada sección muestra una vista previa con el estilo de la web y un link para ver dónde está
+  const SECCIONES = { 'Portada': '', 'Cabañas': 'cabanas', 'Estadías': 'estadia', 'Fotos': 'fotos', 'Opiniones': 'opiniones',
+                      'Cómo llegar': 'ubicacion', 'Preguntas': 'preguntas', 'Cierre (franja naranja)': 'cierre' };
+  const conColor = v => esc(v).replace(/\*([^*]+)\*/g, '<em>$1</em>');
+  VISTAS.textos = async (abierta) => {
     const { data, error: err } = await db.from('textos').select('*').order('orden'); if (err) return error(err);
     const grupos = [...new Set(data.map(t => t.grupo))];
-    $('vista').innerHTML = `<h1 class="titulo">Textos de la web</h1>
-      <p class="ayuda">Cambiá los títulos y textos de la página de inicio. Lo que escribas entre *asteriscos* sale en color e inclinado, por ejemplo: Tres cabañas *de tronco.*</p>
-      <form id="ftx">${grupos.map(g => `<div class="caja"><h2>${esc(g)}</h2>${data.filter(t => t.grupo === g).map(t => {
-        const largo = t.valor.length > 70;
-        return `<label style="margin-bottom:.8rem">${esc(t.etiqueta)}${largo
-          ? `<textarea name="${t.clave}" rows="3" maxlength="400">${esc(t.valor)}</textarea>`
-          : `<input name="${t.clave}" value="${esc(t.valor)}" maxlength="120">`}</label>`; }).join('')}</div>`).join('')}
-        <div style="position:sticky;bottom:96px;z-index:5"><button class="btn grande" style="width:100%">Guardar cambios</button></div></form>`;
+    if (!abierta) abierta = grupos[0];
+    const v = $('vista');
+    v.innerHTML = `<h1 class="titulo">Textos de la web</h1>
+      <p class="ayuda">Elegí una parte de la página. Arriba ves cómo queda y abajo lo cambiás. Lo que va entre *asteriscos* sale en color.</p>
+      <div class="filtros">${grupos.map(g => `<button data-g="${esc(g)}" class="${g === abierta ? 'act' : ''}">${esc(g.replace(' (franja naranja)', ''))}</button>`).join('')}</div>
+      <form id="ftx">${grupos.map(g => { const ts = data.filter(t => t.grupo === g); const oscuro = g === 'Estadías', naranja = g.startsWith('Cierre') || g === 'Portada';
+        return `<section class="grupo-tx" data-grupo="${esc(g)}" ${g === abierta ? '' : 'hidden'}>
+          <div class="previa ${oscuro ? 'oscura' : ''} ${g === 'Portada' ? 'portada-p' : ''} ${g.startsWith('Cierre') ? 'naranja' : ''}" aria-label="Así se ve en la web">
+            <span class="previa-tag">Así se ve en la web</span>
+            ${ts.map(t => { const tit = /titulo/.test(t.clave), lug = t.clave === 'portada_lugar';
+              return `<${tit ? 'h3' : 'p'} class="${tit ? 'p-tit' : lug ? 'p-lug' : 'p-txt'}" data-prev="${t.clave}">${t.clave === 'cabanas_aviso' ? '<b>Para tener en cuenta:</b> ' : ''}${conColor(t.valor)}</${tit ? 'h3' : 'p'}>`; }).join('')}
+          </div>
+          <a class="ver-web" target="_blank" rel="noopener" href="${location.origin}/?ver=${encodeURIComponent(ts[0].clave)}#${SECCIONES[g] || ''}">Ver dónde está en la web ↗</a>
+          <div class="caja">${ts.map(t => `<label style="margin-bottom:.9rem">${esc(t.etiqueta)}${t.valor.length > 70
+              ? `<textarea name="${t.clave}" rows="4" maxlength="400">${esc(t.valor)}</textarea>`
+              : `<input name="${t.clave}" value="${esc(t.valor)}" maxlength="120">`}</label>`).join('')}</div>
+        </section>`; }).join('')}
+        <button class="btn grande" style="width:100%;margin-top:.4rem">Guardar cambios</button></form>`;
+    v.querySelectorAll('[data-g]').forEach(b => b.onclick = () => {
+      v.querySelectorAll('[data-g]').forEach(x => x.classList.toggle('act', x === b));
+      v.querySelectorAll('.grupo-tx').forEach(sec => sec.hidden = sec.dataset.grupo !== b.dataset.g);
+    });
+    // la vista previa cambia mientras escribís
+    v.querySelectorAll('#ftx input, #ftx textarea').forEach(inp => inp.oninput = () => {
+      const p = v.querySelector(`[data-prev="${inp.name}"]`);
+      if (p) p.innerHTML = (inp.name === 'cabanas_aviso' ? '<b>Para tener en cuenta:</b> ' : '') + conColor(inp.value);
+    });
     $('ftx').onsubmit = e => {
       e.preventDefault(); const f = e.target;
       const cambios = data.filter(t => f[t.clave].value.trim() && f[t.clave].value.trim() !== t.valor);
       if (!cambios.length) return aviso('No cambiaste ningún texto.');
-      // antes de guardar, mostrar qué cambia y pedir confirmación
       modal(`<h2>¿Guardar estos cambios?</h2><p class="ayuda" style="margin-top:.5rem">Revisá que esté todo bien escrito: así va a aparecer en la web.</p>
         ${cambios.map(t => `<div class="caja" style="margin-bottom:.6rem"><b>${esc(t.grupo)} · ${esc(t.etiqueta)}</b>
           <p style="color:var(--texto2);text-decoration:line-through;margin:.3rem 0">${esc(t.valor)}</p>
