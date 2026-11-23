@@ -469,6 +469,7 @@
     </div>
     <div class="filtros" id="filtros" role="group" aria-label="Filtrar fotos"></div>
     <div class="mosaico" id="mosaico"></div>
+    <div style="text-align:center;margin-top:1.6rem"><button class="boton" id="masFotos" hidden></button></div>
   </div>
 </section>
 
@@ -751,6 +752,7 @@
       var propias = fotos.filter(function (f) { return f.cabana_id === c.id; });
       var lista = propias.concat(fotos.filter(function (f) { return f.cabana_id === null && f.lugar === 'interior'; }));
       if (!lista.length) lista = [{ ruta: 'fotos/cabana-1.jpg', descripcion: 'Cabaña ' + c.nombre }];
+      lista = lista.slice(0, 15); // el carrusel muestra hasta 15; el visor las muestra todas
       var p = minimo[c.id] || c.precio_base;
       var libre = proxLibre[c.id];
       var cuandoLibre = !libre ? 'Consultá fechas por WhatsApp' : (libre === hoy ? 'Libre desde hoy' : 'Próxima noche libre: ' + A.lindo(libre));
@@ -780,13 +782,21 @@
     var lugares = ['todas'].concat(Object.keys(LUGARES).filter(function (l) { return fotos.some(function (f) { return f.lugar === l; }); }));
     var nombres = {}; cabs.forEach(function (c) { nombres[c.id] = c.nombre; });
     filtrosEl.innerHTML = lugares.map(function (l, i) { return '<button aria-pressed="' + (i === 0) + '" data-l="' + l + '">' + (l === 'todas' ? 'Todas (' + fotos.length + ')' : LUGARES[l]) + '</button>'; }).join('');
-    function pintarFotos(l) {
+    var POR_TANDA = 12, mostradas = POR_TANDA, filtroActual = 'todas';
+    function pintarFotos(l, sumar) {
+      if (!sumar) mostradas = POR_TANDA;
+      filtroActual = l;
       var lista = l === 'todas' ? fotos : fotos.filter(function (f) { return f.lugar === l; });
-      mosaico.innerHTML = lista.map(function (f, i) {
+      var desde = sumar ? mosaico.children.length : 0;
+      var html = lista.slice(desde, mostradas).map(function (f, j) { var i = desde + j;
         var pie = [f.descripcion, nombres[f.cabana_id] ? 'Cabaña ' + nombres[f.cabana_id] : ''].filter(Boolean).join(' · ');
-        return '<figure class="entra" style="animation-delay:' + Math.min(i * 50, 500) + 'ms" data-i="' + i + '" tabindex="0" role="button" aria-label="Ver foto: ' + A.esc(pie || 'foto') + '">' +
+        return '<figure class="entra" style="animation-delay:' + Math.min(j * 50, 500) + 'ms" data-i="' + i + '" tabindex="0" role="button" aria-label="Ver foto: ' + A.esc(pie || 'foto') + '">' +
           '<img src="' + A.esc(A.foto(f.miniatura || f.ruta)) + '" alt="' + A.esc(pie || 'Foto de Aromas de Campo') + '" loading="lazy">' + (pie ? '<figcaption>' + A.esc(pie) + '</figcaption>' : '') + '</figure>';
       }).join('');
+      if (sumar) mosaico.insertAdjacentHTML('beforeend', html); else mosaico.innerHTML = html;
+      var resto = lista.length - mostradas, bm = $('#masFotos');
+      bm.hidden = resto <= 0;
+      if (resto > 0) bm.textContent = 'Ver más fotos (' + resto + ' más)';
       mosaico.onclick = function (e) { var fig = e.target.closest('figure'); if (fig) abrirVisor(lista, +fig.dataset.i); };
       mosaico.onkeydown = function (e) { var fig = e.target.closest('figure'); if (fig && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); abrirVisor(lista, +fig.dataset.i); } };
     }
@@ -795,6 +805,7 @@
       filtrosEl.querySelectorAll('button').forEach(function (x) { x.setAttribute('aria-pressed', x === b); });
       pintarFotos(b.dataset.l);
     });
+    $('#masFotos').addEventListener('click', function () { mostradas += POR_TANDA; pintarFotos(filtroActual, true); A.track && A.track('video', 'mas_fotos'); });
     pintarFotos('todas');
 
     /* estadías: descuento real si Rubén lo carga */
