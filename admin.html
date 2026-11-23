@@ -424,7 +424,7 @@
   function ir(v) {
     if (!VISTAS[v]) v = 'inicio';
     S.vista = v; location.hash = v;
-    document.querySelectorAll('nav.abajo button').forEach(b => b.classList.toggle('act', b.dataset.v === v || (['preguntas','cabanas','ajustes','estadisticas','sync','resenas','fotos','textos','lugares','mensajes'].includes(v) && b.dataset.v === 'mas')));
+    document.querySelectorAll('nav.abajo button').forEach(b => b.classList.toggle('act', b.dataset.v === v || (['preguntas','cabanas','ajustes','estadisticas','sync','resenas','fotos','textos','lugares','mensajes','ganancias','huespedes'].includes(v) && b.dataset.v === 'mas')));
     window.scrollTo({ top: 0, behavior: 'smooth' });
     const vi = $('vista'); vi.classList.remove('vista-anim'); void vi.offsetWidth; vi.classList.add('vista-anim');
     VISTAS[v]();
@@ -738,7 +738,9 @@
       : t.tipo === 'feriado' && S.ajustes.recargo_feriado_pct ? `Precio común +${S.ajustes.recargo_feriado_pct}% (recargo de findes largos)`
       : '<span style="color:var(--naranja)">Sin precio especial todavía</span>';
     const icono = { temporada: '☀️', feriado: '🎉', especial: '⭐' };
+    const sug = sugerencias();
     $('vista').innerHTML = `<h1 class="titulo">Precios</h1>
+      ${sug.map(x => `<div class="caja" style="border-left:4px solid var(--sol)"><b>${x.t}</b><p style="margin-top:.3rem">${x.d}</p></div>`).join('')}
       <div class="caja"><h2>Precio de un día común</h2>
         <p class="vacio" style="margin-bottom:.4rem">Por noche, en pesos. Se usa todos los días que no tengan un precio especial abajo.</p>
         <form id="fp">${S.cabanas.filter(c => c.activa).map(c => `<div class="fila-precio fp4"><div class="nom"><b>${esc(c.nombre)}</b></div>
@@ -1100,10 +1102,166 @@
     });
   }
 
+  // ======================= GANANCIAS =======================
+  const CATS_G = { limpieza: 'Limpieza', luz: 'Luz', gas: 'Gas', agua: 'Agua', internet: 'Internet / cable', arreglos: 'Arreglos', impuestos: 'Impuestos', compras: 'Compras', sueldos: 'Sueldos', publicidad: 'Publicidad', otros: 'Otros' };
+  const comisionPct = r => r.origen === 'booking' ? Number(S.ajustes.comision_booking_pct ?? 15) : r.origen === 'airbnb' ? Number(S.ajustes.comision_airbnb_pct ?? 15.5) : 0;
+  VISTAS.ganancias = async () => {
+    const { data: gs, error: err } = await db.from('gastos').select('*').order('fecha', { ascending: false }); if (err) return error(err);
+    S.gastos = gs || [];
+    if (!S.fin) { const h = new Date(); S.fin = { anio: h.getFullYear(), mes: h.getMonth(), modo: 'mes' }; }
+    const { anio, mes, modo } = S.fin;
+    const MESES = ['enero','febrero','marzo','abril','mayo','junio','julio','agosto','septiembre','octubre','noviembre','diciembre'];
+    const desde = modo === 'mes' ? `${anio}-${String(mes + 1).padStart(2, '0')}-01` : `${anio}-01-01`;
+    const hasta = modo === 'mes' ? A.iso(new Date(anio, mes + 1, 0)) : `${anio}-12-31`;
+    const enRango = f => f >= desde && f <= hasta;
+    // ingresos: reservas confirmadas que llegan en el período
+    const res = S.reservas.filter(r => r.estado === 'confirmada' && enRango(r.entrada));
+    const sinMonto = res.filter(r => !r.total);
+    const porCanal = {};
+    let bruto = 0, comis = 0;
+    res.forEach(r => { const t = Number(r.total || 0), c = Math.round(t * comisionPct(r) / 100); bruto += t; comis += c;
+      porCanal[r.origen] = porCanal[r.origen] || { t: 0, c: 0, n: 0 }; porCanal[r.origen].t += t; porCanal[r.origen].c += c; porCanal[r.origen].n++; });
+    const directo = res.filter(r => !['booking', 'airbnb'].includes(r.origen)).reduce((a, r) => a + Number(r.total || 0), 0);
+    const ahorro = Math.round(directo * Number(S.ajustes.comision_booking_pct ?? 15) / 100);
+    // gastos: los del período + los fijos de cada mes
+    const meses = modo === 'mes' ? [[anio, mes]] : Array.from({ length: 12 }, (_, i) => [anio, i]);
+    const lineas = [];
+    S.gastos.forEach(g => {
+      if (!g.fijo) { if (enRango(g.fecha)) lineas.push(g); return; }
+      meses.forEach(([y, m]) => { const ini = `${y}-${String(m + 1).padStart(2, '0')}-01`, fin = A.iso(new Date(y, m + 1, 0));
+        if (g.fecha <= fin && (!g.hasta || g.hasta >= ini)) lineas.push({ ...g, _mes: m }); });
+    });
+    const totGastos = lineas.reduce((a, g) => a + g.monto, 0);
+    const porCat = {}; lineas.forEach(g => porCat[g.categoria] = (porCat[g.categoria] || 0) + g.monto);
+    const ganancia = bruto - comis - totGastos;
+    // ocupación por cabaña
+    const diasPer = A.noches(desde, A.sumar(hasta, 1));
+    const ocup = S.cabanas.filter(c => c.activa).map(c => {
+      let n = 0; S.reservas.filter(r => r.cabana_id === c.id && r.estado === 'confirmada').forEach(r => {
+        const a = r.entrada > desde ? r.entrada : desde, b = r.salida <= A.sumar(hasta, 1) ? r.salida : A.sumar(hasta, 1); if (b > a) n += A.noches(a, b); });
+      return { c, n, pct: Math.round(n / diasPer * 100) };
+    });
+    const titulo = modo === 'mes' ? `${MESES[mes]} ${anio}` : `Año ${anio}`;
+    $('vista').innerHTML = `<h1 class="titulo">Ganancias</h1>
+      <div class="filtros"><button data-modo="mes" class="${modo === 'mes' ? 'act' : ''}">Por mes</button><button data-modo="anio" class="${modo === 'anio' ? 'act' : ''}">Por año</button></div>
+      <div style="display:flex;justify-content:space-between;align-items:center;margin:.6rem 0 1rem"><button class="btn sec chico" id="fa">←</button>
+        <b style="font-size:1.2rem;text-transform:capitalize">${titulo}</b><button class="btn sec chico" id="fs">→</button></div>
+      <div class="caja" style="background:${ganancia >= 0 ? '#E7EEDF' : '#FBE9E7'};text-align:center">
+        <small>Ganancia</small><div style="font-family:Gloock,Georgia,serif;font-size:2.4rem">${A.pesos(ganancia)}</div>
+        <small>${A.pesos(bruto)} cobrado − ${A.pesos(comis)} comisiones − ${A.pesos(totGastos)} gastos</small></div>
+      ${sinMonto.length ? `<div class="caja" style="border-color:var(--sol)"><b>⚠ Faltan montos:</b> ${sinMonto.length} reserva(s) sin total (las de Booking y Airbnb llegan sin precio). Cargalo para que la cuenta dé bien:
+        ${sinMonto.map(r => `<button class="btn sec chico" style="margin:.3rem .3rem 0 0" data-res="${r.id}">${esc(r.nombre || ORIGENES[r.origen])} · ${A.corto(r.entrada)}</button>`).join('')}</div>` : ''}
+      <div class="caja"><h2>Ingresos por canal</h2>
+        ${Object.keys(porCanal).length ? Object.entries(porCanal).map(([o, v]) => `<div style="display:flex;justify-content:space-between;padding:.35rem 0;border-bottom:1px solid var(--borde)">
+          <span>${ORIGENES[o] || o} <small>(${v.n})</small></span><span>${A.pesos(v.t)}${v.c ? ` <small style="color:#B3261E">− ${A.pesos(v.c)}</small>` : ''}</span></div>`).join('') : '<p class="ayuda">Todavía no hay reservas confirmadas en este período.</p>'}
+        ${ahorro ? `<p style="margin-top:.6rem;color:var(--verde-osc);font-weight:600">💡 Por reservar directo te ahorraste ${A.pesos(ahorro)} en comisiones.</p>` : ''}</div>
+      <div class="caja"><h2>Ocupación</h2>${ocup.map(o => `<div style="margin:.4rem 0"><div style="display:flex;justify-content:space-between"><span>${esc(o.c.nombre)}</span><span>${o.n} de ${diasPer} noches · <b>${o.pct}%</b></span></div>
+        <div class="barra-prog" style="margin-top:.3rem"><i style="width:${Math.min(100, o.pct)}%"></i></div></div>`).join('')}</div>
+      <div class="caja"><div style="display:flex;justify-content:space-between;align-items:center"><h2>Gastos</h2><button class="btn chico" id="nuevo-g">+ Cargar gasto</button></div>
+        ${Object.entries(porCat).sort((a, b) => b[1] - a[1]).map(([c, m]) => `<div style="display:flex;justify-content:space-between;padding:.3rem 0"><span>${CATS_G[c]}</span><b>${A.pesos(m)}</b></div>`).join('') || '<p class="ayuda">No cargaste gastos en este período.</p>'}
+        ${lineas.length ? `<details style="margin-top:.6rem"><summary style="cursor:pointer;font-weight:600">Ver el detalle (${lineas.length})</summary>
+          ${lineas.map(g => `<div style="display:flex;justify-content:space-between;gap:.5rem;padding:.45rem 0;border-bottom:1px solid var(--borde)">
+            <span>${g.fijo ? '🔁 ' : ''}${CATS_G[g.categoria]}${g.nota ? ' · ' + esc(g.nota) : ''}<br><small>${g.fijo ? 'Fijo todos los meses' : A.corto(g.fecha)}</small></span>
+            <span style="text-align:right">${A.pesos(g.monto)}<br><button class="btn sec chico" data-edit-g="${g.id}">Editar</button></span></div>`).join('')}</details>` : ''}</div>
+      <div class="caja"><h2>Comisiones de las plataformas</h2><form class="form" id="fcom"><div class="f2">
+        <label>Booking %<input type="number" step="0.1" min="0" max="40" name="b" value="${S.ajustes.comision_booking_pct ?? 15}"></label>
+        <label>Airbnb %<input type="number" step="0.1" min="0" max="40" name="a" value="${S.ajustes.comision_airbnb_pct ?? 15.5}"></label></div>
+        <button class="btn sec">Guardar comisiones</button></form></div>`;
+    const v = $('vista');
+    v.querySelectorAll('[data-modo]').forEach(b => b.onclick = () => { S.fin.modo = b.dataset.modo; VISTAS.ganancias(); });
+    $('fa').onclick = () => { if (S.fin.modo === 'anio') S.fin.anio--; else if (--S.fin.mes < 0) { S.fin.mes = 11; S.fin.anio--; } VISTAS.ganancias(); };
+    $('fs').onclick = () => { if (S.fin.modo === 'anio') S.fin.anio++; else if (++S.fin.mes > 11) { S.fin.mes = 0; S.fin.anio++; } VISTAS.ganancias(); };
+    v.querySelectorAll('[data-res]').forEach(b => b.onclick = () => formReserva(S.reservas.find(r => r.id === Number(b.dataset.res))));
+    $('nuevo-g').onclick = () => formGasto({ fecha: A.hoy(), categoria: 'limpieza' });
+    v.querySelectorAll('[data-edit-g]').forEach(b => b.onclick = () => formGasto(S.gastos.find(g => g.id === Number(b.dataset.editG))));
+    $('fcom').onsubmit = async e => { e.preventDefault();
+      const c = { comision_booking_pct: Number(e.target.b.value) || 0, comision_airbnb_pct: Number(e.target.a.value) || 0 };
+      const { error: er } = await db.from('ajustes').update(c).eq('id', true); if (er) return error(er);
+      Object.assign(S.ajustes, c); aviso('Comisiones guardadas ✓'); VISTAS.ganancias(); };
+  };
+  function formGasto(g) {
+    modal(`<h2>${g.id ? 'Editar gasto' : 'Cargar gasto'}</h2><form class="form" id="fg">
+      <div class="f2"><label>Tipo<select name="categoria">${Object.entries(CATS_G).map(([k, t]) => `<option value="${k}" ${k === g.categoria ? 'selected' : ''}>${t}</option>`).join('')}</select></label>
+      <label>Monto $<input type="number" name="monto" min="1" step="1" inputmode="numeric" required value="${g.monto || ''}"></label></div>
+      <label>Fecha<input type="date" name="fecha" required value="${g.fecha || A.hoy()}"></label>
+      <label>Nota <small>(opcional)</small><input name="nota" value="${esc(g.nota || '')}" placeholder="Ej: arreglo de la bomba de la pileta"></label>
+      <label class="check"><input type="checkbox" name="fijo" ${g.fijo ? 'checked' : ''}> Se paga todos los meses (luz, internet…)</label>
+      ${g.fijo ? `<label>Dejó de pagarse el <small>(opcional)</small><input type="date" name="hasta" value="${g.hasta || ''}"></label>` : ''}
+      <button class="btn grande">Guardar</button>
+      ${g.id ? '<button class="btn sec grande" type="button" id="borrar-g" style="color:#B3261E">Borrar gasto</button>' : ''}
+      <button class="btn sec grande" type="button" data-cerrar>Cancelar</button></form>`, () => {
+      $('fg').onsubmit = async e => {
+        e.preventDefault(); const f = e.target;
+        const fila = { categoria: f.categoria.value, monto: Math.round(Number(f.monto.value)), fecha: f.fecha.value, nota: f.nota.value.trim() || null, fijo: f.fijo.checked,
+                       hasta: f.hasta ? (f.hasta.value || null) : null };
+        if (!(fila.monto > 0)) return aviso('Poné un monto', true);
+        const { error: er } = g.id ? await db.from('gastos').update(fila).eq('id', g.id) : await db.from('gastos').insert(fila);
+        if (er) return error(er);
+        cerrar(); aviso('Gasto guardado ✓'); VISTAS.ganancias();
+      };
+      if (g.id) $('borrar-g').onclick = () => confirmar('¿Borrar este gasto?', 'Sí, borrar', async () => {
+        const { error: er } = await db.from('gastos').delete().eq('id', g.id); if (er) return error(er); aviso('Gasto borrado'); VISTAS.ganancias(); }, true);
+    });
+  }
+
+  // ======================= HUÉSPEDES =======================
+  VISTAS.huespedes = () => {
+    const mapa = new Map();
+    S.reservas.filter(r => r.estado === 'confirmada' && (r.telefono || r.nombre)).forEach(r => {
+      const k = r.telefono ? telWa(r.telefono) : (r.nombre || '').toLowerCase().trim();
+      const h = mapa.get(k) || { nombre: r.nombre, telefono: r.telefono, email: r.email, visitas: 0, noches: 0, total: 0, ultima: '', origenes: new Set(), res: [] };
+      h.visitas++; h.noches += A.noches(r.entrada, r.salida); h.total += Number(r.total || 0); h.origenes.add(ORIGENES[r.origen] || r.origen);
+      if (r.entrada > h.ultima) { h.ultima = r.entrada; h.nombre = r.nombre || h.nombre; h.email = r.email || h.email; } h.res.push(r); mapa.set(k, h);
+    });
+    const lista = [...mapa.values()].sort((a, b) => b.ultima.localeCompare(a.ultima));
+    S.huespedesLista = lista;
+    $('vista').innerHTML = `<h1 class="titulo">Huéspedes</h1>
+      <p class="ayuda">Todos los que se alojaron o tienen reserva confirmada. Ideal para mandarles una promo en temporada baja.</p>
+      <input class="buscar" id="bh" placeholder="🔍 Buscar por nombre o teléfono" style="width:100%;margin-bottom:.8rem">
+      <div style="display:flex;gap:.5rem;margin-bottom:1rem"><button class="btn sec chico" id="csv">⬇ Descargar lista (Excel)</button><span class="ayuda" style="margin:0;border:0">${lista.length} huésped(es)</span></div>
+      <div id="lh">${lista.map((h, i) => `<div class="caja h-item" data-q="${esc(((h.nombre || '') + ' ' + (h.telefono || '')).toLowerCase())}" style="margin-bottom:.5rem">
+        <div style="display:flex;justify-content:space-between;gap:.5rem"><div><b>${esc(h.nombre || 'Sin nombre')}</b>${h.visitas > 1 ? ` <span class="chip confirmada">Volvió ${h.visitas} veces</span>` : ''}
+        <div style="font-size:.85rem;color:var(--texto2)">${esc(h.telefono || '')} · última: ${A.corto(h.ultima)} · ${h.noches} noches · ${[...h.origenes].join(', ')}</div></div>
+        ${h.telefono ? `<a class="btn wa chico" target="_blank" rel="noopener" href="https://wa.me/${telWa(h.telefono)}?text=${encodeURIComponent(`Hola ${(h.nombre || '').split(' ')[0]}! Te escribo de Aromas de Campo 🌿 `)}">WhatsApp</a>` : ''}</div></div>`).join('') || '<p class="ayuda">Todavía no hay huéspedes confirmados.</p>'}</div>`;
+    $('bh').oninput = e => { const q = e.target.value.toLowerCase().trim(); document.querySelectorAll('.h-item').forEach(el => el.hidden = q && !el.dataset.q.includes(q)); };
+    $('csv').onclick = () => {
+      const filas = [['Nombre', 'Teléfono', 'Email', 'Visitas', 'Noches', 'Última llegada', 'Total', 'Canal']].concat(
+        lista.map(h => [h.nombre || '', h.telefono || '', h.email || '', h.visitas, h.noches, h.ultima, h.total, [...h.origenes].join(' / ')]));
+      const csv = '﻿' + filas.map(f => f.map(x => `"${String(x).replace(/"/g, '""')}"`).join(';')).join('\n');
+      const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([csv], { type: 'text/csv;charset=utf-8' }));
+      a.download = `huespedes-aromas-${A.hoy()}.csv`; document.body.appendChild(a); a.click(); a.remove();
+    };
+  };
+
+  // ======================= SUGERENCIAS DE PRECIO =======================
+  function sugerencias() {
+    const hoy = A.hoy(), out = [];
+    const activas = S.cabanas.filter(c => c.activa);
+    const ocupada = (cid, f) => S.reservas.some(r => r.cabana_id === cid && (r.estado === 'confirmada' || r.estado === 'bloqueo') && r.entrada <= f && r.salida > f);
+    // 1) demanda: fechas libres con 2 o más pedidos en los últimos 30 días
+    const desde30 = new Date(Date.now() - 30 * 864e5).toISOString();
+    const pedidos = S.reservas.filter(r => r.origen === 'web' && r.creada >= desde30 && r.salida > hoy && ['pendiente', 'cancelada'].includes(r.estado));
+    const cuenta = {};
+    pedidos.forEach(r => { for (let f = r.entrada; f < r.salida; f = A.sumar(f, 1)) cuenta[f] = (cuenta[f] || 0) + 1; });
+    const calientes = Object.keys(cuenta).filter(f => cuenta[f] >= 2 && activas.some(c => !ocupada(c.id, f))).sort();
+    if (calientes.length) out.push({ t: '🔥 Mucha demanda', d: `Hubo ${Math.max(...calientes.map(f => cuenta[f]))} pedidos para fechas como el ${A.lindo(calientes[0])} y todavía hay lugar. Podés subirles el precio en "Precios especiales".` });
+    // 2) noches libres en los próximos 7 días
+    let libres7 = 0; for (let i = 0; i < 7; i++) { const f = A.sumar(hoy, i); activas.forEach(c => { if (!ocupada(c.id, f)) libres7++; }); }
+    if (libres7 >= 4 && !(Number(S.ajustes.ultimo_minuto_pct) > 0)) out.push({ t: '⏰ Noches libres esta semana', d: `Quedan ${libres7} noches libres en los próximos 7 días. Activá un descuento de último minuto (Ajustes) para llenarlas.` });
+    // 3) ocupación de los próximos 30 días
+    let occ = 0, tot = 0; for (let i = 0; i < 30; i++) { const f = A.sumar(hoy, i); activas.forEach(c => { tot++; if (ocupada(c.id, f)) occ++; }); }
+    const pct = tot ? Math.round(occ / tot * 100) : 0;
+    if (pct < 25) out.push({ t: '📉 Mes tranquilo', d: `Los próximos 30 días están ocupados al ${pct}%. Buen momento para mandarle una promo a los huéspedes que ya vinieron (Más → Huéspedes).` });
+    else if (pct > 75) out.push({ t: '📈 Mes casi lleno', d: `Los próximos 30 días están ocupados al ${pct}%. Las noches que quedan se pueden vender un poco más caras.` });
+    return out;
+  }
+
   // ======================= MÁS =======================
   VISTAS.mas = () => {
     const pendRes = (S.resenas || []).filter(r => !r.aprobada).length;
-    const items = [['fotos', '📷', 'Fotos', 'Subí fotos de cada cabaña y del complejo, de adentro y de afuera.'],
+    const items = [['ganancias', '💰', 'Ganancias', 'Ingresos, gastos, comisiones y ocupación por mes y por año.'],
+                   ['huespedes', '👥', 'Huéspedes', 'Todos los que vinieron, con su WhatsApp. Descargá la lista.'],
+                   ['fotos', '📷', 'Fotos', 'Subí fotos de cada cabaña y del complejo, de adentro y de afuera.'],
                    ['textos', '✏️', 'Textos de la web', 'Cambiá los títulos y textos de la página de inicio.'],
                    ['mensajes', '💬', 'Mensajes de WhatsApp', 'Los mensajes que mandás seguido: editalos, agregá o borrá.'],
                    ['lugares', '📍', 'Lugares y descuentos', 'La guía de Colón: lugares, restaurantes y cupones para huéspedes.'],
