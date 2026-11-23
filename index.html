@@ -393,9 +393,9 @@
     <img src="logo/aromas-blanco.png" alt="">
   </div>
   <div class="envoltura">
-    <p class="lugar">Colón, Entre Ríos</p>
-    <h1>Cabañas de tronco, <em>sin apuro.</em></h1>
-    <p class="bajada">Pileta, parque y parrilla individual a unos kilómetros del río Uruguay. Mirá los precios en pesos y las fechas libres, y reservá directo con nosotros.</p>
+    <p class="lugar" data-t="portada_lugar">Colón, Entre Ríos</p>
+    <h1 data-t="portada_titulo">Cabañas de tronco, <em>sin apuro.</em></h1>
+    <p class="bajada" data-t="portada_bajada">Pileta, parque y parrilla individual a unos kilómetros del río Uruguay. Mirá los precios en pesos y las fechas libres, y reservá directo con nosotros.</p>
     <div class="acciones">
       <a class="boton boton-sol" href="reservas.html">Ver precios y fechas <span class="flecha">→</span></a>
       <a class="boton boton-linea" href="#cabanas">Conocer las cabañas</a>
@@ -420,24 +420,24 @@
     <div class="cabecera lado">
       <div>
         <p class="rotulo">01 <i>las cabañas</i></p>
-        <h2 id="t-cabanas" class="asoma">Tres cabañas <em>de tronco.</em></h2>
+        <h2 id="t-cabanas" class="asoma" data-t="cabanas_titulo">Tres cabañas <em>de tronco.</em></h2>
       </div>
-      <p class="intro asoma">Olivia, Sofía y Emma, rodeadas de parque y a unos pasos de la pileta. Hoy se alquilan Olivia y Sofía; Emma abre más adelante.</p>
+      <p class="intro asoma" data-t="cabanas_intro">Olivia, Sofía y Emma, rodeadas de parque y a unos pasos de la pileta. Hoy se alquilan Olivia y Sofía; Emma abre más adelante.</p>
     </div>
     <div class="cabanas" id="listaCabanas">
       <article class="cab"><div class="carrusel esqueleto"></div><div class="nombre"><h3 class="esqueleto" style="width:40%;height:2.2rem;border-radius:4px"></h3></div></article>
       <article class="cab"><div class="carrusel esqueleto"></div><div class="nombre"><h3 class="esqueleto" style="width:40%;height:2.2rem;border-radius:4px"></h3></div></article>
     </div>
     <p class="equipamiento" id="equipamiento"><b>Cada cabaña:</b> cama matrimonial · 2 camas de una plaza para chicos · baño privado · cocina equipada · parrilla individual · WiFi · pileta del complejo</p>
-    <p class="equipamiento" style="margin-top:0;border:0;padding-top:.4rem"><b>Para tener en cuenta:</b> alquilamos solo el alojamiento, así que traé ropa de cama y toallas. No se aceptan mascotas.</p>
+    <p class="equipamiento" style="margin-top:0;border:0;padding-top:.4rem"><b>Para tener en cuenta:</b> <span data-t="cabanas_aviso">alquilamos solo el alojamiento, así que traé ropa de cama y toallas. No se aceptan mascotas.</span></p>
   </div>
 </section>
 
 <section class="estadia" id="estadia" aria-labelledby="t-estadia">
   <div class="envoltura">
     <p class="rotulo">02 <i>cuánto quedarse</i></p>
-    <h2 id="t-estadia" class="asoma">Colón no se conoce <em>en un fin de semana.</em></h2>
-    <p class="intro asoma">El mínimo es de 2 noches (3 en temporada alta), pero lo que recomendamos es de 4 noches a dos semanas. Mové la barra y mirá lo que entra.</p>
+    <h2 id="t-estadia" class="asoma" data-t="estadia_titulo">Colón no se conoce <em>en un fin de semana.</em></h2>
+    <p class="intro asoma" data-t="estadia_intro">El mínimo es de 2 noches (3 en temporada alta), pero lo que recomendamos es de 4 noches a dos semanas. Mové la barra y mirá lo que entra.</p>
     <div class="regla">
       <div>
         <div class="contador"><output id="nNoches" for="barraNoches">7</output><span id="nNochesTxt">noches</span></div>
@@ -462,9 +462,9 @@
     <div class="cabecera lado">
       <div>
         <p class="rotulo">03 <i>fotos</i></p>
-        <h2 id="t-fotos" class="asoma">Así se ve <em>de cerca.</em></h2>
+        <h2 id="t-fotos" class="asoma" data-t="fotos_titulo">Así se ve <em>de cerca.</em></h2>
       </div>
-      <p class="intro asoma">Fotos de las cabañas, la pileta y el parque, sin filtros de catálogo. Tocá cualquiera para verla grande.</p>
+      <p class="intro asoma" data-t="fotos_intro">Fotos de las cabañas, la pileta y el parque, sin filtros de catálogo. Tocá cualquiera para verla grande.</p>
     </div>
     <div class="filtros" id="filtros" role="group" aria-label="Filtrar fotos"></div>
     <div class="mosaico" id="mosaico"></div>
@@ -486,7 +486,7 @@
     <p class="rotulo">04 <i>lo que dicen</i></p>
     <div class="nota-google">
       <div class="puntaje" id="puntaje">5,0<small><span class="estrellas">★★★★★</span><br><span id="puntajeTxt">en Google</span></small></div>
-      <h2 id="t-opiniones" class="asoma">Lo cuentan <em>los que vinieron.</em></h2>
+      <h2 id="t-opiniones" class="asoma" data-t="opiniones_titulo">Lo cuentan <em>los que vinieron.</em></h2>
     </div>
     <div class="resenas" id="resenas"></div>
     <div class="acciones">
@@ -500,7 +500,7 @@
   <div class="envoltura grilla">
     <div>
       <p class="rotulo">05 <i>cómo llegar</i></p>
-      <h2 id="t-ubic" class="asoma">En Colón, <em>Entre Ríos.</em></h2>
+      <h2 id="t-ubic" class="asoma" data-t="ubicacion_titulo">En Colón, <em>Entre Ríos.</em></h2>
       <ul class="datos">
         <li>Desde Buenos Aires <span>unos 320 km en auto</span></li>
         <li>Parque Nacional El Palmar <span>a unos 50 km</span></li>
@@ -520,8 +520,8 @@
   <div class="envoltura grilla">
     <div>
       <p class="rotulo">06 <i>preguntas</i></p>
-      <h2 id="t-faq" class="asoma">Antes de <em>reservar.</em></h2>
-      <p class="intro">Si te queda una duda, escribinos por WhatsApp y te contesta Rubén.</p>
+      <h2 id="t-faq" class="asoma" data-t="preguntas_titulo">Antes de <em>reservar.</em></h2>
+      <p class="intro" data-t="preguntas_intro">Si te queda una duda, escribinos por WhatsApp y te contesta Rubén.</p>
     </div>
     <div class="faq-lista" id="faqLista">
       <div class="esqueleto" style="height:3.2rem;margin-bottom:.6rem;border-radius:4px"></div>
@@ -533,8 +533,8 @@
 
 <section class="cierre" aria-labelledby="t-cierre">
   <div class="envoltura">
-    <h2 id="t-cierre">¿Cuántas noches <em>te quedás?</em></h2>
-    <p>Elegí las fechas y mirá el precio total al instante. La reserva queda firme con la seña.</p>
+    <h2 id="t-cierre" data-t="cierre_titulo">¿Cuántas noches <em>te quedás?</em></h2>
+    <p data-t="cierre_texto">Elegí las fechas y mirá el precio total al instante. La reserva queda firme con la seña.</p>
     <div class="acciones">
       <a class="boton boton-tinta" href="reservas.html">Ver precios y fechas <span class="flecha">→</span></a>
       <a class="boton boton-linea" href="https://wa.me/5491169495055?text=Hola!%20Quiero%20consultar%20por%20las%20caba%C3%B1as." target="_blank" rel="noopener">Escribir por WhatsApp</a>
@@ -722,8 +722,16 @@
     db.from('preguntas').select('pregunta,respuesta').eq('visible', true).order('orden'),
     db.from('ajustes').select('aviso,google_puntaje,google_cantidad,google_url,descuento_semana_pct,checkin,checkout').single(),
     db.from('resenas').select('nombre,ciudad,estrellas,texto,respuesta,fuente,creada').eq('aprobada', true).order('creada', { ascending: false }),
-    db.from('fotos').select('id,cabana_id,ruta,miniatura,lugar,descripcion,portada,orden').order('portada', { ascending: false }).order('orden')
+    db.from('fotos').select('id,cabana_id,ruta,miniatura,lugar,descripcion,portada,orden').order('portada', { ascending: false }).order('orden'),
+    db.from('textos').select('clave,valor')
   ]).then(function (r) {
+    /* textos editables desde el panel: lo que va entre *asteriscos* sale en color */
+    (r[6] && r[6].data || []).forEach(function (t) {
+      if (!t.valor || !t.valor.trim()) return;
+      document.querySelectorAll('[data-t="' + t.clave + '"]').forEach(function (el) {
+        el.innerHTML = A.esc(t.valor.trim()).replace(/\*([^*]+)\*/g, '<em>$1</em>').replace(/\n/g, '<br>');
+      });
+    });
     var cabs = r[0].data || [], cal = r[1].data || [], faq = r[2].data || [], aj = r[3].data || {}, res = r[4].data || [], fotos = r[5].data || [];
 
     /* cabañas */

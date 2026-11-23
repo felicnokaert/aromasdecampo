@@ -87,6 +87,10 @@
     .chip.confirmada { background: #DCEBD5; color: #2F5A27; }
     .chip.cancelada { background: #EEE; color: #777; }
     .chip.bloqueo { background: var(--azul-claro); color: var(--azul); }
+    .con-ojo { position: relative; display: block; }
+    .con-ojo input { padding-right: 3.2rem; }
+    .ojo { position: absolute; right: .3rem; top: 50%; transform: translateY(-50%); width: 44px; height: 44px; border: none; background: none; color: var(--texto2); display: grid; place-items: center; border-radius: 8px; }
+    .ojo:active { background: var(--beige); }
     .grilla-fotos { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: .7rem; }
     .foto-adm { position: relative; background: #fff; border-radius: 12px; overflow: hidden; border: 1.5px solid var(--borde); animation: aparecer .35s ease both; }
     .foto-adm img { width: 100%; aspect-ratio: 1; object-fit: cover; display: block; }
@@ -293,6 +297,23 @@
 
   document.addEventListener('keydown', e => { if (e.key === 'Escape') cerrar(); });
 
+  // ---------- ojito para ver la contraseña ----------
+  const OJO = '<svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" aria-hidden="true"><path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12Z"/><circle cx="12" cy="12" r="3"/></svg>';
+  const OJO_NO = '<svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" aria-hidden="true"><path d="M3 3l18 18M10.6 5.1A10 10 0 0 1 12 5c6.4 0 10 7 10 7a17 17 0 0 1-3 3.9M6.6 6.6C3.7 8.4 2 12 2 12s3.6 7 10 7a9.6 9.6 0 0 0 4.4-1.1M9.9 9.9a3 3 0 0 0 4.2 4.2"/></svg>';
+  function ponerOjos(raiz) {
+    (raiz || document).querySelectorAll('input[type=password]:not([data-ojo])').forEach(inp => {
+      inp.dataset.ojo = '1';
+      const caja = document.createElement('span'); caja.className = 'con-ojo';
+      inp.parentNode.insertBefore(caja, inp); caja.appendChild(inp);
+      const b = document.createElement('button'); b.type = 'button'; b.className = 'ojo'; b.innerHTML = OJO; b.setAttribute('aria-label', 'Mostrar contraseña');
+      b.onclick = () => { const ver = inp.type === 'password'; inp.type = ver ? 'text' : 'password'; b.innerHTML = ver ? OJO_NO : OJO;
+        b.setAttribute('aria-label', ver ? 'Ocultar contraseña' : 'Mostrar contraseña'); inp.focus(); };
+      caja.appendChild(b);
+    });
+  }
+  ponerOjos();
+  new MutationObserver(() => ponerOjos()).observe(document.body, { childList: true, subtree: true });
+
   // ---------- ingreso ----------
   async function arrancar() {
     if (!db) { document.body.innerHTML = '<p style="padding:2rem;font-size:1.1rem">Falta configurar la base de datos en <b>js/aromas.js</b>.</p>'; return; }
@@ -388,7 +409,7 @@
   function ir(v) {
     if (!VISTAS[v]) v = 'inicio';
     S.vista = v; location.hash = v;
-    document.querySelectorAll('nav.abajo button').forEach(b => b.classList.toggle('act', b.dataset.v === v || (['preguntas','cabanas','ajustes','estadisticas','sync','resenas','fotos'].includes(v) && b.dataset.v === 'mas')));
+    document.querySelectorAll('nav.abajo button').forEach(b => b.classList.toggle('act', b.dataset.v === v || (['preguntas','cabanas','ajustes','estadisticas','sync','resenas','fotos','textos'].includes(v) && b.dataset.v === 'mas')));
     window.scrollTo({ top: 0, behavior: 'smooth' });
     const vi = $('vista'); vi.classList.remove('vista-anim'); void vi.offsetWidth; vi.classList.add('vista-anim');
     VISTAS[v]();
@@ -886,10 +907,47 @@
     }));
   };
 
+  // ======================= TEXTOS DE LA WEB =======================
+  VISTAS.textos = async () => {
+    const { data, error: err } = await db.from('textos').select('*').order('orden'); if (err) return error(err);
+    const grupos = [...new Set(data.map(t => t.grupo))];
+    $('vista').innerHTML = `<h1 class="titulo">Textos de la web</h1>
+      <p class="ayuda">Cambiá los títulos y textos de la página de inicio. Lo que escribas entre *asteriscos* sale en color e inclinado, por ejemplo: Tres cabañas *de tronco.*</p>
+      <form id="ftx">${grupos.map(g => `<div class="caja"><h2>${esc(g)}</h2>${data.filter(t => t.grupo === g).map(t => {
+        const largo = t.valor.length > 70;
+        return `<label style="margin-bottom:.8rem">${esc(t.etiqueta)}${largo
+          ? `<textarea name="${t.clave}" rows="3" maxlength="400">${esc(t.valor)}</textarea>`
+          : `<input name="${t.clave}" value="${esc(t.valor)}" maxlength="120">`}</label>`; }).join('')}</div>`).join('')}
+        <div style="position:sticky;bottom:96px;z-index:5"><button class="btn grande" style="width:100%">Guardar cambios</button></div></form>`;
+    $('ftx').onsubmit = e => {
+      e.preventDefault(); const f = e.target;
+      const cambios = data.filter(t => f[t.clave].value.trim() && f[t.clave].value.trim() !== t.valor);
+      if (!cambios.length) return aviso('No cambiaste ningún texto.');
+      // antes de guardar, mostrar qué cambia y pedir confirmación
+      modal(`<h2>¿Guardar estos cambios?</h2><p class="ayuda" style="margin-top:.5rem">Revisá que esté todo bien escrito: así va a aparecer en la web.</p>
+        ${cambios.map(t => `<div class="caja" style="margin-bottom:.6rem"><b>${esc(t.grupo)} · ${esc(t.etiqueta)}</b>
+          <p style="color:var(--texto2);text-decoration:line-through;margin:.3rem 0">${esc(t.valor)}</p>
+          <p style="font-weight:600">${esc(f[t.clave].value.trim())}</p></div>`).join('')}
+        <div class="botones"><button class="btn grande" id="si-tx">Sí, guardar cambios</button><button class="btn sec grande" data-cerrar>No, seguir editando</button></div>`, () => {
+        $('si-tx').onclick = async () => {
+          $('si-tx').disabled = true;
+          for (const t of cambios) {
+            const valor = f[t.clave].value.trim();
+            const { error: er } = await db.from('textos').update({ valor, editado: new Date().toISOString() }).eq('clave', t.clave);
+            if (er) { $('si-tx').disabled = false; return error(er); }
+            t.valor = valor;
+          }
+          cerrar(); aviso(cambios.length === 1 ? 'Cambio guardado ✓ Ya se ve en la web.' : cambios.length + ' cambios guardados ✓ Ya se ven en la web.');
+        };
+      });
+    };
+  };
+
   // ======================= MÁS =======================
   VISTAS.mas = () => {
     const pendRes = (S.resenas || []).filter(r => !r.aprobada).length;
     const items = [['fotos', '📷', 'Fotos', 'Subí fotos de cada cabaña y del complejo, de adentro y de afuera.'],
+                   ['textos', '✏️', 'Textos de la web', 'Cambiá los títulos y textos de la página de inicio.'],
                    ['sync', '🔄', 'Booking y Airbnb', 'Conectar los calendarios para que nunca se pisen las reservas.'],
                    ['resenas', '⭐', 'Reseñas' + (pendRes ? ` (${pendRes} nuevas)` : ''), 'Opiniones de huéspedes: aprobalas para que salgan en la web.'],
                    ['preguntas', '❓', 'Preguntas frecuentes', 'Lo que la gente pregunta siempre. Respondelo una vez acá.'],
