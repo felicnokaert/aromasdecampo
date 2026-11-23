@@ -598,7 +598,8 @@
       `La entrada es desde las ${a.checkin || '14 hs'} y la salida el ${A.lindo(r.salida)} hasta las ${a.checkout || '11 hs'}.` +
       (a.info_llegada ? `\n\n${a.info_llegada}` : '') + `\n\nCualquier cosa nos escribís. ¡Buen viaje!`;
   }
-  const msgResena = r => `Hola ${primerNombre(r)}! Gracias por elegir Aromas de Campo 🌿 ¿Nos contás cómo la pasaste? Es un minuto y nos ayuda muchísimo: ${web()}/opinar.html?c=${r.codigo}`;
+  // el pedido de opinión lleva directo a dejarla en Google (así suben en Google Maps)
+  const msgResena = r => `Hola ${primerNombre(r)}! Gracias por elegir Aromas de Campo 🌿 ¿Nos dejás tu opinión en Google? Es un minuto y nos ayuda muchísimo a que otras familias nos encuentren: ${S.ajustes.google_resena_url || (web() + '/opinar.html?c=' + r.codigo)}`;
   async function marcar(r, campo) {
     const { error: err } = await db.from('reservas').update({ [campo]: true }).eq('id', r.id);
     if (err) return error(err); r[campo] = true; aviso('Listo ✓'); VISTAS[S.vista]();

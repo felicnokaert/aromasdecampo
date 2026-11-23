@@ -31,10 +31,10 @@ Deno.serve(async (req) => {
     const noches = (Date.parse(r.salida) - Date.parse(r.entrada)) / 86400000;
     let tel = String(r.telefono || "").replace(/\D/g, "").replace(/^0/, "");
     if (!tel.startsWith("54")) tel = "549" + tel.replace(/^15/, "");
-    const panel = (Deno.env.get("PANEL_URL") || "https://aromasdecampo.vercel.app/admin.html");
+    const panel = (Deno.env.get("PANEL_URL") || "https://aromasdecampo.vercel.app/panel");
     const html = `
       <div style="font-family:Arial,sans-serif;max-width:520px;margin:auto;color:#1E1E1E">
-        <h2 style="color:#4F6049">🌿 Nueva reserva desde la web</h2>
+        <h2 style="color:#24301F;font-family:Georgia,serif">Nueva reserva desde la web</h2>
         <p style="font-size:16px"><b>${esc(r.nombre)}</b> pidió la cabaña <b>${esc(r.cabanas?.nombre)}</b></p>
         <table style="font-size:15px;border-collapse:collapse;width:100%">
           <tr><td style="padding:6px 0;color:#666">Llega</td><td><b>${lindo(r.entrada)}</b></td></tr>
@@ -47,8 +47,8 @@ Deno.serve(async (req) => {
         </table>
         ${r.mensaje ? `<p style="background:#F0EBE1;padding:10px;border-radius:8px">💬 ${esc(r.mensaje)}</p>` : ""}
         <p>Ojo: hasta que no pague la seña <b>las fechas siguen libres</b> para otros. Cuando te llegue la seña, confirmala en el panel con un toque.</p>
-        <p><a href="https://wa.me/${tel}" style="background:#25D366;color:#fff;padding:12px 18px;border-radius:10px;text-decoration:none;font-weight:bold">Escribirle por WhatsApp</a>
-           &nbsp; <a href="${panel}" style="background:#7A8C72;color:#fff;padding:12px 18px;border-radius:10px;text-decoration:none;font-weight:bold">Abrir el panel</a></p>
+        <p><a href="https://wa.me/${tel}" style="background:#25D366;color:#fff;padding:12px 18px;border-radius:999px;text-decoration:none;font-weight:bold">Escribirle por WhatsApp</a>
+           &nbsp; <a href="${panel}" style="background:#D2662A;color:#fff;padding:12px 18px;border-radius:999px;text-decoration:none;font-weight:bold">Abrir el panel</a></p>
       </div>`;
 
     const res = await fetch("https://api.resend.com/emails", {

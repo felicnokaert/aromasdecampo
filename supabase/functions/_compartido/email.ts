@@ -25,14 +25,14 @@ export const lindo = (s: string) => { const [y, m, d] = s.split("-").map(Number)
 export const hoyAR = (masDias = 0) => { const d = new Date(Date.now() - 3 * 3600e3); d.setUTCDate(d.getUTCDate() + masDias); return d.toISOString().slice(0, 10); };
 
 export const plantilla = (titulo: string, cuerpo: string) => `
-  <div style="background:#F5EFE4;padding:24px 12px;font-family:Arial,sans-serif;color:#1E1E1E">
+  <div style="background:#F2EADB;padding:24px 12px;font-family:Arial,sans-serif;color:#1E1E1E">
     <div style="max-width:540px;margin:auto;background:#fff;border-radius:16px;overflow:hidden">
-      <div style="background:#1C2B1E;color:#fff;padding:18px 22px;font-size:20px">🌿 Aromas de Campo</div>
+      <div style="background:#24301F;color:#F2EADB;padding:18px 22px;font-size:20px;font-family:Georgia,serif">Aromas de Campo</div>
       <div style="padding:22px;font-size:15px;line-height:1.55">
-        <h2 style="margin:0 0 12px;color:#4F6049;font-family:Georgia,serif">${titulo}</h2>${cuerpo}
+        <h2 style="margin:0 0 12px;color:#24301F;font-family:Georgia,serif">${titulo}</h2>${cuerpo}
       </div>
       <div style="padding:14px 22px;background:#F0EBE1;color:#6B6B6B;font-size:12px">Cabañas de tronco · Colón, Entre Ríos</div>
     </div>
   </div>`;
-export const boton = (url: string, txt: string, color = "#7A8C72") =>
-  `<a href="${url}" style="display:inline-block;background:${color};color:#fff;padding:12px 18px;border-radius:10px;text-decoration:none;font-weight:bold;margin:6px 6px 0 0">${txt}</a>`;
+export const boton = (url: string, txt: string, color = "#D2662A") =>
+  `<a href="${url}" style="display:inline-block;background:${color};color:#fff;padding:12px 18px;border-radius:999px;text-decoration:none;font-weight:bold;margin:6px 6px 0 0">${txt}</a>`;

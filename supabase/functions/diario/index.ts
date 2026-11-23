@@ -35,7 +35,7 @@ Deno.serve(async (_req) => {
     for (const r of salieron || []) {
       const ok = await enviarEmail(r.email, "¿Cómo la pasaste en Aromas de Campo? ⭐", plantilla(`Gracias por venir, ${esc(String(r.nombre || "").split(" ")[0])}`, `
         <p>Esperamos que hayas descansado en la cabaña <b>${esc(cab(r.cabana_id))}</b>. ¿Nos contás cómo la pasaste? Nos lleva 1 minuto y ayuda muchísimo a otras familias a elegirnos.</p>
-        ${boton(`${web}/opinar.html?c=${r.codigo}`, "Dejar mi opinión ⭐")}`));
+        ${boton(aj?.google_resena_url || `${web}/opinar.html?c=${r.codigo}`, "Dejar mi opinión en Google ⭐")}`));
       if (ok) { await db.from("reservas").update({ resena_pedida: true }).eq("id", r.id); (hecho.resenas as number)++; }
     }
   }
@@ -62,7 +62,7 @@ Deno.serve(async (_req) => {
       <p>💰 <b>Reservas confirmadas en los últimos 7 días:</b> ${pesos(vendido)}</p>
       <p>👀 <b>Visitas a la web:</b> ${visitas.count || 0} · <b>clics a WhatsApp:</b> ${wa.count || 0}</p>
       ${res.data?.length ? `<p>⭐ <b>${res.data.length} reseña(s) esperando tu aprobación.</b></p>` : ""}
-      ${boton(web + "/admin.html", "Abrir el panel")}`));
+      ${boton(web + "/panel", "Abrir el panel")}`));
   }
 
   return new Response(JSON.stringify({ ok: true, ...hecho }), { headers: { "Content-Type": "application/json" } });
