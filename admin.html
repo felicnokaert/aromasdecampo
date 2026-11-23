@@ -104,6 +104,14 @@
     .previa .p-lug { font-style: italic; opacity: .85; font-size: .9rem; }
     .ver-web { display: inline-block; margin: 0 0 1rem .2rem; font-weight: 600; color: var(--verde-osc); }
     .grupo-tx[hidden] { display: none; }
+    .grupo-mas { font-size: .78rem !important; letter-spacing: .08em; text-transform: uppercase; color: var(--texto2); margin: 1.3rem 0 .45rem .2rem; font-family: 'Figtree', system-ui, sans-serif !important; font-weight: 700 !important; }
+    .lista-mas { background: var(--blanco); border: 1px solid var(--borde); border-radius: 14px; overflow: hidden; }
+    .lista-mas button { width: 100%; display: flex; align-items: center; gap: .85rem; padding: .95rem 1rem; background: none; border: 0; border-bottom: 1px solid var(--borde); font: inherit; font-size: 1.05rem; text-align: left; color: var(--texto); cursor: pointer; min-height: 56px; }
+    .lista-mas button:last-child { border-bottom: 0; }
+    .lista-mas button:active { background: var(--beige); }
+    .ico-mas { font-size: 1.35rem; width: 1.8rem; text-align: center; }
+    .txt-mas { flex: 1; font-weight: 600; }
+    .flecha-mas { font-size: 1.5rem; color: var(--texto2); line-height: 1; }
     .grilla-fotos { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: .7rem; }
     .foto-adm { position: relative; background: #fff; border-radius: 12px; overflow: hidden; border: 1.5px solid var(--borde); animation: aparecer .35s ease both; }
     .foto-adm img { width: 100%; aspect-ratio: 1; object-fit: cover; display: block; }
@@ -1259,20 +1267,17 @@
   // ======================= MÁS =======================
   VISTAS.mas = () => {
     const pendRes = (S.resenas || []).filter(r => !r.aprobada).length;
-    const items = [['ganancias', '💰', 'Ganancias', 'Ingresos, gastos, comisiones y ocupación por mes y por año.'],
-                   ['huespedes', '👥', 'Huéspedes', 'Todos los que vinieron, con su WhatsApp. Descargá la lista.'],
-                   ['fotos', '📷', 'Fotos', 'Subí fotos de cada cabaña y del complejo, de adentro y de afuera.'],
-                   ['textos', '✏️', 'Textos de la web', 'Cambiá los títulos y textos de la página de inicio.'],
-                   ['mensajes', '💬', 'Mensajes de WhatsApp', 'Los mensajes que mandás seguido: editalos, agregá o borrá.'],
-                   ['lugares', '📍', 'Lugares y descuentos', 'La guía de Colón: lugares, restaurantes y cupones para huéspedes.'],
-                   ['sync', '🔄', 'Booking y Airbnb', 'Conectar los calendarios para que nunca se pisen las reservas.'],
-                   ['resenas', '⭐', 'Reseñas' + (pendRes ? ` (${pendRes} nuevas)` : ''), 'Opiniones de huéspedes: aprobalas para que salgan en la web.'],
-                   ['preguntas', '❓', 'Preguntas frecuentes', 'Lo que la gente pregunta siempre. Respondelo una vez acá.'],
-                   ['estadisticas', '📊', 'Estadísticas', 'Visitas, clics a WhatsApp y de dónde viene la gente.'],
-                   ['cabanas', '🏡', 'Cabañas', 'Nombre, descripción, capacidad y equipamiento.'],
-                   ['ajustes', '⚙️', 'Datos de cobro y horarios', 'Alias, CBU, seña, entrada y salida, aviso en la web.']];
-    $('vista').innerHTML = `<h1 class="titulo">Más opciones</h1>` + items.map(([v, i, t, d]) =>
-      `<button class="caja" data-v="${v}" style="width:100%;text-align:left;border:none;display:flex;gap:1rem;align-items:center"><span style="font-size:2rem">${i}</span><span><b style="font-size:1.1rem">${t}</b><br><span style="color:var(--texto2);font-size:.92rem">${d}</span></span></button>`).join('');
+    // agrupado por cuánto se usa: lo de todos los días arriba, la configuración al final
+    const grupos = [
+      ['Día a día', [['mensajes', '💬', 'Mensajes de WhatsApp'], ['huespedes', '👥', 'Huéspedes'], ['resenas', '⭐', 'Reseñas', pendRes ? `${pendRes} nuevas` : '']]],
+      ['Números', [['ganancias', '💰', 'Ganancias'], ['estadisticas', '📊', 'Visitas a la web']]],
+      ['Lo que se ve en la web', [['fotos', '📷', 'Fotos'], ['textos', '✏️', 'Textos'], ['lugares', '📍', 'Lugares y descuentos'], ['preguntas', '❓', 'Preguntas frecuentes'], ['cabanas', '🏡', 'Cabañas']]],
+      ['Configuración', [['ajustes', '⚙️', 'Cobro y horarios'], ['sync', '🔄', 'Booking y Airbnb']]]
+    ];
+    $('vista').innerHTML = `<h1 class="titulo">Más</h1>` + grupos.map(([g, items]) => `
+      <h2 class="grupo-mas">${g}</h2>
+      <div class="lista-mas">${items.map(([v, i, t, extra]) => `<button data-v="${v}"><span class="ico-mas" aria-hidden="true">${i}</span><span class="txt-mas">${t}</span>
+        ${extra ? `<span class="chip pendiente">${extra}</span>` : ''}<span class="flecha-mas" aria-hidden="true">›</span></button>`).join('')}</div>`).join('');
     $('vista').querySelectorAll('[data-v]').forEach(b => b.onclick = () => ir(b.dataset.v));
   };
 
