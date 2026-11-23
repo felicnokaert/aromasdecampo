@@ -392,7 +392,7 @@
 
   async function cargarTodo() {
     const desde = A.sumar(A.hoy(), -400);
-    const [c, a, r, t, p, al, ce, rs] = await Promise.all([
+    const [c, a, r, t, p, al, ce, rs, ms] = await Promise.all([
       db.from('cabanas').select('*').order('orden'),
       db.from('ajustes').select('*').single(),
       db.from('reservas').select('*').gte('salida', desde).order('entrada'),
@@ -400,9 +400,11 @@
       db.from('preguntas').select('*').order('orden'),
       db.from('alertas').select('*').eq('vista', false).order('creada', { ascending: false }),
       db.from('calendarios_externos').select('*'),
-      db.from('resenas').select('*').order('creada', { ascending: false })
+      db.from('resenas').select('*').order('creada', { ascending: false }),
+      db.from('mensajes').select('*').order('orden')
     ]);
     [c, a, r, t, p, al, ce, rs].forEach(x => x.error && error(x.error));
+    S.mensajes = ms.data || [];
     S.alertas = al.data || []; S.calExt = ce.data || []; S.resenas = rs.data || [];
     S.cabanas = c.data || []; S.ajustes = a.data || {}; S.reservas = r.data || []; S.temporadas = t.data || []; S.preguntas = p.data || [];
     S.cal.cab ||= (S.cabanas[0] || {}).id;
@@ -422,7 +424,7 @@
   function ir(v) {
     if (!VISTAS[v]) v = 'inicio';
     S.vista = v; location.hash = v;
-    document.querySelectorAll('nav.abajo button').forEach(b => b.classList.toggle('act', b.dataset.v === v || (['preguntas','cabanas','ajustes','estadisticas','sync','resenas','fotos','textos','lugares'].includes(v) && b.dataset.v === 'mas')));
+    document.querySelectorAll('nav.abajo button').forEach(b => b.classList.toggle('act', b.dataset.v === v || (['preguntas','cabanas','ajustes','estadisticas','sync','resenas','fotos','textos','lugares','mensajes'].includes(v) && b.dataset.v === 'mas')));
     window.scrollTo({ top: 0, behavior: 'smooth' });
     const vi = $('vista'); vi.classList.remove('vista-anim'); void vi.offsetWidth; vi.classList.add('vista-anim');
     VISTAS[v]();
@@ -451,10 +453,12 @@
       <div class="res-top"><div class="res-nombre">${r.estado === 'bloqueo' ? '🔒 Fechas bloqueadas' : esc(r.nombre || 'Sin nombre')}</div><span class="chip ${r.estado}">${est}</span></div>
       <div class="res-fechas">🏡 <b>${esc(cabNombre(r.cabana_id))}</b> · ${A.lindo(r.entrada)} → ${A.lindo(r.salida)} (${noches} ${noches === 1 ? 'noche' : 'noches'})</div>
       <div class="res-meta">${r.estado !== 'bloqueo' ? `${r.personas ? r.personas + ' pers. · ' : ''}${r.total ? A.pesos(r.total) : ''}${r.mascota ? ' · 🐾 mascota' : ''} · ${ORIGENES[r.origen]}${r.codigo ? ' · ' + r.codigo : ''}` : esc(r.notas || '')}</div>`;
+    if (r.llegada_hora && r.estado === 'confirmada') html += `<div class="res-meta" style="color:var(--verde-osc);font-weight:600">🕑 Llega ${esc(r.llegada_hora)}${r.llegada_nota ? ' · ' + esc(r.llegada_nota) : ''}</div>`;
+    if (conAcciones && r.telefono && (r.estado === 'confirmada' || r.estado === 'pendiente')) html += `<button class="btn sec chico" data-acc="mensajes" style="margin-top:.5rem">💬 Mensajes</button>`;
     if (conAcciones && r.estado === 'pendiente') {
       html += `<div class="botones">
         <button class="btn" data-acc="confirmar">✓ Llegó la seña</button>
-        ${r.telefono ? `<a class="btn wa" target="_blank" rel="noopener" href="https://wa.me/${telWa(r.telefono)}?text=${encodeURIComponent(`Hola ${(r.nombre || '').split(' ')[0]}! Te escribo de Aromas de Campo por tu reserva ${r.codigo} en la cabaña ${cabNombre(r.cabana_id)} del ${A.lindo(r.entrada)} al ${A.lindo(r.salida)}.`)}">WhatsApp</a>` : ''}
+        ${r.telefono ? `<a class="btn wa" target="_blank" rel="noopener" href="${linkWa(r, plantilla('pedido', r, `Hola ${primerNombre(r)}! Te escribo de Aromas de Campo por tu reserva ${r.codigo} en la cabaña ${cabNombre(r.cabana_id)} del ${A.lindo(r.entrada)} al ${A.lindo(r.salida)}.`))}">Pasar alias</a>` : ''}
         <button class="btn rojo" data-acc="cancelar">Cancelar</button></div>`;
     }
     return html + '</div>';
@@ -467,6 +471,7 @@
         if (e.target.closest('a')) return;
         if (acc && acc.dataset.acc === 'confirmar') return confirmarReserva(r);
         if (acc && acc.dataset.acc === 'cancelar') return cancelarReserva(r);
+        if (acc && acc.dataset.acc === 'mensajes') return elegirMensaje(r);
         verReserva(r);
       };
       el.style.cursor = 'pointer';
@@ -495,7 +500,7 @@
             });
           }), 60);
       } else if (r.telefono) {
-        const txt = `Hola ${(r.nombre || '').split(' ')[0]}! Recibimos tu seña. Tu reserva ${r.codigo} en la cabaña ${cabNombre(r.cabana_id)} del ${A.lindo(r.entrada)} al ${A.lindo(r.salida)} está CONFIRMADA. Entrada desde las ${S.ajustes.checkin || '14 hs'}. ¡Te esperamos! 🌿 Aromas de Campo`;
+        const txt = plantilla('sena', r, null) || `Hola ${(r.nombre || '').split(' ')[0]}! Recibimos tu seña. Tu reserva ${r.codigo} en la cabaña ${cabNombre(r.cabana_id)} del ${A.lindo(r.entrada)} al ${A.lindo(r.salida)} está CONFIRMADA. Entrada desde las ${S.ajustes.checkin || '14 hs'}. ¡Te esperamos! 🌿 Aromas de Campo`;
         setTimeout(() => modal(`<h2>¡Confirmada! ✓</h2><p style="margin-bottom:1rem">¿Le avisás al huésped por WhatsApp? Ya está escrito el mensaje.</p>
           <a class="btn wa grande" target="_blank" rel="noopener" href="https://wa.me/${telWa(r.telefono)}?text=${encodeURIComponent(txt)}" data-cerrar>Avisar por WhatsApp</a>
           <button class="btn sec grande" style="margin-top:.5rem" data-cerrar>Ahora no</button>`), 50);
@@ -596,12 +601,13 @@
   const web = () => location.origin;
   function msgRecordatorio(r) {
     const a = S.ajustes;
+    if ((S.mensajes || []).some(m => m.clave === 'llegada')) return plantilla('llegada', r);
     return `Hola ${primerNombre(r)}! Te esperamos el ${A.lindo(r.entrada)} en la cabaña ${cabNombre(r.cabana_id)} 🌿 ` +
       `La entrada es desde las ${a.checkin || '14 hs'} y la salida el ${A.lindo(r.salida)} hasta las ${a.checkout || '11 hs'}.` +
       (a.info_llegada ? `\n\n${a.info_llegada}` : '') + `\n\nCualquier cosa nos escribís. ¡Buen viaje!`;
   }
   // el pedido de opinión lleva directo a dejarla en Google (así suben en Google Maps)
-  const msgResena = r => `Hola ${primerNombre(r)}! Gracias por elegir Aromas de Campo 🌿 ¿Nos dejás tu opinión en Google? Es un minuto y nos ayuda muchísimo a que otras familias nos encuentren: ${S.ajustes.google_resena_url || (web() + '/opinar.html?c=' + r.codigo)}`;
+  const msgResena = r => (S.mensajes || []).some(m => m.clave === 'opinion') ? plantilla('opinion', r) : `Hola ${primerNombre(r)}! Gracias por elegir Aromas de Campo 🌿 ¿Nos dejás tu opinión en Google? Es un minuto y nos ayuda muchísimo a que otras familias nos encuentren: ${S.ajustes.google_resena_url || (web() + '/opinar.html?c=' + r.codigo)}`;
   async function marcar(r, campo) {
     const { error: err } = await db.from('reservas').update({ [campo]: true }).eq('id', r.id);
     if (err) return error(err); r[campo] = true; aviso('Listo ✓'); VISTAS[S.vista]();
@@ -1029,11 +1035,77 @@
     });
   }
 
+  // ======================= MENSAJES DE WHATSAPP =======================
+  const VARIABLES = { nombre: 'nombre del huésped', cabana: 'cabaña', entrada: 'día que llega', salida: 'día que se va', noches: 'noches',
+    total: 'total', sena: 'seña', alias: 'alias', cbu: 'CBU', titular: 'titular', codigo: 'código de reserva', checkin: 'hora de entrada',
+    checkout: 'hora de salida', ficha: 'link de la ficha de llegada', google: 'link para opinar en Google', web: 'link de la web' };
+  function rellenar(texto, r) {
+    const a = S.ajustes || {}, n = A.noches(r.entrada, r.salida);
+    const datos = { nombre: primerNombre(r), cabana: cabNombre(r.cabana_id), entrada: A.lindo(r.entrada), salida: A.lindo(r.salida), noches: n,
+      total: r.total ? A.pesos(r.total) : '', sena: r.sena ? A.pesos(r.sena) : '', alias: a.alias || '', cbu: a.cbu || '', titular: a.titular || '',
+      codigo: r.codigo || '', checkin: a.checkin || '12 hs', checkout: a.checkout || '10 hs', ficha: `${web()}/llegada.html?c=${r.codigo || ''}`,
+      google: a.google_resena_url || `${web()}/opinar.html?c=${r.codigo || ''}`, web: web() };
+    return String(texto).replace(/\{(\w+)\}/g, (m, k) => k in datos ? datos[k] : m);
+  }
+  const plantilla = (clave, r, porDefecto) => { const m = (S.mensajes || []).find(x => x.clave === clave); return m ? rellenar(m.texto, r) : porDefecto; };
+  const linkWa = (r, txt) => `https://wa.me/${telWa(r.telefono)}?text=${encodeURIComponent(txt)}`;
+  function elegirMensaje(r) {
+    if (!r.telefono) return aviso('Esta reserva no tiene teléfono cargado.', true);
+    modal(`<h2>Mandar un mensaje</h2><p class="ayuda" style="margin:.5rem 0 1rem">A ${esc(r.nombre || '')} · ${esc(cabNombre(r.cabana_id))}. Tocá uno y se abre WhatsApp con el mensaje ya escrito.</p>
+      ${(S.mensajes || []).map(m => `<a class="caja" style="display:block;text-decoration:none;color:inherit;margin-bottom:.5rem" target="_blank" rel="noopener" href="${linkWa(r, rellenar(m.texto, r))}">
+        <b>💬 ${esc(m.titulo)}</b><p style="font-size:.85rem;color:var(--texto2);white-space:pre-line;margin-top:.3rem;max-height:4.6em;overflow:hidden">${esc(rellenar(m.texto, r))}</p></a>`).join('')}
+      <button class="btn sec grande" data-cerrar>Cerrar</button>`);
+  }
+  VISTAS.mensajes = async () => {
+    const { data, error: err } = await db.from('mensajes').select('*').order('orden'); if (err) return error(err);
+    S.mensajes = data || [];
+    const AUTO = { pedido: 'Se usa en los pedidos sin seña', sena: 'Se usa al confirmar la seña', llegada: 'Se usa en "Para hacer hoy" antes de que lleguen', opinion: 'Se usa en "Para hacer hoy" después de que se van' };
+    $('vista').innerHTML = `<h1 class="titulo">Mensajes de WhatsApp</h1>
+      <p class="ayuda">Los mensajes que mandás seguido. Las palabras entre {llaves} se completan solas con los datos de cada reserva.</p>
+      <button class="btn grande" id="nuevo-m" style="width:100%;margin-bottom:1rem">+ Nuevo mensaje</button>
+      ${S.mensajes.map(m => `<div class="caja" style="margin-bottom:.6rem"><div style="display:flex;justify-content:space-between;gap:.6rem">
+        <div><b>${esc(m.titulo)}</b>${AUTO[m.clave] ? `<div style="font-size:.8rem;color:var(--sol)">${AUTO[m.clave]}</div>` : ''}</div>
+        <button class="btn sec chico" data-edit-m="${m.id}">Editar</button></div>
+        <p style="font-size:.88rem;color:var(--texto2);white-space:pre-line;margin-top:.4rem;max-height:5.5em;overflow:hidden">${esc(m.texto)}</p></div>`).join('')}`;
+    $('nuevo-m').onclick = () => formMensaje({});
+    document.querySelectorAll('[data-edit-m]').forEach(b => b.onclick = () => formMensaje(S.mensajes.find(m => m.id === Number(b.dataset.editM))));
+  };
+  function formMensaje(m) {
+    const ejemplo = { nombre: 'Laura Pérez', cabana_id: (S.cabanas[0] || {}).id, entrada: A.sumar(A.hoy(), 10), salida: A.sumar(A.hoy(), 14), total: 380000, sena: 114000, codigo: 'A1B2C3', telefono: '' };
+    modal(`<h2>${m.id ? 'Editar mensaje' : 'Nuevo mensaje'}</h2><form class="form" id="fm">
+      <label>Nombre del mensaje<input name="titulo" value="${esc(m.titulo || '')}" required placeholder="Ej: Cómo llegar"></label>
+      <label>Mensaje<textarea name="texto" id="texto-m" rows="8" required>${esc(m.texto || '')}</textarea></label>
+      <div><small style="color:var(--texto2)">Tocá para agregar un dato:</small><div class="filtros" style="flex-wrap:wrap;margin-top:.3rem">${Object.entries(VARIABLES).map(([k, t]) => `<button type="button" data-var="${k}">${t}</button>`).join('')}</div></div>
+      <div class="caja" style="background:#E7F5EC"><small style="color:var(--texto2)">Así le llega (ejemplo):</small><p id="prev-m" style="white-space:pre-line;font-size:.92rem;margin-top:.3rem"></p></div>
+      <button class="btn grande">Guardar</button>
+      ${m.id ? `<button class="btn sec grande" type="button" id="borrar-m" style="color:#B3261E">Borrar mensaje</button>` : ''}
+      <button class="btn sec grande" type="button" data-cerrar>Cancelar</button></form>`, () => {
+      const ta = $('texto-m'), prev = () => $('prev-m').textContent = rellenar(ta.value, ejemplo);
+      ta.oninput = prev; prev();
+      document.querySelectorAll('[data-var]').forEach(b => b.onclick = () => {
+        const i = ta.selectionStart ?? ta.value.length, ins = `{${b.dataset.var}}`;
+        ta.value = ta.value.slice(0, i) + ins + ta.value.slice(ta.selectionEnd ?? i); ta.focus(); ta.selectionStart = ta.selectionEnd = i + ins.length; prev();
+      });
+      $('fm').onsubmit = async e => {
+        e.preventDefault(); const fila = { titulo: e.target.titulo.value.trim(), texto: ta.value.trim() };
+        if (!m.id) fila.orden = Math.max(0, ...(S.mensajes || []).map(x => x.orden)) + 1;
+        const { error: er } = m.id ? await db.from('mensajes').update(fila).eq('id', m.id) : await db.from('mensajes').insert(fila);
+        if (er) return error(er);
+        cerrar(); aviso('Mensaje guardado ✓'); VISTAS.mensajes();
+      };
+      if (m.id) $('borrar-m').onclick = () => confirmar(`¿Borrar el mensaje "${m.titulo}"?` + (m.clave ? ' El panel va a usar uno de reemplazo.' : ''), 'Sí, borrar', async () => {
+        const { error: er } = await db.from('mensajes').delete().eq('id', m.id); if (er) return error(er);
+        aviso('Mensaje borrado'); VISTAS.mensajes();
+      }, true);
+    });
+  }
+
   // ======================= MÁS =======================
   VISTAS.mas = () => {
     const pendRes = (S.resenas || []).filter(r => !r.aprobada).length;
     const items = [['fotos', '📷', 'Fotos', 'Subí fotos de cada cabaña y del complejo, de adentro y de afuera.'],
                    ['textos', '✏️', 'Textos de la web', 'Cambiá los títulos y textos de la página de inicio.'],
+                   ['mensajes', '💬', 'Mensajes de WhatsApp', 'Los mensajes que mandás seguido: editalos, agregá o borrá.'],
                    ['lugares', '📍', 'Lugares y descuentos', 'La guía de Colón: lugares, restaurantes y cupones para huéspedes.'],
                    ['sync', '🔄', 'Booking y Airbnb', 'Conectar los calendarios para que nunca se pisen las reservas.'],
                    ['resenas', '⭐', 'Reseñas' + (pendRes ? ` (${pendRes} nuevas)` : ''), 'Opiniones de huéspedes: aprobalas para que salgan en la web.'],

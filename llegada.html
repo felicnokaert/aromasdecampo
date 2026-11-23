@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>Tu llegada · Aromas de Campo</title>
+  <meta name="robots" content="noindex">
+  <meta name="theme-color" content="#24301F">
+  <link rel="icon" type="image/png" href="logo/favicon-dark.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Gloock&family=Newsreader:ital,opsz@1,6..72&family=Figtree:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root { --papel: #F2EADB; --papel-2: #E9DEC9; --tinta: #221F1A; --tinta-2: #5C564B; --monte: #24301F; --sol: #D2662A; --sol-osc: #A9491A; --linea: rgba(34,31,26,.16);
+            --display: 'Gloock', Georgia, serif; --serif: 'Newsreader', Georgia, serif; --ui: 'Figtree', system-ui, sans-serif; }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    [hidden] { display: none !important; }
+    body { font-family: var(--ui); background: var(--papel); color: var(--tinta); font-size: 17px; line-height: 1.55; }
+    a { color: inherit; }
+    .cab { background: var(--monte) url('fotos/cabana-2.jpg') center/cover; color: #fff; position: relative; padding: 4.5rem 1.2rem 2rem; }
+    .cab::after { content: ''; position: absolute; inset: 0; background: linear-gradient(180deg, rgba(18,22,14,.35), rgba(18,22,14,.9)); }
+    .cab > * { position: relative; z-index: 1; max-width: 640px; margin: 0 auto; }
+    .cab img.logo { position: absolute; top: 1rem; left: 1.2rem; width: 42px; }
+    .rot { font-family: var(--serif); font-style: italic; opacity: .9; }
+    h1 { font-family: var(--display); font-weight: 400; font-size: clamp(2.2rem, 9vw, 3.4rem); line-height: 1.02; margin: .3rem 0 .6rem; text-shadow: 0 1px 14px rgba(0,0,0,.4); }
+    h1 em { font-family: var(--serif); font-style: italic; color: #F5C99C; }
+    main { max-width: 640px; margin: 0 auto; padding: 0 1.2rem 3rem; }
+    .fila { display: grid; grid-template-columns: 1fr 1fr; border-bottom: 1px solid var(--linea); }
+    .fila div { padding: 1.1rem 0; } .fila div + div { border-left: 1px solid var(--linea); padding-left: 1rem; }
+    .fila small { display: block; color: var(--tinta-2); font-size: .82rem; }
+    .fila b { font-family: var(--display); font-weight: 400; font-size: 1.35rem; }
+    h2 { font-family: var(--display); font-weight: 400; font-size: 1.7rem; margin: 2rem 0 .7rem; }
+    .lista { list-style: none; border-top: 1px solid var(--linea); }
+    .lista li { padding: .8rem 0; border-bottom: 1px solid var(--linea); display: flex; gap: .8rem; }
+    .lista li span:first-child { flex: none; width: 1.6rem; text-align: center; }
+    .info { background: #fff8ec; border-left: 3px solid var(--sol); padding: .9rem 1rem; white-space: pre-line; border-radius: 0 8px 8px 0; }
+    .boton { display: flex; justify-content: center; align-items: center; gap: .5rem; width: 100%; font-weight: 600; text-decoration: none; padding: 1rem 1.2rem; border-radius: 999px; background: var(--sol); color: #fff; border: 0; font-size: 1.02rem; cursor: pointer; margin-top: .8rem; }
+    .boton.tinta { background: var(--monte); } .boton.wa { background: #1FAF5A; }
+    form { display: grid; gap: .9rem; margin-top: .4rem; }
+    label { display: grid; gap: .3rem; font-weight: 600; font-size: .95rem; }
+    select, input, textarea { font: inherit; padding: .85rem .9rem; border-radius: 10px; border: 1.5px solid var(--linea); background: #fffdf8; width: 100%; }
+    .ok { background: #E7EEDF; color: #24301F; padding: .9rem 1rem; border-radius: 10px; font-weight: 600; }
+    .error { text-align: center; padding: 4rem 1.2rem; }
+    .esq { height: 1.2rem; border-radius: 4px; background: var(--papel-2); margin: .6rem 0; }
+  </style>
+</head>
+<body>
+<div id="todo">
+  <header class="cab">
+    <img class="logo" src="logo/aromas-blanco.png" alt="Aromas de Campo">
+    <p class="rot">Ficha de llegada</p>
+    <h1 id="titulo">Te esperamos</h1>
+    <p id="sub">Cargando tu reserva…</p>
+  </header>
+  <main id="contenido"><div class="esq"></div><div class="esq"></div><div class="esq"></div></main>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="js/aromas.js"></script>
+<script>
+(async function () {
+  const A = window.Aromas, db = window.db, $ = id => document.getElementById(id);
+  const codigo = new URLSearchParams(location.search).get('c') || '';
+  const MAPA = 'https://www.google.com/maps/search/?api=1&query=Aromas+de+campo+Col%C3%B3n+Entre+R%C3%ADos&query_place_id=ChIJn7-yVu8trpURfWGnk6a6PHQ';
+  const { data: d } = await db.rpc('datos_llegada', { p_codigo: codigo });
+  if (!d || !d.ok) {
+    $('todo').innerHTML = `<div class="error"><h1 style="color:var(--tinta)">Ups</h1><p>${A.esc((d && d.error) || 'No encontramos la reserva.')}</p>
+      <a class="boton wa" href="https://wa.me/5491169495055">Escribinos por WhatsApp</a></div>`;
+    return;
+  }
+  A.track('visita', 'llegada');
+  const noches = A.noches(d.entrada, d.salida);
+  $('titulo').innerHTML = `¡Hola ${A.esc(d.nombre)}! <em>Te esperamos.</em>`;
+  $('sub').textContent = `Cabaña ${d.cabana} · ${noches} ${noches === 1 ? 'noche' : 'noches'}`;
+  const horas = ['12 a 14 hs', '14 a 16 hs', '16 a 18 hs', '18 a 20 hs', 'Después de las 20 hs', 'Todavía no sé'];
+  $('contenido').innerHTML = `
+    <div class="fila"><div><small>Llegás</small><b>${A.lindo(d.entrada)}</b><small>desde las ${A.esc(d.checkin || '12 hs')}</small></div>
+      <div><small>Te vas</small><b>${A.lindo(d.salida)}</b><small>hasta las ${A.esc(d.checkout || '10 hs')}</small></div></div>
+    <h2>Cómo llegar</h2>
+    <p>Estamos a 5 minutos del centro de Colón, las playas y las termas.</p>
+    <a class="boton tinta" target="_blank" rel="noopener" href="${MAPA}">Abrir la ubicación en el mapa ↗</a>
+    ${d.info ? `<h2>Indicaciones</h2><div class="info">${A.esc(d.info)}</div>` : ''}
+    <h2>Para tener en cuenta</h2>
+    <ul class="lista">
+      <li><span>🛏️</span><span>Traé <b>sábanas, fundas y toallas</b>. Lo demás está todo: cocina con horno, heladera, microondas, vajilla, aire frío/calor, TV y WiFi.</span></li>
+      <li><span>🐾</span><span>No se aceptan mascotas.</span></li>
+      <li><span>🔥</span><span>Cada cabaña tiene su parrilla. La pileta tiene reposeras, sombrilla y deck.</span></li>
+    </ul>
+    <h2>¿A qué hora llegan?</h2>
+    <p style="color:var(--tinta-2)">Así Rubén los espera con todo listo.</p>
+    <form id="f">
+      <label>Horario aproximado<select name="hora">${horas.map(h => `<option ${h === d.hora ? 'selected' : ''}>${h}</option>`).join('')}</select></label>
+      <label>¿Cuántos son?<select name="personas">${[1, 2, 3, 4].map(n => `<option value="${n}" ${n === d.personas ? 'selected' : ''}>${n}</option>`).join('')}</select></label>
+      <label>¿Algo que tengamos que saber? <small style="font-weight:400;color:var(--tinta-2)">(opcional)</small><textarea name="nota" rows="2" maxlength="500" placeholder="Ej: llegamos con un bebé">${A.esc(d.nota || '')}</textarea></label>
+      <button class="boton" id="enviar">${d.hora ? 'Actualizar' : 'Avisar a qué hora llego'}</button>
+      <p id="msg" hidden></p>
+    </form>
+    <h2>Qué hacer en la zona</h2>
+    <p>Termas, playas, historia y lugares para comer, con <b>descuentos para huéspedes</b>.</p>
+    <a class="boton tinta" href="guia.html">Ver la guía de Colón</a>
+    <a class="boton wa" target="_blank" rel="noopener" href="https://wa.me/${A.esc(d.whatsapp || '5491169495055')}">¿Dudas? Escribinos por WhatsApp</a>`;
+  $('f').onsubmit = async e => {
+    e.preventDefault(); const f = e.target, b = $('enviar'); b.disabled = true; b.textContent = 'Guardando…';
+    const { data: r } = await db.rpc('guardar_llegada', { p_codigo: codigo, p_hora: f.hora.value, p_personas: Number(f.personas.value), p_nota: f.nota.value });
+    const m = $('msg'); m.hidden = false;
+    if (r && r.ok) { m.className = 'ok'; m.textContent = '¡Listo! Le avisamos a Rubén. Buen viaje 🌿'; b.textContent = 'Actualizar'; }
+    else { m.className = 'info'; m.textContent = (r && r.error) || 'No se pudo guardar. Probá de nuevo.'; b.textContent = 'Avisar a qué hora llego'; }
+    b.disabled = false;
+  };
+})();
+</script>
+</body>
+</html>
