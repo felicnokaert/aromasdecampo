@@ -9,7 +9,7 @@
   <meta property="og:description" content="Cabañas de tronco con pileta y parque en Colón, Entre Ríos. Precios en pesos y fechas libres en la web.">
   <meta property="og:type" content="website">
   <meta property="og:url" content="https://aromasdecampo.vercel.app">
-  <meta property="og:image" content="https://aromasdecampo.vercel.app/fotos/hero-poster.jpg">
+  <meta property="og:image" content="https://aromasdecampo.vercel.app/fotos/cabana-2.jpg">
   <meta name="theme-color" content="#24301F">
   <link rel="icon" type="image/png" href="logo/favicon-dark.png" media="(prefers-color-scheme: light)">
   <link rel="icon" type="image/png" href="logo/favicon.png" media="(prefers-color-scheme: dark)">
@@ -379,10 +379,7 @@
 
 <main>
 <section class="portada" aria-label="Portada" style="padding:0">
-  <img class="poster" src="fotos/hero-poster.jpg" alt="" fetchpriority="high">
-  <video autoplay muted loop playsinline preload="metadata" poster="fotos/hero-poster.jpg" aria-hidden="true">
-    <source src="videos/hero.mp4" type="video/mp4">
-  </video>
+  <img class="poster" id="fotoPortada" src="fotos/cabana-2.jpg" alt="Las cabañas de tronco de Aromas de Campo" fetchpriority="high">
   <div class="matasellos" aria-hidden="true">
     <svg viewBox="0 0 200 200">
       <defs><path id="circ" d="M100,100 m-78,0 a78,78 0 1,1 156,0 a78,78 0 1,1 -156,0"/></defs>
@@ -393,9 +390,9 @@
     <img src="logo/aromas-blanco.png" alt="">
   </div>
   <div class="envoltura">
-    <p class="lugar" data-t="portada_lugar">Colón, Entre Ríos</p>
-    <h1 data-t="portada_titulo">Cabañas de tronco, <em>sin apuro.</em></h1>
-    <p class="bajada" data-t="portada_bajada">Pileta, parque y parrilla individual a unos kilómetros del río Uruguay. Mirá los precios en pesos y las fechas libres, y reservá directo con nosotros.</p>
+    <p class="lugar" data-t="portada_lugar">Entre Ríos, Argentina</p>
+    <h1 data-t="portada_titulo">Cabañas de tronco <em>en Colón.</em></h1>
+    <p class="bajada" data-t="portada_bajada">A 5 minutos del centro, las playas y las termas. Pileta con deck solárium, parque y parrilla individual. Mirá los precios en pesos y las fechas libres, y reservá directo con nosotros.</p>
     <div class="acciones">
       <a class="boton boton-sol" href="reservas.html">Ver precios y fechas <span class="flecha">→</span></a>
       <a class="boton boton-linea" href="#cabanas">Conocer las cabañas</a>
@@ -408,8 +405,8 @@
   <div class="envoltura">
     <ul>
       <li><b>2 adultos + 2 chicos</b><span>por cabaña</span></li>
-      <li><b>2 habitaciones</b><span>matrimonial y dos de una plaza</span></li>
-      <li><b>Pileta y parque</b><span>compartidos del complejo</span></li>
+      <li><b>A 5 minutos</b><span>del centro, playas y termas</span></li>
+      <li><b>Pileta y deck</b><span>con reposeras y sombrilla</span></li>
       <li><b>Parrilla individual</b><span>una para cada cabaña</span></li>
     </ul>
   </div>
@@ -428,8 +425,8 @@
       <article class="cab"><div class="carrusel esqueleto"></div><div class="nombre"><h3 class="esqueleto" style="width:40%;height:2.2rem;border-radius:4px"></h3></div></article>
       <article class="cab"><div class="carrusel esqueleto"></div><div class="nombre"><h3 class="esqueleto" style="width:40%;height:2.2rem;border-radius:4px"></h3></div></article>
     </div>
-    <p class="equipamiento" id="equipamiento"><b>Cada cabaña:</b> cama matrimonial · 2 camas de una plaza para chicos · baño privado · cocina equipada · parrilla individual · WiFi · pileta del complejo</p>
-    <p class="equipamiento" style="margin-top:0;border:0;padding-top:.4rem"><b>Para tener en cuenta:</b> <span data-t="cabanas_aviso">alquilamos solo el alojamiento, así que traé ropa de cama y toallas. No se aceptan mascotas.</span></p>
+    <p class="equipamiento" id="equipamiento"><b>Cada cabaña:</b> habitación con somier 2½ plazas y colchón de alta densidad · cama cucheta en L en el living · aire frío/calor · cocina con horno · heladera con freezer · microondas · vajilla para 4 · Smart TV 32" con cable · WiFi · parrilla individual · pileta del complejo</p>
+    <p class="equipamiento" style="margin-top:0;border:0;padding-top:.4rem"><b>Para tener en cuenta:</b> <span data-t="cabanas_aviso">las cabañas tienen todo lo necesario: solo traé sábanas, fundas y toallas. No se aceptan mascotas.</span></p>
   </div>
 </section>
 
@@ -502,6 +499,7 @@
       <p class="rotulo">05 <i>cómo llegar</i></p>
       <h2 id="t-ubic" class="asoma" data-t="ubicacion_titulo">En Colón, <em>Entre Ríos.</em></h2>
       <ul class="datos">
+        <li>Centro, playas y termas de Colón <span>a 5 minutos</span></li>
         <li>Desde Buenos Aires <span>unos 320 km en auto</span></li>
         <li>Parque Nacional El Palmar <span>a unos 50 km</span></li>
         <li>Villa Elisa <span>a unos 30 minutos</span></li>
@@ -615,9 +613,7 @@
   observar();
 
   /* ---- video de portada: no en datos móviles lentos ---- */
-  var vid = document.querySelector('.portada video');
-  if (navigator.connection && navigator.connection.saveData) vid.remove();
-  else vid.addEventListener('playing', function () { $('.portada .poster').style.opacity = 0; });
+
 
   /* ---- videos: tocar para reproducir ---- */
   document.querySelectorAll('.tira .video').forEach(function (v) {
@@ -812,7 +808,7 @@
     var FUENTES = { google: 'Google', web: 'Web', booking: 'Booking', airbnb: 'Airbnb', whatsapp: 'WhatsApp', otra: '' };
     function tarjeta(x) {
       return '<article class="resena"><div class="estrellas" aria-label="' + x.estrellas + ' de 5 estrellas">' + '★★★★★'.slice(0, x.estrellas) + '<span style="opacity:.25">' + '★★★★★'.slice(x.estrellas) + '</span></div>' +
-        '<p>' + A.esc(x.texto) + '</p>' + (x.respuesta ? '<p class="respuesta">Respuesta de Aromas: ' + A.esc(x.respuesta) + '</p>' : '') +
+        '<p>' + A.esc(x.texto) + '</p>' + 
         '<div class="quien"><span><b>' + A.esc(x.nombre) + '</b>' + (x.ciudad ? ' · ' + A.esc(x.ciudad) : '') + '</span>' + (FUENTES[x.fuente] ? '<span class="fuente">' + FUENTES[x.fuente] + '</span>' : '') + '</div></article>';
     }
     if (res.length) {

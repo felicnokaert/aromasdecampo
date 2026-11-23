@@ -220,7 +220,7 @@
   </section>
 
   <p class="paso">1 · ¿Cuántos van?</p>
-  <p style="margin:-.3rem 0 .6rem;color:var(--texto2);font-size:.95rem">Cada cabaña es para 2 adultos y 2 chicos: cama matrimonial y dos camas de una plaza.</p>
+  <p style="margin:-.3rem 0 .6rem;color:var(--texto2);font-size:.95rem">Cada cabaña es para 2 adultos y 2 chicos: habitación con somier de 2½ plazas y cama cucheta en L en el living.</p>
   <div class="personas" id="personas" role="radiogroup" aria-label="Cantidad de personas">
     <button data-p="1" role="radio">1 persona</button><button data-p="2" role="radio" class="act">2 personas</button><button data-p="3" role="radio">3 personas</button><button data-p="4" role="radio">4 personas</button>
   </div>
@@ -358,7 +358,7 @@
         <div class="cab-img">${c.foto ? `<img src="${A.esc(c.foto)}" alt="Cabaña ${A.esc(c.nombre)}" loading="lazy">` : ''}
           ${c.etiqueta ? `<span class="cab-tag">${A.esc(c.etiqueta)}</span>` : ''}<span class="cab-check">✓</span></div>
         <div class="cab-txt"><h3>${A.esc(c.nombre)}</h3>
-          <p class="meta">2 adultos y 2 chicos · cama matrimonial y dos de una plaza</p>
+          <p class="meta">2 adultos y 2 chicos · aire frío/calor · a 5 min del centro</p>
           <p class="desde">desde ${A.pesos(desde)} <span>/ noche</span></p></div></button>`;
     }).join('');
     setTimeout(() => $('cabanas').classList.remove('primera'), 900);
@@ -469,7 +469,7 @@
         <label>Nombre y apellido<input name="nombre" autocomplete="name" required maxlength="80"></label>
         <label>WhatsApp / teléfono<input name="telefono" type="tel" autocomplete="tel" inputmode="tel" required maxlength="30" placeholder="11 5555 1234"></label>
         <label>Email (opcional)<input name="email" type="email" autocomplete="email" maxlength="120"></label>
-        <p class="nota" style="text-align:left">🐾 No se aceptan mascotas · Se alquila solo el alojamiento (traé ropa de cama y toallas).</p>
+        <p class="nota" style="text-align:left">🐾 No se aceptan mascotas · Solo traé sábanas, fundas y toallas: lo demás está todo.</p>
         <label>¿Algo que quieras contarnos? (opcional)<textarea name="mensaje" rows="2" maxlength="800" placeholder="Horario de llegada, consultas…"></textarea></label>
         <div id="form-error"></div>
         <button class="btn" type="submit">Reservar estas fechas</button>
@@ -549,7 +549,7 @@
     const aj = estado.ajustes || {};
     $('info-cab').innerHTML = `<h3 style="font-size:1.3rem">Cabaña ${A.esc(c.nombre)}</h3>
       <p style="color:var(--texto2);margin-top:.3rem">${A.esc(c.descripcion || '')}</p>
-      <p style="margin-top:.6rem">Para <strong>2 adultos y 2 chicos</strong> · cama matrimonial y dos de una plaza · mínimo ${c.minimo_noches} noches (3 en temporada alta). Lo ideal: de 4 noches a dos semanas
+      <p style="margin-top:.6rem">Para <strong>2 adultos y 2 chicos</strong> · habitación con somier de 2½ plazas y cama cucheta en L en el living · mínimo ${c.minimo_noches} noches (3 en temporada alta). Lo ideal: de 4 noches a dos semanas
         ${aj.checkin ? ` · 🕑 Entrada ${A.esc(aj.checkin)} · salida ${A.esc(aj.checkout)}` : ''}</p>
       <div class="equip">${(c.equipamiento || []).map(e => `<span>${A.esc(e)}</span>`).join('')}</div>`;
   }
