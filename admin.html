@@ -239,7 +239,16 @@
     .login-caja { animation: centro .5s cubic-bezier(.2,.8,.2,1) both; box-shadow: 0 20px 60px rgba(0,0,0,.35); }
     :focus-visible { outline: 3px solid var(--verde-osc); outline-offset: 2px; }
     @media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation: none !important; transition: none !important; } }
-  </style>
+  
+    .comparar { display: grid; grid-template-columns: 1fr; gap: .6rem; margin: .8rem 0; }
+    .comparar.dos { grid-template-columns: 1fr 1fr; }
+    .comparar figure { margin: 0; }
+    .comparar img { width: 100%; aspect-ratio: 4/3; object-fit: cover; border-radius: 10px; display: block; background: #eee; }
+    .comparar figcaption { font-size: .85rem; color: #6b6357; margin: .35rem 0; line-height: 1.3; }
+    .problemas { margin: .4rem 0 .6rem 1.1rem; padding: 0; } .problemas li { margin: .25rem 0; }
+    .rev-tit { font-size: 1.05rem; margin: 1.2rem 0 .2rem; }
+    .comparar .btn.chico { width: 100%; }
+</style>
 </head>
 <body>
 
@@ -848,6 +857,106 @@
     const blob = await new Promise(ok => c.toBlob(ok, 'image/jpeg', calidad));
     return { blob, ancho: c.width, alto: c.height };
   }
+
+  // ---- Revisión de fotos: repetidas (por cómo se ven, no por el nombre) y calidad ----
+  async function cargarImg(src) {
+    if (src instanceof Blob) { try { return await createImageBitmap(src, { imageOrientation: 'from-image' }); } catch (e) { src = URL.createObjectURL(src); } }
+    return await new Promise((ok, mal) => { const i = new Image(); i.crossOrigin = 'anonymous'; i.onload = () => ok(i); i.onerror = mal; i.src = src; });
+  }
+  // achica en pasos (de a la mitad) para que el resultado no dependa de cómo se leyó la imagen
+  function grises(img, w, h) {
+    let src = img, sw = img.naturalWidth || img.width, sh = img.naturalHeight || img.height;
+    while (sw / 2 >= w * 1.5 && sh / 2 >= h * 1.5) {
+      const c = document.createElement('canvas'); c.width = Math.round(sw / 2); c.height = Math.round(sh / 2);
+      const x = c.getContext('2d'); x.imageSmoothingQuality = 'high'; x.drawImage(src, 0, 0, c.width, c.height); src = c; sw = c.width; sh = c.height;
+    }
+    const c = document.createElement('canvas'); c.width = w; c.height = h; const x = c.getContext('2d', { willReadFrequently: true });
+    x.imageSmoothingQuality = 'high'; x.drawImage(src, 0, 0, w, h); const d = x.getImageData(0, 0, w, h).data, g = new Float32Array(w * h);
+    for (let i = 0; i < w * h; i++) g[i] = .299 * d[i * 4] + .587 * d[i * 4 + 1] + .114 * d[i * 4 + 2];
+    return g;
+  }
+  async function analizarFoto(src) {
+    const img = await cargarImg(src), W = img.naturalWidth || img.width, H = img.naturalHeight || img.height;
+    // huella: promedio por bloques de una versión de 144×128 y comparación de vecinos (dHash de 64 bits)
+    const q = grises(img, 144, 128), g = new Float32Array(72);
+    for (let by = 0; by < 8; by++) for (let bx = 0; bx < 9; bx++) { let t = 0; for (let y = 0; y < 16; y++) for (let x = 0; x < 16; x++) t += q[(by * 16 + y) * 144 + bx * 16 + x]; g[by * 9 + bx] = t; }
+    let bits = '';
+    for (let y = 0; y < 8; y++) for (let x = 0; x < 8; x++) bits += g[y * 9 + x] > g[y * 9 + x + 1] ? '1' : '0';
+    const huella = bits.match(/.{4}/g).map(b => parseInt(b, 2).toString(16)).join('');
+    // nitidez y luz, sobre una copia de 720 px (el tamaño de las miniaturas)
+    const k = Math.min(1, 720 / Math.max(W, H)), w = Math.max(8, Math.round(W * k)), h = Math.max(8, Math.round(H * k)), p = grises(img, w, h);
+    let su = 0, s = 0, s2 = 0, n = 0;
+    for (let i = 0; i < p.length; i++) su += p[i];
+    for (let y = 1; y < h - 1; y++) for (let x = 1; x < w - 1; x++) { const i = y * w + x, l = 4 * p[i] - p[i - 1] - p[i + 1] - p[i - w] - p[i + w]; s += l; s2 += l * l; n++; }
+    return { huella, ancho: W, alto: H, brillo: su / p.length, nitidez: s2 / n - (s / n) ** 2 };
+  }
+  const distHuella = (a, b) => { let d = 0; for (let i = 0; i < 16; i++) { let x = parseInt(a[i], 16) ^ parseInt(b[i], 16); while (x) { d += x & 1; x >>= 1; } } return d; };
+  const PARECIDA = 12;
+  function problemasFoto(a, conTamano = true) {
+    const l = [];
+    if (conTamano && Math.min(a.ancho, a.alto) < 600) l.push(`Es muy chica (${a.ancho}×${a.alto}): en la web se va a ver borrosa.`);
+    if (a.brillo < 50) l.push('Está muy oscura.');
+    else if (a.brillo > 195) l.push('Está muy clara, como quemada.');
+    if (a.brillo >= 50 && a.nitidez < 60) l.push('Parece movida o fuera de foco.');
+    return l;
+  }
+  const dondeFoto = f => f.cabana_id ? 'Cabaña ' + ((S.cabanas.find(c => c.id === f.cabana_id) || {}).nombre || '') : 'Complejo';
+  async function huellasGuardadas() {
+    for (const f of S.fotos.filter(f => !f.huella)) {
+      try { f.huella = (await analizarFoto(urlFoto(f.miniatura))).huella; db.from('fotos').update({ huella: f.huella }).eq('id', f.id).then(() => {}); } catch (e) { /* si no se puede leer, se saltea */ }
+    }
+  }
+  function preguntarFoto(src, problemas, parecida) {
+    return new Promise(res => {
+      let listo = false; const fin = v => { if (listo) return; listo = true; obs.disconnect(); cerrar(); setTimeout(() => res(v), 230); };
+      const obs = new MutationObserver(() => { if (!$('mf') && !listo) { listo = true; obs.disconnect(); res(false); } });
+      const url = src instanceof Blob ? URL.createObjectURL(src) : src;
+      modal(`<h2>${parecida ? (parecida.lote ? 'Esta foto está repetida' : 'Esta foto ya está subida') : 'Ojo con esta foto'}</h2>
+        <div class="comparar ${parecida ? 'dos' : ''}"><figure><img src="${esc(url)}" alt=""><figcaption>${parecida ? 'La que querés subir' : 'La foto'}</figcaption></figure>
+        ${parecida ? `<figure><img src="${esc(parecida.lote ? parecida.miniatura : urlFoto(parecida.miniatura))}" alt=""><figcaption>${parecida.lote ? 'Ya la elegiste recién, en esta misma tanda' : 'Ya está en ' + esc(dondeFoto(parecida))}</figcaption></figure>` : ''}</div>
+        <ul class="problemas">${parecida ? `<li>Se ve igual (o casi igual) a ${parecida.lote ? 'otra foto que estás subiendo' : 'una foto que ya está en la web'}, aunque el archivo tenga otro nombre.</li>` : ''}${problemas.map(p => `<li>${esc(p)}</li>`).join('')}</ul>
+        <p class="ayuda">${parecida ? 'Te recomendamos no subirla, así no aparece repetida.' : 'Te recomendamos no subirla: una foto linda vende más que muchas fotos.'}</p>
+        <div class="botones"><button class="btn grande" id="no-sube">No subirla</button><button class="btn grande sec" id="si-sube">Subirla igual</button></div>`, () => {
+        $('no-sube').onclick = () => fin(false); $('si-sube').onclick = () => fin(true);
+        obs.observe($('modal-raiz'), { childList: true, subtree: true });
+      });
+    });
+  }
+
+  async function revisarFotos(cabSel) {
+    modal('<h2>Revisando fotos…</h2><p class="ayuda" id="rev-txt">Un momento.</p>');
+    const info = [];
+    for (const f of S.fotos) {
+      try { const a = await analizarFoto(urlFoto(f.miniatura)); if (!f.huella) { f.huella = a.huella; db.from('fotos').update({ huella: a.huella }).eq('id', f.id).then(() => {}); }
+        const probs = problemasFoto(a, false); if (f.ancho && f.alto && Math.min(f.ancho, f.alto) < 600) probs.unshift('Es muy chica: en la web se va a ver borrosa.');
+        info.push({ f, probs }); } catch (e) { /* no se pudo leer */ }
+      if ($('rev-txt')) $('rev-txt').textContent = `${info.length} de ${S.fotos.length}…`;
+    }
+    const pares = [];
+    for (let i = 0; i < info.length; i++) for (let j = i + 1; j < info.length; j++)
+      if (info[i].f.huella && info[j].f.huella && distHuella(info[i].f.huella, info[j].f.huella) <= PARECIDA) pares.push([info[i].f, info[j].f]);
+    const malas = info.filter(x => x.probs.length);
+    const mini = (f, txt) => `<figure data-id="${f.id}"><img src="${esc(urlFoto(f.miniatura))}" alt=""><figcaption>${esc(dondeFoto(f))}${txt ? '<br>' + esc(txt) : ''}</figcaption><button class="btn chico rojo" data-borrar="${f.id}">Borrar esta</button></figure>`;
+    if (!$('mf')) return;
+    modal(`<h2>Revisión de fotos</h2>
+      ${!pares.length && !malas.length ? '<p>✅ Todo bien: no hay fotos repetidas ni de mala calidad.</p>' : ''}
+      ${pares.length ? `<h3 class="rev-tit">Fotos repetidas (${pares.length})</h3><p class="ayuda">Se ven iguales o casi iguales. Conviene dejar una sola.</p>${pares.map(([a, b]) => `<div class="comparar dos">${mini(a)}${mini(b)}</div>`).join('')}` : ''}
+      ${malas.length ? `<h3 class="rev-tit">Para revisar (${malas.length})</h3>${malas.map(x => `<div class="comparar">${mini(x.f, x.probs.join(' '))}</div>`).join('')}` : ''}
+      <button class="btn grande sec" data-cerrar style="margin-top:1rem">Listo</button>`, m => {
+      m.querySelectorAll('[data-borrar]').forEach(b => b.onclick = async () => {
+        const f = S.fotos.find(x => x.id === Number(b.dataset.borrar)); if (!f) return;
+        if (!confirm('¿Borrar esta foto de la web?')) return;
+        b.disabled = true;
+        if (!/^fotos\//.test(f.ruta)) await db.storage.from('fotos').remove([f.ruta, f.miniatura]);
+        const { error: err } = await db.from('fotos').delete().eq('id', f.id); if (err) { b.disabled = false; return error(err); }
+        S.fotos = S.fotos.filter(x => x.id !== f.id);
+        m.querySelectorAll(`figure[data-id="${f.id}"]`).forEach(fig => { fig.style.opacity = .35; fig.querySelector('button').textContent = 'Borrada'; fig.querySelector('button').disabled = true; });
+        aviso('Foto borrada');
+      });
+      const volver = new MutationObserver(() => { if (!$('mf')) { volver.disconnect(); VISTAS.fotos(cabSel); } });
+      volver.observe($('modal-raiz'), { childList: true });
+    });
+  }
   VISTAS.fotos = async (cabSel) => {
     if (cabSel === undefined) cabSel = S.fotosCab === undefined ? 'general' : S.fotosCab;
     S.fotosCab = cabSel;
@@ -863,6 +972,7 @@
       <div class="caja subir-fotos">
         <label>¿Qué muestran las fotos?<select id="lugar-f">${Object.entries(LUGARES).map(([k, t]) => `<option value="${k}" ${k === (cabId ? 'interior' : 'parque') ? 'selected' : ''}>${t}</option>`).join('')}</select></label>
         <label class="btn grande" style="margin-top:.8rem;cursor:pointer">📷 Elegir fotos del celular<input type="file" id="archivos" accept="image/*" multiple hidden></label>
+        ${S.fotos.length > 1 ? '<button type="button" class="btn sec" id="revisar-f" style="margin-top:.6rem;width:100%">🔍 Buscar fotos repetidas o feas</button>' : ''}
         <div id="progreso" hidden><div class="barra-prog"><i id="barra-prog"></i></div><p id="prog-txt" class="ayuda" style="margin:.4rem 0 0"></p></div>
       </div>
       ${lista.length ? `<div class="grilla-fotos">${lista.map((f, i) => `<figure class="foto-adm" data-id="${f.id}">
@@ -881,24 +991,43 @@
     $('archivos').onchange = async e => {
       const files = [...e.target.files].filter(f => f.type.startsWith('image/')); if (!files.length) return;
       const lugar = $('lugar-f').value; $('progreso').hidden = false;
-      let orden = Math.max(0, ...S.fotos.filter(f => f.cabana_id === cabId).map(f => f.orden)), ok = 0;
+      let orden = Math.max(0, ...S.fotos.filter(f => f.cabana_id === cabId).map(f => f.orden)), ok = 0, salteadas = 0;
+      // 1) revisar antes de subir: repetidas y calidad
+      $('prog-txt').textContent = 'Revisando las fotos…'; $('barra-prog').style.width = '3%';
+      await huellasGuardadas();
+      const elegidas = [], nuevas = [];
       for (let i = 0; i < files.length; i++) {
-        $('prog-txt').textContent = `Subiendo ${i + 1} de ${files.length}…`; $('barra-prog').style.width = (i / files.length * 100) + '%';
+        let a = null; try { a = await analizarFoto(files[i]); } catch (e) { /* si no se puede analizar, se sube igual */ }
+        if (a) {
+          const previas = S.fotos.filter(f => f.huella).concat(nuevas);
+          let parecida = null, mejor = 99;
+          for (const f of previas) { const d = distHuella(a.huella, f.huella); if (d <= PARECIDA && d < mejor) { mejor = d; parecida = f; } }
+          const probs = problemasFoto(a);
+          if ((parecida || probs.length) && !(await preguntarFoto(files[i], probs, parecida))) { salteadas++; continue; }
+          nuevas.push({ huella: a.huella, miniatura: URL.createObjectURL(files[i]), cabana_id: cabId, lote: true });
+        }
+        elegidas.push({ file: files[i], huella: a ? a.huella : null });
+      }
+      // 2) subir las que quedaron
+      for (let i = 0; i < elegidas.length; i++) {
+        $('prog-txt').textContent = `Subiendo ${i + 1} de ${elegidas.length}…`; $('barra-prog').style.width = (i / elegidas.length * 100) + '%';
         try {
-          const grande = await achicar(files[i], 1800, .82), chica = await achicar(files[i], 720, .78);
+          const grande = await achicar(elegidas[i].file, 1800, .82), chica = await achicar(elegidas[i].file, 720, .78);
           const base = (cabId ? 'cabana-' + cabId : 'complejo') + '/' + Date.now().toString(36) + Math.random().toString(36).slice(2, 7);
           const st = db.storage.from('fotos');
           let r = await st.upload(base + '.jpg', grande.blob, { contentType: 'image/jpeg', cacheControl: '31536000' }); if (r.error) throw r.error;
           r = await st.upload(base + '-chica.jpg', chica.blob, { contentType: 'image/jpeg', cacheControl: '31536000' }); if (r.error) throw r.error;
           const primera = !S.fotos.some(f => f.cabana_id === cabId);
-          const { data, error: err } = await db.from('fotos').insert({ cabana_id: cabId, ruta: base + '.jpg', miniatura: base + '-chica.jpg', lugar, ancho: grande.ancho, alto: grande.alto, orden: ++orden, portada: primera }).select().single();
+          const { data, error: err } = await db.from('fotos').insert({ cabana_id: cabId, ruta: base + '.jpg', miniatura: base + '-chica.jpg', lugar, ancho: grande.ancho, alto: grande.alto, orden: ++orden, portada: primera, huella: elegidas[i].huella }).select().single();
           if (err) throw err; S.fotos.push(data); ok++;
-        } catch (er) { console.error(er); aviso('No se pudo subir "' + files[i].name + '"', true); }
+        } catch (er) { console.error(er); aviso('No se pudo subir "' + elegidas[i].file.name + '"', true); }
       }
       $('barra-prog').style.width = '100%';
-      aviso(ok === 1 ? 'Foto subida ✓ Ya está en la web.' : ok + ' fotos subidas ✓ Ya están en la web.');
+      const nota = salteadas ? ` (${salteadas} no se ${salteadas === 1 ? 'subió' : 'subieron'})` : '';
+      aviso(ok === 0 ? 'No se subió ninguna foto' + nota : (ok === 1 ? 'Foto subida ✓ Ya está en la web.' : ok + ' fotos subidas ✓ Ya están en la web.') + nota);
       VISTAS.fotos(cabSel);
     };
+    if ($('revisar-f')) $('revisar-f').onclick = () => revisarFotos(cabSel);
     v.querySelectorAll('.foto-adm').forEach(fig => fig.querySelectorAll('[data-a]').forEach(b => b.onclick = async () => {
       const f = S.fotos.find(x => x.id === Number(fig.dataset.id)), a = b.dataset.a, i = lista.indexOf(f);
       if (a === 'izq' || a === 'der') {
