@@ -101,7 +101,7 @@ create table if not exists public.ajustes (
   ultimo_minuto_dias smallint not null default 3 check (ultimo_minuto_dias between 1 and 14), -- si faltan menos de N días
   info_llegada      text,                         -- lo que se le manda al huésped antes de llegar (dirección, horarios…)
   resumen_semanal   boolean not null default true,
-  web_url           text not null default 'https://aromasdecampo.vercel.app',
+  web_url           text not null default 'https://aromasdecampo.ar',
   descuento_semana_pct smallint not null default 0 check (descuento_semana_pct between 0 and 60), -- 7 noches o más
   google_puntaje    numeric(2,1) default 5.0,
   google_cantidad   int default 34,

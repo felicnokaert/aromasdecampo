@@ -12,7 +12,7 @@ Deno.serve(async (_req) => {
   const { data: aj } = await db.from("ajustes").select("*").single();
   const { data: cabs } = await db.from("cabanas").select("id, nombre");
   const cab = (id: number) => cabs?.find((c) => c.id === id)?.nombre || "";
-  const web = aj?.web_url || "https://aromasdecampo.vercel.app";
+  const web = aj?.web_url || "https://aromasdecampo.ar";
   const hecho: Record<string, number | boolean> = {};
 
   // 1. Recordatorios de llegada
