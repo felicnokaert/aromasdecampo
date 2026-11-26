@@ -254,6 +254,53 @@
     .tabla-plat thead th { font-size: .8rem; color: #6b6357; font-weight: 600; }
     .tabla-plat td small { display: block; color: #6b6357; font-size: .8rem; }
 
+    /* ===== Colores por canal ===== */
+    :root { --airbnb: #E0565B; --airbnb-claro: #FDE7E7; --booking: #1F4FA3; --booking-claro: #E3EBF8; --web: #2F5A27; --web-claro: #DCEBD5; }
+    .grilla .d.confirmada.o-airbnb { background: var(--airbnb-claro); border-color: #F5C2C3; } .grilla .d.confirmada.o-airbnb small { color: #A8343A; }
+    .grilla .d.confirmada.o-booking { background: var(--booking-claro); border-color: #C3D3EE; } .grilla .d.confirmada.o-booking small { color: var(--booking); }
+    .grilla .d.bloqueo { background: repeating-linear-gradient(135deg, #EEF2F7 0 6px, #E2E8F0 6px 12px); }
+    .grilla .d .canal { margin-top: auto; align-self: flex-end; font-size: .6rem; font-weight: 800; border-radius: 5px; padding: 0 .25rem; color: #fff; background: var(--web); }
+    .grilla .d .canal.airbnb { background: var(--airbnb); } .grilla .d .canal.booking { background: var(--booking); }
+    .grilla.mes-izq { animation: mesIzq .32s cubic-bezier(.2,.8,.2,1) both; } .grilla.mes-der { animation: mesDer .32s cubic-bezier(.2,.8,.2,1) both; }
+    @keyframes mesIzq { from { opacity: 0; transform: translateX(-28px); } } @keyframes mesDer { from { opacity: 0; transform: translateX(28px); } }
+    .canal-chip { display: inline-block; font-size: .72rem; font-weight: 800; border-radius: 999px; padding: .05rem .5rem; color: #fff; background: var(--web); vertical-align: 1px; }
+    .canal-chip.airbnb { background: var(--airbnb); } .canal-chip.booking { background: var(--booking); } .canal-chip.whatsapp { background: #1DA851; } .canal-chip.instagram { background: #C13584; } .canal-chip.otro { background: #7A7364; }
+    .res.o-airbnb { border-left: 5px solid var(--airbnb); } .res.o-booking { border-left: 5px solid var(--booking); }
+
+    /* ===== Inicio: estado de las cabañas y conexiones ===== */
+    .fecha-hoy { color: var(--texto2); margin: -.7rem 0 1rem .1rem; font-weight: 500; } .fecha-hoy::first-letter { text-transform: uppercase; }
+    .estado-cabs { display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: .7rem; margin-bottom: 1rem; }
+    .cab-estado { border-radius: 16px; padding: 1rem 1.05rem; background: var(--blanco); border: 1px solid var(--borde); position: relative; overflow: hidden; cursor: pointer; }
+    .cab-estado::before { content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 6px; background: #9FB394; }
+    .cab-estado.ocupada::before { background: var(--sol); }
+    .cab-estado h3 { font-family: 'Gloock', Georgia, serif; font-weight: 400; font-size: 1.35rem; display: flex; justify-content: space-between; align-items: center; }
+    .cab-estado .est { font-family: 'Figtree', sans-serif; font-size: .78rem; font-weight: 700; border-radius: 999px; padding: .1rem .6rem; background: #DCEBD5; color: #2F5A27; }
+    .cab-estado.ocupada .est { background: #FBE3D4; color: #A9491A; }
+    .cab-estado p { color: var(--texto2); font-size: .92rem; margin-top: .3rem; }
+    .cab-estado .prox { color: var(--texto); font-weight: 600; }
+    .conexiones { display: flex; gap: .5rem; flex-wrap: wrap; margin: 0 0 1rem; }
+    .conexiones button { display: inline-flex; align-items: center; gap: .45rem; border: 1px solid var(--borde); background: var(--blanco); border-radius: 999px; padding: .45rem .85rem; font-size: .86rem; font-weight: 600; color: var(--texto); }
+    .conexiones i { width: 10px; height: 10px; border-radius: 50%; background: #3BA55C; box-shadow: 0 0 0 0 rgba(59,165,92,.5); animation: latido 2.4s ease-out infinite; }
+    .conexiones .mal i { background: var(--rojo); animation: none; } .conexiones .mal { border-color: #E8B4B0; background: var(--rojo-claro); color: var(--rojo); }
+    .conexiones .off i { background: #B9B0A0; animation: none; } .conexiones .off { color: var(--texto2); }
+    @keyframes latido { 0% { box-shadow: 0 0 0 0 rgba(59,165,92,.45); } 70%, 100% { box-shadow: 0 0 0 8px rgba(59,165,92,0); } }
+    .alerta { animation: subir .45s cubic-bezier(.2,.75,.2,1) both; }
+    .alerta.nueva-res { background: #FFF8EC; border-color: #F2CB91; }
+
+    /* ===== Toques de app ===== */
+    nav.abajo button::after { content: ''; position: absolute; top: 5px; left: 50%; width: 52px; height: 32px; border-radius: 999px; background: rgba(210,102,42,.12); transform: translateX(-50%) scale(.4); opacity: 0; transition: transform .3s cubic-bezier(.2,.8,.2,1), opacity .25s; z-index: -1; }
+    nav.abajo button.act::after { transform: translateX(-50%) scale(1); opacity: 1; }
+    nav.abajo button.act { box-shadow: none; }
+    nav.abajo { backdrop-filter: blur(10px); background: rgba(255,252,246,.94); padding-bottom: env(safe-area-inset-bottom); }
+    .toast.chau { animation: tostada .25s ease reverse both; }
+    .caja, .cab-estado { transition: box-shadow .25s, transform .2s; }
+    @media (hover: hover) { .caja:hover, .cab-estado:hover { box-shadow: 0 8px 24px rgba(60,50,30,.08) !important; } }
+    .cab-estado:active { transform: scale(.98); }
+    .pend-ini { width: 100%; display: flex; gap: .8rem; align-items: center; text-align: left; font: inherit; color: inherit; cursor: pointer; background: var(--naranja-claro) !important; border-color: #F2CB91 !important; }
+    .pend-ini > span:first-child { font-size: 1.5rem; } .pend-ini > span:nth-child(2) { flex: 1; }
+    .tarea.pend.hecho b { color: var(--texto2); font-weight: 600; }
+    .actualizado { text-align: center; color: var(--texto2); font-size: .8rem; margin: 1.2rem 0 .4rem; }
+
     .guia-sync summary { cursor: pointer; } .guia-sync h3 { margin: .8rem 0 .3rem; font-size: 1rem; } .guia-sync ol { margin: 0 0 .4rem 1.2rem; padding: 0; } .guia-sync li { margin: .25rem 0; }
 </style>
 </head>
@@ -309,7 +356,7 @@
   // ---------- utilidades ----------
   function aviso(txt, mal) {
     const t = document.createElement('div'); t.className = 'toast' + (mal ? ' mal' : ''); t.textContent = txt;
-    document.body.appendChild(t); setTimeout(() => t.remove(), mal ? 4500 : 2600);
+    document.body.appendChild(t); setTimeout(() => { t.classList.add('chau'); setTimeout(() => t.remove(), 260); }, mal ? 4500 : 2600);
   }
   function error(e) {
     console.error(e);
@@ -414,7 +461,18 @@
     ir(location.hash.slice(1) || 'inicio'); chauSplash();
   }
 
+  // Se actualiza solo: al volver a la app y cada 3 minutos (si no hay una ventana abierta)
+  let ultimaCarga = 0;
+  async function refrescar() {
+    if ($('app').classList.contains('oculto') || $('mf') || document.activeElement?.matches('input, textarea, select')) return;
+    if (Date.now() - ultimaCarga < 60000) return;
+    await cargarTodo(); if (!$('mf') && ['inicio', 'reservas', 'calendario', 'sync'].includes(S.vista)) VISTAS[S.vista]();
+  }
+  document.addEventListener('visibilitychange', () => { if (!document.hidden) refrescar(); });
+  setInterval(() => { if (!document.hidden) refrescar(); }, 180000);
+
   async function cargarTodo() {
+    ultimaCarga = Date.now();
     const desde = A.sumar(A.hoy(), -400);
     const [c, a, r, t, p, al, ce, rs, ms] = await Promise.all([
       db.from('cabanas').select('*').order('orden'),
@@ -448,7 +506,7 @@
   function ir(v) {
     if (!VISTAS[v]) v = 'inicio';
     S.vista = v; location.hash = v;
-    document.querySelectorAll('nav.abajo button').forEach(b => b.classList.toggle('act', b.dataset.v === v || (['preguntas','cabanas','ajustes','estadisticas','sync','resenas','fotos','textos','lugares','mensajes','ganancias','huespedes','plataformas'].includes(v) && b.dataset.v === 'mas')));
+    document.querySelectorAll('nav.abajo button').forEach(b => b.classList.toggle('act', b.dataset.v === v || (['preguntas','cabanas','ajustes','estadisticas','sync','resenas','fotos','textos','lugares','mensajes','ganancias','huespedes','plataformas','pendientes'].includes(v) && b.dataset.v === 'mas')));
     window.scrollTo({ top: 0, behavior: 'smooth' });
     const vi = $('vista'); vi.classList.remove('vista-anim'); void vi.offsetWidth; vi.classList.add('vista-anim');
     VISTAS[v]();
@@ -473,10 +531,10 @@
   function tarjeta(r, conAcciones) {
     const noches = A.noches(r.entrada, r.salida);
     const est = vencida(r) ? 'Venció el plazo de seña' : ESTADOS[r.estado];
-    let html = `<div class="res ${r.estado}" data-id="${r.id}">
+    let html = `<div class="res ${r.estado} o-${r.origen}" data-id="${r.id}">
       <div class="res-top"><div class="res-nombre">${r.estado === 'bloqueo' ? '🔒 Fechas bloqueadas' : esc(r.nombre || 'Sin nombre')}</div><span class="chip ${r.estado}">${est}</span></div>
       <div class="res-fechas">🏡 <b>${esc(cabNombre(r.cabana_id))}</b> · ${A.lindo(r.entrada)} → ${A.lindo(r.salida)} (${noches} ${noches === 1 ? 'noche' : 'noches'})</div>
-      <div class="res-meta">${r.estado !== 'bloqueo' ? `${r.personas ? r.personas + ' pers. · ' : ''}${r.total ? A.pesos(r.total) : ''}${r.mascota ? ' · 🐾 mascota' : ''} · ${ORIGENES[r.origen]}${r.codigo ? ' · ' + r.codigo : ''}` : esc(r.notas || '')}</div>`;
+      <div class="res-meta">${r.estado !== 'bloqueo' ? `${r.personas ? r.personas + ' pers. · ' : ''}${r.total ? A.pesos(r.total) : ''}${r.mascota ? ' · 🐾 mascota' : ''} · <span class="canal-chip ${r.origen}">${ORIGENES[r.origen]}</span>${r.codigo ? ' · ' + r.codigo : ''}` : esc(r.notas || '')}</div>`;
     if (r.llegada_hora && r.estado === 'confirmada') html += `<div class="res-meta" style="color:var(--verde-osc);font-weight:600">🕑 Llega ${esc(r.llegada_hora)}${r.llegada_nota ? ' · ' + esc(r.llegada_nota) : ''}</div>`;
     if (conAcciones && r.telefono && (r.estado === 'confirmada' || r.estado === 'pendiente')) html += `<button class="btn sec chico" data-acc="mensajes" style="margin-top:.5rem">💬 Mensajes</button>`;
     if (conAcciones && r.estado === 'pendiente') {
@@ -637,6 +695,37 @@
     if (err) return error(err); r[campo] = true; aviso('Listo ✓'); VISTAS[S.vista]();
   }
 
+  // Estado de cada cabaña hoy (ocupada / libre y lo que viene)
+  function estadoCabanas() {
+    const hoy = A.hoy();
+    return `<div class="estado-cabs">${S.cabanas.filter(c => c.activa).map(c => {
+      const de = S.reservas.filter(r => r.cabana_id === c.id && r.estado === 'confirmada');
+      const ahora = de.find(r => r.entrada <= hoy && r.salida > hoy);
+      const prox = de.filter(r => r.entrada > hoy).sort((a, b) => a.entrada.localeCompare(b.entrada))[0];
+      const quien = r => esc((r.nombre || '').replace(/^Reserva de /, 'huésped de '));
+      const linea = ahora ? `<p><span class="prox">${quien(ahora)}</span> · se va el ${A.lindo(ahora.salida)}</p>`
+        : `<p>${prox ? `Próxima llegada: <span class="prox">${A.lindo(prox.entrada)}</span>` : 'Sin llegadas cargadas'}</p>`;
+      return `<button class="cab-estado ${ahora ? 'ocupada' : ''}" data-cabcal="${c.id}" style="text-align:left;font:inherit;color:inherit">
+        <h3>${esc(c.nombre)} <span class="est">${ahora ? 'Ocupada' : 'Libre hoy'}</span></h3>${linea}
+        ${ahora && prox ? `<p>Después: ${A.lindo(prox.entrada)}</p>` : ''}</button>`; }).join('')}</div>`;
+  }
+  // Semáforo de conexiones con Airbnb y Booking
+  function estadoCanal(plat) {
+    const cs = (S.calExt || []).filter(c => c.plataforma === plat);
+    if (!cs.length) return { cls: 'off', txt: 'sin conectar' };
+    if (cs.some(c => c.ultimo_error)) return { cls: 'mal', txt: 'con problemas' };
+    const vieja = Math.min(...cs.map(c => c.ultima_sync ? new Date(c.ultima_sync).getTime() : 0));
+    const min = Math.round((Date.now() - vieja) / 60000);
+    if (min > 60) return { cls: 'mal', txt: `sin datos hace ${min > 180 ? Math.round(min / 60) + ' h' : min + ' min'}` };
+    return { cls: '', txt: min < 1 ? 'al día' : `al día · hace ${min} min` };
+  }
+  function conexiones() {
+    const b = estadoCanal('booking'), a = estadoCanal('airbnb');
+    return `<div class="conexiones"><button data-ir="sync"><i></i>Web</button>
+      <button data-ir="sync" class="${a.cls}"><i></i>Airbnb ${a.txt}</button>
+      <button data-ir="sync" class="${b.cls}"><i></i>Booking ${b.txt}</button></div>`;
+  }
+
   // ======================= INICIO =======================
   VISTAS.inicio = async () => {
     const hoy = A.hoy(), en14 = A.sumar(hoy, 14);
@@ -653,10 +742,14 @@
       opinar.map(r => `<div class="tarea"><div>⭐ <b>${esc(r.nombre)}</b> se fue el ${A.lindo(r.salida)}<br><small class="vacio">Pedile que deje su opinión</small></div>
         <div class="botones" style="margin:0"><a class="btn wa chico" target="_blank" rel="noopener" href="https://wa.me/${telWa(r.telefono)}?text=${encodeURIComponent(msgResena(r))}">WhatsApp</a>
         <button class="btn sec chico" data-hecho="${r.id}" data-campo="resena_pedida">✓ Ya lo mandé</button></div></div>`).join('');
-    const alertas = (S.alertas || []).map(a => `<div class="alerta ${a.tipo === 'doble' ? '' : 'aviso'}"><p>${esc(a.mensaje)}</p>
-        <button class="btn ${a.tipo === 'doble' ? 'rojo' : 'sec'} chico" data-visto="${a.id}">Entendido</button></div>`).join('');
-    $('vista').innerHTML = `<h1 class="titulo">${saludo}</h1>${alertas}
+    const alertas = (S.alertas || []).map(a => { const nueva = /^nueva:/.test(a.clave || '');
+      return `<div class="alerta ${a.tipo === 'doble' || a.tipo === 'sync' ? '' : nueva ? 'nueva-res' : 'aviso'}"><p>${esc(a.mensaje)}</p>
+        <div class="botones" style="margin:0">${nueva ? `<button class="btn chico" data-ir="reservas">Ver reservas</button>` : ''}${a.tipo === 'sync' ? `<button class="btn chico" data-ir="sync">Revisar conexión</button>` : ''}
+        <button class="btn ${a.tipo === 'doble' ? 'rojo' : 'sec'} chico" data-visto="${a.id}">Entendido</button></div></div>`; }).join('');
+    const fechaHoy = new Date().toLocaleDateString('es-AR', { weekday: 'long', day: 'numeric', month: 'long' });
+    $('vista').innerHTML = `<h1 class="titulo">${saludo}</h1><p class="fecha-hoy">${fechaHoy}</p>${conexiones()}${estadoCabanas()}${alertas}
       ${tareas ? `<div class="caja"><h2>Para hacer hoy</h2>${tareas}</div>` : ''}
+      ${pendientesFaltan() ? `<button class="caja pend-ini" data-ir="pendientes"><span>✅</span><span><b>Faltan ${pendientesFaltan()} cosas para dejar Airbnb y Booking al 100%</b><br><small class="vacio">Tocá para ver la lista con los pasos</small></span><span class="flecha-mas">›</span></button>` : ''}
       <div class="caja"><h2>Para confirmar (${pend.length})</h2>
         ${pend.length ? '<p class="vacio" style="margin-bottom:.6rem">Gente que pidió fechas en la web. Cuando te llegue la seña, tocá "Llegó la seña".</p>' + pend.map(r => tarjeta(r, true)).join('') : '<p class="vacio">No hay reservas esperando seña. 👍</p>'}</div>
       <div class="caja"><h2>Ahora en las cabañas</h2>${adentro.length ? adentro.map(r => tarjeta(r)).join('') : '<p class="vacio">Ninguna cabaña ocupada hoy.</p>'}</div>
@@ -667,6 +760,8 @@
     activarTarjetas($('vista'));
     $('nueva').onclick = () => formReserva(null);
     $('ver-est').onclick = () => ir('estadisticas');
+    $('vista').querySelectorAll('[data-ir]').forEach(b => b.onclick = () => ir(b.dataset.ir));
+    $('vista').querySelectorAll('[data-cabcal]').forEach(b => b.onclick = () => { S.cal.cab = Number(b.dataset.cabcal); S.cal.mes = null; ir('calendario'); });
     $('vista').querySelectorAll('[data-hecho]').forEach(b => b.onclick = () => marcar(S.reservas.find(x => x.id === Number(b.dataset.hecho)), b.dataset.campo));
     $('vista').querySelectorAll('[data-visto]').forEach(b => b.onclick = async () => {
       const id = Number(b.dataset.visto); const { error: err } = await db.from('alertas').update({ vista: true }).eq('id', id);
@@ -720,23 +815,29 @@
       const f = A.iso(new Date(m.getFullYear(), m.getMonth(), n));
       const r = deCab.find(x => f >= x.entrada && f < x.salida);
       let cls = 'd', txt = '';
-      if (r) { cls += ' ' + r.estado; txt = r.estado === 'bloqueo' ? '🔒 ' + (r.notas || 'Bloqueado') : (f === r.entrada ? '➜ ' : '') + (r.nombre || '').split(' ')[0]; }
+      let canal = '';
+      if (r) { cls += ' ' + r.estado + ' o-' + r.origen; txt = r.estado === 'bloqueo' ? '🔒 ' + (r.notas || 'Bloqueado') : (f === r.entrada ? '➜ ' : '') + (r.nombre || '').replace(/^Reserva de /, '').split(' ')[0]; }
       if (f === hoy) cls += ' hoy';
       if (f < hoy) cls += ' pasado';
       if (S.cal.a === f) cls += ' sel';
-      celdas += `<button class="${cls}" data-f="${f}" ${r ? `data-r="${r.id}"` : ''}><b>${n}</b><small>${esc(txt)}</small></button>`;
+      celdas += `<button class="${cls}" data-f="${f}" ${r ? `data-r="${r.id}"` : ''}><b>${n}</b><small>${esc(txt)}</small>${canal}</button>`;
     }
     $('vista').innerHTML = `<h1 class="titulo">Calendario</h1>
       <div class="cab-tabs">${S.cabanas.filter(c => c.activa).map(c => `<button data-c="${c.id}" class="${c.id === S.cal.cab ? 'act' : ''}">${esc(c.nombre)}</button>`).join('')}</div>
       <div class="caja">
         <div class="cal-top"><button id="ca">‹</button><h2>${A.MESES[m.getMonth()]} ${m.getFullYear()}</h2><button id="cs">›</button></div>
         <p class="vacio" style="text-align:center;margin-bottom:.6rem" id="cal-ayuda">${S.cal.a ? `Llega el ${A.lindo(S.cal.a)}. Ahora tocá el día que se va.` : 'Tocá un día libre para cargar una reserva o bloquear. Tocá una reserva para verla.'}</p>
-        <div class="grilla">${celdas}</div>
-        <div class="leyenda"><span><i style="background:#DCEBD5"></i>Confirmada</span><span><i style="background:#FFE9C9"></i>Falta seña</span><span><i style="background:var(--azul-claro)"></i>Bloqueada</span><span><i style="background:#fff;border:1px solid #ddd"></i>Libre</span></div>
+        <div class="grilla ${S.cal.dir ? 'mes-' + S.cal.dir : ''}">${celdas}</div>
+        <div class="leyenda"><span><i style="background:#DCEBD5"></i>Web / WhatsApp</span><span><i style="background:var(--airbnb-claro);border:1px solid #F5C2C3"></i>Airbnb</span><span><i style="background:var(--booking-claro);border:1px solid #C3D3EE"></i>Booking</span><span><i style="background:#FFE9C9"></i>Falta seña</span><span><i style="background:repeating-linear-gradient(135deg,#EEF2F7 0 3px,#E2E8F0 3px 6px)"></i>Cerrada</span><span><i style="background:#fff;border:1px solid #ddd"></i>Libre</span></div>
       </div>`;
     $('vista').querySelectorAll('.cab-tabs button').forEach(b => b.onclick = () => { S.cal.cab = Number(b.dataset.c); S.cal.a = null; VISTAS.calendario(); });
-    $('ca').onclick = () => { S.cal.mes = new Date(m.getFullYear(), m.getMonth() - 1, 1); VISTAS.calendario(); };
-    $('cs').onclick = () => { S.cal.mes = new Date(m.getFullYear(), m.getMonth() + 1, 1); VISTAS.calendario(); };
+    S.cal.dir = null;
+    $('ca').onclick = () => { S.cal.mes = new Date(m.getFullYear(), m.getMonth() - 1, 1); S.cal.dir = 'izq'; VISTAS.calendario(); };
+    $('cs').onclick = () => { S.cal.mes = new Date(m.getFullYear(), m.getMonth() + 1, 1); S.cal.dir = 'der'; VISTAS.calendario(); };
+    // deslizar el dedo para cambiar de mes
+    let x0 = null; const gr = $('vista').querySelector('.grilla');
+    gr.addEventListener('touchstart', e => { x0 = e.touches[0].clientX; }, { passive: true });
+    gr.addEventListener('touchend', e => { if (x0 == null) return; const dx = e.changedTouches[0].clientX - x0; x0 = null; if (Math.abs(dx) > 70) (dx > 0 ? $('ca') : $('cs')).click(); });
     $('vista').querySelectorAll('.grilla button.d').forEach(b => b.onclick = () => {
       if (b.dataset.r) { S.cal.a = null; return verReserva(S.reservas.find(x => x.id === Number(b.dataset.r))); }
       const f = b.dataset.f;
@@ -1476,6 +1577,45 @@
   };
 
   // ======================= MÁS =======================
+  // ======================= LO QUE FALTA COMPLETAR (guía para Rubén) =======================
+  const AIRBNB_ED = 'https://www.airbnb.com.ar/hosting/listings/editor/1827242410610257428';
+  const PENDIENTES = [
+    ['Airbnb', [
+      ['ab-ident', 'Verificar tu identidad y aceptar las condiciones', 'Sin esto el anuncio no se publica. Entrá, tocá el anuncio de Olivia y seguí lo que dice "Acción necesaria". Lo hacés vos con tu DNI.', 'https://www.airbnb.com.ar/hosting/listings'],
+      ['ab-wifi', 'Cargar el WiFi (nombre y clave)', 'Va en "Guía de llegada" → "Datos del wifi". Airbnb solo se lo muestra al huésped que ya reservó.', AIRBNB_ED],
+      ['ab-llegada', 'Revisar las instrucciones de llegada', 'Cómo encontrar las cabañas y quién los recibe. Ya cargamos un texto base: leelo y corregí lo que no sea así.', AIRBNB_ED],
+      ['ab-camara', 'Confirmar si hay cámara en el exterior', 'El anuncio dice que hay cámara de seguridad afuera. Si no es así, sacalo en "Seguridad del huésped".', AIRBNB_ED],
+      ['ab-sofia', 'Duplicar el anuncio para Sofía', 'Cuando Olivia esté publicada: en el anuncio tocá los tres puntitos → "Duplicar anuncio". Después avisale a Felipe para conectar el calendario.', 'https://www.airbnb.com.ar/hosting/listings'],
+      ['ab-app', 'Instalar la app de Airbnb y activar avisos', 'Así respondés rápido (en menos de 1 hora sube el anuncio en los resultados).', 'https://www.airbnb.com.ar/host/homes']]],
+    ['Booking', [
+      ['bk-kyp', 'Completar el formulario "Conocé a tu socio" antes del 10/12', 'Lo pide Booking para seguir mostrando las casas. Datos personales y de cobro: lo hacés vos.', 'https://admin.booking.com'],
+      ['bk-wifi', 'Cargar el WiFi y el horario de llegada', 'En Propiedad → Políticas / Información para el huésped.', 'https://admin.booking.com'],
+      ['bk-datos', 'Completar medidas de las casas y meses de la pileta', 'Suben el puntaje de la página (hoy 71%).', 'https://admin.booking.com'],
+      ['bk-fotos', 'Cambiar 7 fotos de baja calidad', 'Booking las marca como borrosas u oscuras. Mejor de día, con luz y el celular horizontal.', 'https://admin.booking.com'],
+      ['bk-app', 'Instalar la app Pulse de Booking', 'Para ver reservas y contestar mensajes desde el celular.', 'https://www.booking.com/pulse']]],
+    ['Google y redes', [
+      ['gg-web', 'Poner aromasdecampo.ar como sitio web en Google', 'En el Perfil de Empresa de Google (las 34 opiniones de 5 estrellas): Editar perfil → Sitio web.', 'https://business.google.com'],
+      ['fb-web', 'Cambiar el link de la página de Facebook', 'Hoy dice "whatsapp.com". Poné https://aromasdecampo.ar y que los idiomas sean Español.', 'https://www.facebook.com/aromasdecampo022/'],
+      ['ig-bio', 'Poner el link de la web en la biografía de Instagram', 'aromasdecampo.ar, igual en todos lados.', 'https://www.instagram.com/']]]
+  ];
+  VISTAS.pendientes = () => {
+    const hechos = new Set(S.ajustes.pendientes_hechos || []);
+    const total = PENDIENTES.reduce((n, [, l]) => n + l.length, 0), listos = PENDIENTES.reduce((n, [, l]) => n + l.filter(x => hechos.has(x[0])).length, 0);
+    $('vista').innerHTML = `<h1 class="titulo">Lo que falta completar</h1>
+      <p class="ayuda">Cosas que tiene que hacer el dueño de las cuentas (por seguridad nadie más puede). Tocá el botón para ir directo, y marcá ✓ cuando esté. <b>Nunca</b> le pases la clave del WiFi a nadie por mensaje: va solo dentro de Airbnb y Booking.</p>
+      <div class="caja"><b>${listos} de ${total} listas</b><div class="barra-prog"><i style="width:${Math.round(listos / total * 100)}%"></i></div></div>
+      ${PENDIENTES.map(([g, l]) => `<div class="caja"><h2>${g}</h2>${l.map(([id, t, d, url]) => `<div class="tarea pend ${hechos.has(id) ? 'hecho' : ''}">
+        <div style="flex:1;min-width:200px"><b>${hechos.has(id) ? '✅ ' : ''}${t}</b><br><small class="vacio">${d}</small></div>
+        <div class="botones" style="margin:0">${hechos.has(id) ? '' : `<a class="btn sec chico" href="${url}" target="_blank" rel="noopener">Ir ›</a>`}
+          <button class="btn ${hechos.has(id) ? 'sec' : ''} chico" data-pend="${id}">${hechos.has(id) ? 'Deshacer' : '✓ Listo'}</button></div></div>`).join('')}</div>`).join('')}`;
+    $('vista').querySelectorAll('[data-pend]').forEach(b => b.onclick = async () => {
+      const id = b.dataset.pend; hechos.has(id) ? hechos.delete(id) : hechos.add(id);
+      const v = [...hechos]; const { error: err } = await db.from('ajustes').update({ pendientes_hechos: v }).eq('id', S.ajustes.id);
+      if (err) return error(err); S.ajustes.pendientes_hechos = v; if (hechos.has(id)) aviso('¡Bien! Uno menos ✓'); VISTAS.pendientes();
+    });
+  };
+  const pendientesFaltan = () => { const h = new Set(S.ajustes.pendientes_hechos || []); return PENDIENTES.reduce((n, [, l]) => n + l.filter(x => !h.has(x[0])).length, 0); };
+
   VISTAS.mas = () => {
     const pendRes = (S.resenas || []).filter(r => !r.aprobada).length;
     // agrupado por cuánto se usa: lo de todos los días arriba, la configuración al final
@@ -1483,7 +1623,7 @@
       ['Día a día', [['mensajes', '💬', 'Mensajes de WhatsApp'], ['huespedes', '👥', 'Huéspedes'], ['resenas', '⭐', 'Reseñas', pendRes ? `${pendRes} nuevas` : '']]],
       ['Números', [['ganancias', '💰', 'Ganancias'], ['plataformas', '⚖️', 'Precios en Airbnb y Booking'], ['estadisticas', '📊', 'Visitas a la web']]],
       ['Lo que se ve en la web', [['fotos', '📷', 'Fotos'], ['textos', '✏️', 'Textos'], ['lugares', '📍', 'Lugares y descuentos'], ['preguntas', '❓', 'Preguntas frecuentes'], ['cabanas', '🏡', 'Cabañas']]],
-      ['Configuración', [['ajustes', '⚙️', 'Cobro y horarios'], ['sync', '🔄', 'Booking y Airbnb']]]
+      ['Configuración', [['pendientes', '✅', 'Lo que falta completar', pendientesFaltan() ? `faltan ${pendientesFaltan()}` : ''], ['ajustes', '⚙️', 'Cobro y horarios'], ['sync', '🔄', 'Booking y Airbnb']]]
     ];
     $('vista').innerHTML = `<h1 class="titulo">Más</h1>` + grupos.map(([g, items]) => `
       <h2 class="grupo-mas">${g}</h2>
@@ -1626,7 +1766,7 @@
     const PLAT = { booking: 'Booking.com', airbnb: 'Airbnb' };
     const hace = f => { if (!f) return 'nunca'; const m = Math.round((Date.now() - new Date(f)) / 60000); return m < 1 ? 'recién' : m < 60 ? `hace ${m} min` : m < 1440 ? `hace ${Math.round(m / 60)} h` : new Date(f).toLocaleDateString('es-AR'); };
     $('vista').innerHTML = `<h1 class="titulo">Booking y Airbnb</h1>
-      <p class="ayuda">Para cada cabaña hay que hacer 2 cosas en cada plataforma: <b>1)</b> copiar <b>nuestro link</b> y pegarlo allá en "Importar calendario". <b>2)</b> copiar <b>el link de ellos</b> ("Exportar calendario") y pegarlo acá. Desde ese momento se sincroniza solo cada 30 minutos.</p>
+      <p class="ayuda">Para cada cabaña hay que hacer 2 cosas en cada plataforma: <b>1)</b> copiar <b>nuestro link</b> y pegarlo allá en "Importar calendario". <b>2)</b> copiar <b>el link de ellos</b> ("Exportar calendario") y pegarlo acá. Desde ese momento se sincroniza solo cada 15 minutos, y si entra o se cancela una reserva allá, te llega un aviso acá y por email.</p>
       <details class="caja guia-sync"><summary><b>¿Dónde encuentro los links en Airbnb y Booking?</b></summary>
         <h3>Airbnb</h3><ol><li>Entrá a Airbnb en modo anfitrión → <b>Calendario</b> y elegí la cabaña.</li>
           <li>Tocá <b>Disponibilidad</b> → <b>Conectar calendarios</b> (o "Sincronizar calendarios").</li>

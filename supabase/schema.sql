@@ -138,6 +138,7 @@ create table if not exists public.calendarios_externos (
   url          text not null check (url ~* '^https://'),
   ultima_sync  timestamptz,
   ultimo_error text,
+  error_desde  timestamptz,                    -- desde cuándo falla (para avisar si sigue fallando)
   eventos      int,
   unique (cabana_id, plataforma)
 );
@@ -441,6 +442,13 @@ begin
               c.plataforma, case when v_bloqueo then null else 'Reserva de ' || v_plat end, v_uid,
               case when v_bloqueo then 'Cerrado en ' || v_plat end);
       v_nuevas := v_nuevas + 1;
+      -- aviso de reserva nueva que entró por la plataforma (va al panel y por email)
+      if not v_bloqueo then
+        insert into public.alertas (clave, tipo, mensaje) values ('nueva:' || v_uid, 'aviso',
+          format('📅 Nueva reserva de %s en %s: llega el %s y se va el %s (%s noches). Ya quedó bloqueada en la web y en las otras plataformas. Cargá el monto y el nombre en Reservas cuando lo veas en %s.',
+                 v_plat, v_nombre_cab, to_char(v_ent,'DD/MM'), to_char(v_sal,'DD/MM'), v_sal - v_ent, v_plat))
+        on conflict (clave) do nothing;
+      end if;
       -- un pedido de la web (falta seña) sobre las mismas fechas: avisar
       select * into v_choque from public.reservas
        where cabana_id = c.cabana_id and estado = 'pendiente' and creada > now() - interval '14 days'
@@ -471,12 +479,22 @@ begin
   end loop;
 
   -- lo que desapareció del calendario externo (cancelado allá) se libera acá
-  update public.reservas set estado = 'cancelada', notas = coalesce(notas || ' · ', '') || 'Cancelada en ' || v_plat
-   where cabana_id = c.cabana_id and origen = c.plataforma and externo_uid is not null
-     and estado <> 'cancelada' and salida >= current_date and not (externo_uid = any (v_uids));
-  get diagnostics v_canceladas = row_count;
+  with c2 as (
+    update public.reservas r set estado = 'cancelada', notas = coalesce(r.notas || ' · ', '') || 'Cancelada en ' || v_plat
+     where r.cabana_id = c.cabana_id and r.origen = c.plataforma and r.externo_uid is not null
+       and r.estado <> 'cancelada' and r.salida >= current_date and not (r.externo_uid = any (v_uids))
+    returning r.externo_uid, r.entrada, r.salida, (r.nombre is not null and r.notas not like 'Cerrado en%') as era_reserva
+  ), avisos as (
+    insert into public.alertas (clave, tipo, mensaje)
+    select 'cancel:' || externo_uid, 'aviso',
+           format('❌ Se canceló en %s la reserva de %s del %s al %s. Esas fechas ya quedaron libres en la web.',
+                  v_plat, v_nombre_cab, to_char(entrada,'DD/MM'), to_char(salida,'DD/MM'))
+      from c2 where era_reserva
+    on conflict (clave) do nothing
+  )
+  select count(*) into v_canceladas from c2;
 
-  update public.calendarios_externos set ultima_sync = now(), ultimo_error = null, eventos = jsonb_array_length(coalesce(p_eventos,'[]'))
+  update public.calendarios_externos set ultima_sync = now(), ultimo_error = null, error_desde = null, eventos = jsonb_array_length(coalesce(p_eventos,'[]'))
    where id = p_cal;
   return jsonb_build_object('ok', true, 'nuevas', v_nuevas, 'canceladas', v_canceladas, 'dobles', v_dobles);
 end $$;
