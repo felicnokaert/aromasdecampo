@@ -248,6 +248,13 @@
     .problemas { margin: .4rem 0 .6rem 1.1rem; padding: 0; } .problemas li { margin: .25rem 0; }
     .rev-tit { font-size: 1.05rem; margin: 1.2rem 0 .2rem; }
     .comparar .btn.chico { width: 100%; }
+
+    .tabla-plat { width: 100%; border-collapse: collapse; font-size: .95rem; }
+    .tabla-plat th, .tabla-plat td { text-align: left; padding: .55rem .4rem; border-bottom: 1px solid #e6dcc8; vertical-align: top; }
+    .tabla-plat thead th { font-size: .8rem; color: #6b6357; font-weight: 600; }
+    .tabla-plat td small { display: block; color: #6b6357; font-size: .8rem; }
+
+    .guia-sync summary { cursor: pointer; } .guia-sync h3 { margin: .8rem 0 .3rem; font-size: 1rem; } .guia-sync ol { margin: 0 0 .4rem 1.2rem; padding: 0; } .guia-sync li { margin: .25rem 0; }
 </style>
 </head>
 <body>
@@ -441,7 +448,7 @@
   function ir(v) {
     if (!VISTAS[v]) v = 'inicio';
     S.vista = v; location.hash = v;
-    document.querySelectorAll('nav.abajo button').forEach(b => b.classList.toggle('act', b.dataset.v === v || (['preguntas','cabanas','ajustes','estadisticas','sync','resenas','fotos','textos','lugares','mensajes','ganancias','huespedes'].includes(v) && b.dataset.v === 'mas')));
+    document.querySelectorAll('nav.abajo button').forEach(b => b.classList.toggle('act', b.dataset.v === v || (['preguntas','cabanas','ajustes','estadisticas','sync','resenas','fotos','textos','lugares','mensajes','ganancias','huespedes','plataformas'].includes(v) && b.dataset.v === 'mas')));
     window.scrollTo({ top: 0, behavior: 'smooth' });
     const vi = $('vista'); vi.classList.remove('vista-anim'); void vi.offsetWidth; vi.classList.add('vista-anim');
     VISTAS[v]();
@@ -756,6 +763,9 @@
       : '<span style="color:var(--naranja)">Sin precio especial todavía</span>';
     const icono = { temporada: '☀️', feriado: '🎉', especial: '⭐' };
     const sug = sugerencias();
+    const ap = analisisPlataformas(S.dolar && S.dolar.v).alertas.filter(a => !a.t.startsWith('💵'));
+    if (ap.length) sug.push({ t: '⚖️ Revisá los precios de Airbnb y Booking', d: ap[0].t.replace(/^\S+\s/, '') + '. <a href="#plataformas">Ver la comparación →</a>' });
+    if (!S.dolar) dolarHoy().then(d => { if (d && S.vista === 'precios' && !document.querySelector('[data-plat-ok]')) { document.body.setAttribute('data-plat-ok', '1'); VISTAS.precios(); } });
     $('vista').innerHTML = `<h1 class="titulo">Precios</h1>
       ${sug.map(x => `<div class="caja" style="border-left:4px solid var(--sol)"><b>${x.t}</b><p style="margin-top:.3rem">${x.d}</p></div>`).join('')}
       <div class="caja"><h2>Precio de un día común</h2>
@@ -1393,13 +1403,85 @@
     return out;
   }
 
+
+  // ---------- Precios en Airbnb y Booking: comparación y alertas ----------
+  async function dolarHoy() {
+    if (S.dolar && Date.now() - S.dolar.t < 36e5) return S.dolar;
+    try {
+      const r = await fetch('https://dolarapi.com/v1/dolares/oficial'); const d = await r.json();
+      if (d && d.venta) return (S.dolar = { v: Number(d.venta), fuente: 'dólar oficial (venta) de hoy', t: Date.now() });
+    } catch (e) { /* sin internet o la página del dólar no responde */ }
+    const m = Number(S.ajustes.cotizacion_usd);
+    return m ? { v: m, fuente: 'cotización cargada a mano', t: 0 } : null;
+  }
+  const dec = n => String(n).replace('.', ',');
+  function analisisPlataformas(dol) {
+    const aj = S.ajustes, c = S.cabanas.find(x => x.activa) || {};
+    const web2 = Number(c.precio_base) || 0, web4 = p4(web2, c.extra_persona);
+    const comA = Number(aj.comision_airbnb_pct ?? 15.5), comB = Number(aj.comision_booking_pct ?? 15);
+    const filas = [
+      { n: 'Web (directo)', p2: web2, p4: web4, com: 0 },
+      { n: 'Airbnb', usd2: aj.airbnb_usd_2, usd4: aj.airbnb_usd_4, com: comA },
+      { n: 'Booking', usd2: aj.booking_usd_2, usd4: aj.booking_usd_4, com: comB }
+    ];
+    filas.forEach(f => { if (f.usd2 != null && dol) { f.p2 = Math.round(Number(f.usd2) * dol); f.p4 = Math.round(Number(f.usd4 ?? f.usd2) * dol); }
+      f.neto2 = f.p2 != null ? Math.round(f.p2 * (1 - f.com / 100)) : null; f.neto4 = f.p4 != null ? Math.round(f.p4 * (1 - f.com / 100)) : null; });
+    const alertas = [];
+    if (!dol) alertas.push({ t: '💵 Falta el dólar', d: 'No se pudo leer el dólar de hoy. Cargalo a mano abajo para poder comparar.' });
+    else filas.slice(1).forEach(f => {
+      if (f.usd2 == null) return;
+      const ideal = Math.ceil(web2 / (1 - f.com / 100) / dol);
+      if (f.p2 < web2) alertas.push({ t: `⚠️ En ${f.n} el huésped paga menos que en la web`, d: `Paga ${A.pesos(f.p2)} contra ${A.pesos(web2)} en la web. Así nadie reserva directo. Subilo a USD ${ideal} o más.` });
+      else if (f.neto2 < web2) alertas.push({ t: `💸 En ${f.n} te queda menos que por la web`, d: `Después de la comisión (${dec(f.com)}%) te quedan ${A.pesos(f.neto2)} por noche, contra ${A.pesos(web2)} por la web. Para cubrir la comisión, el precio debería ser USD ${ideal}.` });
+    });
+    const zona = [['Booking', aj.booking_usd_2, aj.booking_mediana_usd, 'la mitad de los alojamientos parecidos de la zona cobra menos que eso'], ['Airbnb', aj.airbnb_usd_2, aj.airbnb_sugerido_usd, 'es el precio que sugiere Airbnb']];
+    zona.forEach(([n, mio, ref, que]) => { if (mio && ref) { const x = Number(mio) / Number(ref);
+      if (x >= 1.8) alertas.push({ t: `📊 ${n}: estás ${x.toFixed(1).replace('.', ',')} veces arriba de la zona`, d: `Cobrás USD ${dec(mio)} y la referencia es USD ${dec(ref)} (${que}). Un anuncio nuevo y sin reseñas con ese precio aparece poco en las búsquedas. Probá unas semanas con la promo de anuncio nuevo o un precio más cerca de la referencia hasta tener las primeras reseñas.` });
+      else if (x < 0.8) alertas.push({ t: `📊 ${n}: estás por debajo de la zona`, d: `Cobrás USD ${dec(mio)} y la referencia es USD ${dec(ref)}. Podrías subirlo un poco.` }); } });
+    return { filas, alertas, web2 };
+  }
+  VISTAS.plataformas = async () => {
+    $('vista').innerHTML = '<h1 class="titulo">Precios en Airbnb y Booking</h1><p class="vacio">Calculando…</p>';
+    const dol = await dolarHoy(); if (S.vista !== 'plataformas') return;
+    const { filas, alertas } = analisisPlataformas(dol && dol.v), aj = S.ajustes;
+    const $p = n => n == null ? '—' : A.pesos(n);
+    $('vista').innerHTML = `<h1 class="titulo">Precios en Airbnb y Booking</h1>
+      <p class="ayuda">Compará lo que paga el huésped en cada lugar y lo que te queda a vos después de la comisión. Para que convenga reservar directo, <b>la web tiene que ser siempre la más barata</b> para el huésped.</p>
+      ${alertas.map(x => `<div class="caja" style="border-left:4px solid var(--sol)"><b>${x.t}</b><p style="margin-top:.3rem">${x.d}</p></div>`).join('') || '<div class="caja" style="border-left:4px solid var(--monte)"><b>✅ Todo en orden</b><p style="margin-top:.3rem">La web es la más barata y en las plataformas la comisión queda cubierta.</p></div>'}
+      <div class="caja"><h2>Una noche, 2 personas</h2>
+        <table class="tabla-plat"><thead><tr><th></th><th>Paga el huésped</th><th>Comisión</th><th>Te queda</th></tr></thead><tbody>
+        ${filas.map(f => `<tr><th>${f.n}</th><td>${$p(f.p2)}${f.usd2 != null ? `<small>USD ${String(f.usd2).replace('.', ',')}</small>` : ''}</td><td>${f.com ? dec(f.com) + '%' : 'sin comisión'}</td><td><b>${$p(f.neto2)}</b></td></tr>`).join('')}
+        </tbody></table>
+        <h2 style="margin-top:1rem">Una noche, 4 personas</h2>
+        <table class="tabla-plat"><thead><tr><th></th><th>Paga el huésped</th><th>Comisión</th><th>Te queda</th></tr></thead><tbody>
+        ${filas.map(f => `<tr><th>${f.n}</th><td>${$p(f.p4)}${f.usd4 != null ? `<small>USD ${String(f.usd4).replace('.', ',')}</small>` : ''}</td><td>${f.com ? dec(f.com) + '%' : 'sin comisión'}</td><td><b>${$p(f.neto4)}</b></td></tr>`).join('')}
+        </tbody></table>
+        <p class="vacio" style="font-size:.85rem;margin-top:.6rem">${dol ? `Dólar usado: ${A.pesos(dol.v)} (${dol.fuente}).` : 'Sin dólar cargado.'} El precio de la web es el de un día común, sin precios especiales.</p></div>
+      <form class="caja form" id="fplat"><h2>Lo que cobrás en cada plataforma</h2>
+        <p class="vacio" style="margin-bottom:.6rem">Cuando cambies un precio en Airbnb o Booking, actualizalo acá también, así las cuentas dan bien.</p>
+        <div class="f2"><label>Airbnb · 2 personas (USD)<input type="number" step="0.01" min="0" name="a2" value="${aj.airbnb_usd_2 ?? ''}"></label>
+          <label>Airbnb · 4 personas (USD)<input type="number" step="0.01" min="0" name="a4" value="${aj.airbnb_usd_4 ?? ''}"></label>
+          <label>Booking · 2 personas (USD)<input type="number" step="0.01" min="0" name="b2" value="${aj.booking_usd_2 ?? ''}"></label>
+          <label>Booking · 4 personas (USD)<input type="number" step="0.01" min="0" name="b4" value="${aj.booking_usd_4 ?? ''}"></label>
+          <label>Precio sugerido por Airbnb (USD)<input type="number" step="0.01" min="0" name="as" value="${aj.airbnb_sugerido_usd ?? ''}"></label>
+          <label>Mediana de la zona en Booking (USD)<input type="number" step="0.01" min="0" name="bm" value="${aj.booking_mediana_usd ?? ''}"></label>
+          <label>Dólar a mano <small>(solo si no se lee solo)</small><input type="number" step="1" min="0" name="dol" value="${aj.cotizacion_usd ?? ''}"></label></div>
+        <button class="btn grande">Guardar</button></form>
+      <div class="caja"><h2>Comisiones</h2><p>Airbnb se queda con el <b>${dec(aj.comision_airbnb_pct ?? 15.5)}%</b> y Booking con el <b>${dec(aj.comision_booking_pct ?? 15)}%</b> de cada reserva. Por la web no se paga comisión. Las podés cambiar en Más → Ganancias.</p></div>`;
+    const num = v => v === '' ? null : Number(v);
+    $('fplat').onsubmit = async e => { e.preventDefault(); const f = e.target;
+      const c = { airbnb_usd_2: num(f.a2.value), airbnb_usd_4: num(f.a4.value), booking_usd_2: num(f.b2.value), booking_usd_4: num(f.b4.value), airbnb_sugerido_usd: num(f.as.value), booking_mediana_usd: num(f.bm.value), cotizacion_usd: num(f.dol.value) };
+      const { error: err } = await db.from('ajustes').update(c).eq('id', true); if (err) return error(err);
+      Object.assign(S.ajustes, c); aviso('Guardado ✓'); VISTAS.plataformas(); };
+  };
+
   // ======================= MÁS =======================
   VISTAS.mas = () => {
     const pendRes = (S.resenas || []).filter(r => !r.aprobada).length;
     // agrupado por cuánto se usa: lo de todos los días arriba, la configuración al final
     const grupos = [
       ['Día a día', [['mensajes', '💬', 'Mensajes de WhatsApp'], ['huespedes', '👥', 'Huéspedes'], ['resenas', '⭐', 'Reseñas', pendRes ? `${pendRes} nuevas` : '']]],
-      ['Números', [['ganancias', '💰', 'Ganancias'], ['estadisticas', '📊', 'Visitas a la web']]],
+      ['Números', [['ganancias', '💰', 'Ganancias'], ['plataformas', '⚖️', 'Precios en Airbnb y Booking'], ['estadisticas', '📊', 'Visitas a la web']]],
       ['Lo que se ve en la web', [['fotos', '📷', 'Fotos'], ['textos', '✏️', 'Textos'], ['lugares', '📍', 'Lugares y descuentos'], ['preguntas', '❓', 'Preguntas frecuentes'], ['cabanas', '🏡', 'Cabañas']]],
       ['Configuración', [['ajustes', '⚙️', 'Cobro y horarios'], ['sync', '🔄', 'Booking y Airbnb']]]
     ];
@@ -1545,6 +1627,15 @@
     const hace = f => { if (!f) return 'nunca'; const m = Math.round((Date.now() - new Date(f)) / 60000); return m < 1 ? 'recién' : m < 60 ? `hace ${m} min` : m < 1440 ? `hace ${Math.round(m / 60)} h` : new Date(f).toLocaleDateString('es-AR'); };
     $('vista').innerHTML = `<h1 class="titulo">Booking y Airbnb</h1>
       <p class="ayuda">Para cada cabaña hay que hacer 2 cosas en cada plataforma: <b>1)</b> copiar <b>nuestro link</b> y pegarlo allá en "Importar calendario". <b>2)</b> copiar <b>el link de ellos</b> ("Exportar calendario") y pegarlo acá. Desde ese momento se sincroniza solo cada 30 minutos.</p>
+      <details class="caja guia-sync"><summary><b>¿Dónde encuentro los links en Airbnb y Booking?</b></summary>
+        <h3>Airbnb</h3><ol><li>Entrá a Airbnb en modo anfitrión → <b>Calendario</b> y elegí la cabaña.</li>
+          <li>Tocá <b>Disponibilidad</b> → <b>Conectar calendarios</b> (o "Sincronizar calendarios").</li>
+          <li><b>Exportar calendario:</b> copiá ese link y pegalo acá abajo, en el paso 2.</li>
+          <li><b>Importar calendario:</b> pegá nuestro link (paso 1) y ponele de nombre "Web Aromas".</li></ol>
+        <h3>Booking</h3><ol><li>Entrá a la extranet de Booking → <b>Tarifas y disponibilidad</b> → <b>Sincronizar calendarios</b>.</li>
+          <li>Elegí la casa (Olivia o Sofía) y tocá <b>Conectar calendario</b>.</li>
+          <li>Pegá nuestro link (paso 1) donde dice <b>importar</b>, y copiá el link de <b>exportar</b> de Booking para pegarlo acá (paso 2).</li></ol>
+        <p class="vacio">Los mensajes de los huéspedes de Airbnb y Booking se siguen contestando desde sus apps: esas plataformas no dejan traerlos a otro lado.</p></details>
       <button class="btn grande" id="sync-ya" style="margin-bottom:1rem">🔄 Sincronizar ahora</button>
       ${S.cabanas.filter(c => c.activa).map(c => `<div class="caja"><h2>${esc(c.nombre)}</h2>${Object.entries(PLAT).map(([k, nom]) => {
         const ce = S.calExt.find(x => x.cabana_id === c.id && x.plataforma === k);
