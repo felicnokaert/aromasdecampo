@@ -1,0 +1,8 @@
+User-agent: *
+Allow: /
+Disallow: /panel
+Disallow: /admin.html
+Disallow: /api/
+Disallow: /cal/
+
+Sitemap: https://aromasdecampo.ar/sitemap.xml
