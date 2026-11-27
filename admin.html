@@ -312,6 +312,8 @@
     .rank .pos { width: 30px; height: 30px; border-radius: 50%; display: grid; place-items: center; background: var(--borde); font-weight: 800; flex: none; }
     .rank.nos .pos { background: var(--sol); color: #fff; }
     .rank-txt { flex: 1; min-width: 0; } .rank-txt b { display: block; } .rank-txt small { color: var(--texto2); display: block; font-size: .8rem; }
+    .fuentes { display: flex !important; flex-wrap: wrap; gap: .3rem .7rem; margin-top: .15rem; }
+    .fuentes span { white-space: nowrap; } .fuentes .f-g { color: #1A73E8; } .fuentes .f-b { color: var(--booking); } .fuentes .f-a { color: var(--airbnb); }
     .rank-txt .barra-prog { margin: .35rem 0 .2rem; }
     .rank .pts { font-family: 'Gloock', Georgia, serif; font-size: 1.6rem; min-width: 2.2rem; text-align: right; }
     .pend-ini { width: 100%; display: flex; gap: .8rem; align-items: center; text-align: left; font: inherit; color: inherit; cursor: pointer; background: var(--naranja-claro) !important; border-color: #F2CB91 !important; }
@@ -1569,8 +1571,16 @@
       if (t.precio) base = Number(t.precio); if (t.extra_persona) extra = Number(t.extra_persona); rec = Math.max(rec, Number(t.recargo_pct || 0)); }
     return Math.round((base + extra * Math.max(0, personas - 2)) * (1 + rec / 100));
   }
+  // opiniones de Google (sobre 5), Booking y Airbnb (Booking sobre 10, Airbnb sobre 5), pesadas por cantidad
+  function opinionesComp(c) {
+    const fs = [[c.google_puntaje, c.google_opiniones, 5], [c.puntaje, c.opiniones, 10], [c.airbnb_puntaje, c.airbnb_opiniones, 5]]
+      .filter(([p, n]) => p != null && n > 0).map(([p, n, max]) => [Number(p) / max, Number(n)]);
+    const total = fs.reduce((a, [, n]) => a + n, 0);
+    return { nota: total ? fs.reduce((a, [p, n]) => a + p * n, 0) / total : null, total };
+  }
   function puntajeCompetidor(c, indicePrecio) {
-    const op = c.puntaje ? Number(c.puntaje) / 10 * 30 + Math.min(c.opiniones || 0, 100) / 100 * 10 : 0;
+    const o = opinionesComp(c);
+    const op = o.nota == null ? 0 : o.nota * 30 + Math.min(o.total, 200) / 200 * 10;
     const pr = indicePrecio == null ? 15 : Math.max(0, Math.min(30, 30 - (indicePrecio - 0.9) * 50));
     const sv = SERVICIOS_CLAVE.filter(x => (c.servicios || []).includes(x)).length * 3;
     return { total: Math.round(op + pr + sv), op: Math.round(op), pr: Math.round(pr), sv };
@@ -1640,17 +1650,19 @@
       <p class="ayuda">Cómo estamos contra los complejos de la zona en Booking: precios, fechas llenas, opiniones y servicios. Es para comparar: <b>los precios los decide Rubén</b>.
       ${dias != null ? `<br><small>Datos de Booking actualizados ${dias === 0 ? 'hoy' : dias === 1 ? 'ayer' : `hace ${dias} días`}. Se actualizan solos todas las semanas.</small>` : ''}</p>
       <div class="caja"><h2>Puntaje de cada uno</h2>
-        <p class="vacio" style="margin-bottom:.8rem">Sobre 100: <b>40</b> por opiniones en Booking, <b>30</b> por precio contra la zona y <b>30</b> por servicios.</p>
+        <p class="vacio" style="margin-bottom:.8rem">Sobre 100: <b>40</b> por opiniones (Google, Booking y Airbnb juntas: nota y cantidad), <b>30</b> por precio contra la zona y <b>30</b> por servicios.</p>
         ${ranking.map((r, i) => `<div class="rank ${r.c.es_nuestro ? 'nos' : ''}"><span class="pos">${i + 1}</span>
-          <div class="rank-txt"><b>${esc(r.c.nombre)}</b><small>${r.c.puntaje ? `⭐ ${dec(r.c.puntaje)} (${r.c.opiniones} opiniones)` : 'Sin opiniones en Booking'} · ${esc(r.c.distancia || '')}</small>
+          <div class="rank-txt"><b>${esc(r.c.nombre)}</b><small class="fuentes"><span class="f-g">Google ${r.c.google_puntaje ? `⭐ ${dec(Number(r.c.google_puntaje).toFixed(1))} (${r.c.google_opiniones})` : '—'}</span><span class="f-b">Booking ${r.c.puntaje ? `${dec(r.c.puntaje)} (${r.c.opiniones})` : 'sin opiniones'}</span><span class="f-a">Airbnb ${r.c.airbnb_puntaje ? `⭐ ${dec(Number(r.c.airbnb_puntaje).toFixed(2))} (${r.c.airbnb_opiniones})` : '—'}</span>${r.c.distancia && r.c.distancia !== '—' ? `<span>📍 ${esc(r.c.distancia)}</span>` : ''}</small>
           <div class="barra-prog"><i style="width:${r.p.total}%"></i></div>
           <small>Opiniones ${r.p.op}/40 · Precio ${r.p.pr}/30 · Servicios ${r.p.sv}/30${indice[r.c.booking_id] != null ? ` · precio ${pct(indice[r.c.booking_id] - 1)} vs. la zona` : ''}</small></div>
           <span class="pts">${r.p.total}</span></div>`).join('')}
       </div>
       ${yo ? `<div class="caja" style="border-left:4px solid var(--sol)"><h2>Cómo subir en el ranking</h2>
-        <p class="consejo">📍 Hoy estamos <b>${pos}° de ${ranking.length}</b>. ${!nuestro.opiniones ? 'Lo que más pesa es que <b>todavía no tenemos opiniones en Booking</b> (en Google tenemos 5,0 con 34). Con las primeras 5 opiniones subimos hasta 30 puntos: pedile a cada huésped que deje su opinión.' : ''}</p>
+        <p class="consejo">📍 Hoy estamos <b>${pos}° de ${ranking.length}</b>. ${nuestro.google_puntaje ? `En Google tenemos la mejor nota de la zona (${dec(Number(nuestro.google_puntaje).toFixed(1))}), pero con ${nuestro.google_opiniones} opiniones contra ${Math.max(...otros.map(o => o.google_opiniones || 0))} del que más tiene. ` : ''}${!nuestro.opiniones ? '<b>En Booking todavía no tenemos opiniones.</b> ' : ''}Lo que más nos hace subir: <b>pedirle a cada huésped que deje su opinión</b> en Google y en la plataforma por la que reservó.</p>
         ${faltan.length ? `<p class="consejo">🧰 Servicios que ellos muestran y nosotros no: ${faltan.map(f => `<b>${esc(f.x)}</b> (${f.n} de ${otros.length})`).join(', ')}. Lo que ya tengamos hay que marcarlo en Booking y Airbnb (suma puntos gratis). Lo demás, como dar ropa de cama, es decisión de Rubén.</p>` : ''}
-        <p class="consejo">💬 Lo que más elogian de ellos: ${otros.filter(o => o.destacan).map(o => `<b>${esc(o.nombre)}</b>: ${esc(o.destacan.toLowerCase())}`).join('; ')}.</p></div>` : ''}
+        <p class="consejo">💬 Lo que más elogian de ellos: ${otros.filter(o => o.google_elogian || o.destacan).map(o => `<b>${esc(o.nombre)}</b>: ${esc((o.google_elogian || o.destacan).toLowerCase())}`).join('; ')}.</p>
+        ${otros.some(o => o.google_quejas) ? `<p class="consejo">⚠️ Sus quejas (nuestra oportunidad): ${otros.filter(o => o.google_quejas).map(o => `<b>${esc(o.nombre)}</b>: ${esc(o.google_quejas.toLowerCase())}`).join('; ')}. Si nosotros lo hacemos bien, contarlo en el anuncio y en redes.</p>` : ''}
+        ${nuestro.google_elogian ? `<p class="consejo">🌿 Lo que elogian de nosotros en Google: ${esc(nuestro.google_elogian.toLowerCase())}. Usalo en las publicaciones.</p>` : ''}</div>` : ''}
       <h2 class="grupo-mas" style="margin-top:1.4rem">Fechas importantes</h2>
       ${vigentes.map(tarjetaPeriodo).join('') || '<p class="vacio">Todavía no hay precios cargados.</p>'}`;
   };
