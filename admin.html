@@ -296,6 +296,24 @@
     .caja, .cab-estado { transition: box-shadow .25s, transform .2s; }
     @media (hover: hover) { .caja:hover, .cab-estado:hover { box-shadow: 0 8px 24px rgba(60,50,30,.08) !important; } }
     .cab-estado:active { transform: scale(.98); }
+    .periodo-comp .per-cab { display: flex; justify-content: space-between; align-items: baseline; gap: .5rem; flex-wrap: wrap; }
+    .periodo-comp .per-cab span { color: var(--texto2); font-size: .88rem; }
+    .ocup { height: 8px; border-radius: 99px; background: #E5DED0; overflow: hidden; margin-top: .5rem; }
+    .ocup i { display: block; height: 100%; background: linear-gradient(90deg, #E9A23B, var(--rojo)); border-radius: 99px; transition: width .6s cubic-bezier(.2,.8,.2,1); }
+    .consejo { background: var(--papel, #F6F1E7); border-radius: 10px; padding: .55rem .75rem; margin: .4rem 0; font-size: .93rem; }
+    .tablas-comp { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 1rem; margin-top: .6rem; }
+    .tablas-comp h3 { font-size: .9rem; color: var(--texto2); margin-bottom: .3rem; }
+    .tabla-plat tr.nos th, .tabla-plat tr.nos td { background: #FFF3E6; }
+    .tabla-plat tr.nos.web th, .tabla-plat tr.nos.web td { background: #E8F2E2; }
+    .lleno { color: var(--rojo); font-weight: 700; font-size: .85rem; }
+    .rank { display: flex; gap: .75rem; align-items: center; padding: .7rem .4rem; border-bottom: 1px solid var(--borde); }
+    .rank:last-child { border-bottom: 0; }
+    .rank.nos { background: #FFF3E6; border-radius: 12px; }
+    .rank .pos { width: 30px; height: 30px; border-radius: 50%; display: grid; place-items: center; background: var(--borde); font-weight: 800; flex: none; }
+    .rank.nos .pos { background: var(--sol); color: #fff; }
+    .rank-txt { flex: 1; min-width: 0; } .rank-txt b { display: block; } .rank-txt small { color: var(--texto2); display: block; font-size: .8rem; }
+    .rank-txt .barra-prog { margin: .35rem 0 .2rem; }
+    .rank .pts { font-family: 'Gloock', Georgia, serif; font-size: 1.6rem; min-width: 2.2rem; text-align: right; }
     .pend-ini { width: 100%; display: flex; gap: .8rem; align-items: center; text-align: left; font: inherit; color: inherit; cursor: pointer; background: var(--naranja-claro) !important; border-color: #F2CB91 !important; }
     .pend-ini > span:first-child { font-size: 1.5rem; } .pend-ini > span:nth-child(2) { flex: 1; }
     .tarea.pend.hecho b { color: var(--texto2); font-weight: 600; }
@@ -506,7 +524,7 @@
   function ir(v) {
     if (!VISTAS[v]) v = 'inicio';
     S.vista = v; location.hash = v;
-    document.querySelectorAll('nav.abajo button').forEach(b => b.classList.toggle('act', b.dataset.v === v || (['preguntas','cabanas','ajustes','estadisticas','sync','resenas','fotos','textos','lugares','mensajes','ganancias','huespedes','plataformas','pendientes'].includes(v) && b.dataset.v === 'mas')));
+    document.querySelectorAll('nav.abajo button').forEach(b => b.classList.toggle('act', b.dataset.v === v || (['preguntas','cabanas','ajustes','estadisticas','sync','resenas','fotos','textos','lugares','mensajes','ganancias','huespedes','plataformas','pendientes','competidores'].includes(v) && b.dataset.v === 'mas')));
     window.scrollTo({ top: 0, behavior: 'smooth' });
     const vi = $('vista'); vi.classList.remove('vista-anim'); void vi.offsetWidth; vi.classList.add('vista-anim');
     VISTAS[v]();
@@ -1541,6 +1559,102 @@
       else if (x < 0.8) alertas.push({ t: `📊 ${n}: estás por debajo de la zona`, d: `Cobrás USD ${dec(mio)} y la referencia es USD ${dec(ref)}. Podrías subirlo un poco.` }); } });
     return { filas, alertas, web2 };
   }
+  // ======================= COMPETIDORES =======================
+  // Precios y disponibilidad de los complejos de la zona en Booking (los actualiza una tarea semanal)
+  const SERVICIOS_CLAVE = ['Pileta', 'Pileta todo el año', 'Parrilla individual', 'Aire acondicionado', 'Wifi', 'Cocina completa',
+    'Estacionamiento', 'Ropa de cama y toallas', 'Juegos para chicos', 'Acepta mascotas'];
+  function precioWebNoche(fecha, personas) {
+    const cab = S.cabanas.find(c => c.activa) || {}; let base = Number(cab.precio_base || 0), extra = Number(cab.extra_persona || 0), rec = 0;
+    for (const t of (S.temporadas || [])) if (t.desde <= fecha && t.hasta >= fecha && (!t.cabana_id || t.cabana_id === cab.id)) {
+      if (t.precio) base = Number(t.precio); if (t.extra_persona) extra = Number(t.extra_persona); rec = Math.max(rec, Number(t.recargo_pct || 0)); }
+    return Math.round((base + extra * Math.max(0, personas - 2)) * (1 + rec / 100));
+  }
+  function puntajeCompetidor(c, indicePrecio) {
+    const op = c.puntaje ? Number(c.puntaje) / 10 * 30 + Math.min(c.opiniones || 0, 100) / 100 * 10 : 0;
+    const pr = indicePrecio == null ? 15 : Math.max(0, Math.min(30, 30 - (indicePrecio - 0.9) * 50));
+    const sv = SERVICIOS_CLAVE.filter(x => (c.servicios || []).includes(x)).length * 3;
+    return { total: Math.round(op + pr + sv), op: Math.round(op), pr: Math.round(pr), sv };
+  }
+  VISTAS.competidores = async () => {
+    $('vista').innerHTML = '<h1 class="titulo">Competidores</h1><div class="esqueleto" style="height:120px"></div>';
+    const [{ data: comps, error: e1 }, { data: precios, error: e2 }, { data: temps }] = await Promise.all([
+      db.from('competidores').select('*').eq('activo', true),
+      db.from('competidor_precios').select('*').order('entrada'),
+      db.from('temporadas').select('*')]);
+    if (S.vista !== 'competidores') return;
+    if (e1 || e2) return error(e1 || e2);
+    S.temporadas = temps || [];
+    const nuestro = comps.find(c => c.es_nuestro), otros = comps.filter(c => !c.es_nuestro);
+    const nombre = id => (comps.find(c => c.booking_id === id) || {}).nombre || '';
+    // agrupar por período
+    const periodos = [];
+    for (const p of precios) { let g = periodos.find(x => x.periodo === p.periodo); if (!g) periodos.push(g = { periodo: p.periodo, entrada: p.entrada, salida: p.salida, filas: [] }); g.filas.push(p); }
+    const hoy = A.hoy(); const vigentes = periodos.filter(g => g.salida >= hoy);
+    // índice de precio de cada uno contra el promedio de la zona (solo fechas con precio)
+    const indice = {};
+    for (const c of comps) {
+      const rs = [];
+      for (const g of vigentes) {
+        const mio = g.filas.find(f => f.booking_id === c.booking_id && f.personas === 2 && f.disponible);
+        const zona = g.filas.filter(f => f.personas === 2 && f.disponible && f.booking_id !== c.booking_id).map(f => Number(f.precio_noche));
+        if (mio && zona.length) rs.push(Number(mio.precio_noche) / (zona.reduce((a, b) => a + b, 0) / zona.length));
+      }
+      indice[c.booking_id] = rs.length ? rs.reduce((a, b) => a + b, 0) / rs.length : null;
+    }
+    const ranking = comps.map(c => ({ c, p: puntajeCompetidor(c, indice[c.booking_id]) })).sort((a, b) => b.p.total - a.p.total);
+    const yo = ranking.find(r => r.c.es_nuestro);
+    const pos = ranking.indexOf(yo) + 1;
+    const faltan = SERVICIOS_CLAVE.filter(x => !(nuestro?.servicios || []).includes(x)).map(x => ({ x, n: otros.filter(o => (o.servicios || []).includes(x)).length })).filter(o => o.n).sort((a, b) => b.n - a.n);
+    const relev = precios.length ? precios.reduce((m, p) => p.relevado > m ? p.relevado : m, precios[0].relevado) : null;
+    const dias = relev ? Math.floor((Date.now() - new Date(relev)) / 864e5) : null;
+    const pct = n => (n > 0 ? '+' : '') + Math.round(n * 100) + '%';
+
+    const tarjetaPeriodo = g => {
+      const fil2 = g.filas.filter(f => f.personas === 2), fil4 = g.filas.filter(f => f.personas === 4);
+      const zona = fil2.filter(f => f.booking_id !== nuestro?.booking_id);
+      const llenos = zona.filter(f => !f.disponible).length, disp = zona.filter(f => f.disponible).map(f => Number(f.precio_noche));
+      const mio = fil2.find(f => f.booking_id === nuestro?.booking_id);
+      const prom = disp.length ? disp.reduce((a, b) => a + b, 0) / disp.length : null;
+      const web2 = precioWebNoche(g.entrada, 2), web4 = precioWebNoche(g.entrada, 4);
+      const consejos = [];
+      if (zona.length && llenos / zona.length >= 0.6) consejos.push(`🔥 <b>Mucha demanda:</b> ${llenos} de ${zona.length} competidores ya no tienen lugar. Es buen momento para no bajar precios.`);
+      if (mio?.disponible && prom) {
+        const d = Number(mio.precio_noche) / prom - 1;
+        if (d > 0.25) consejos.push(`💸 En Booking estás <b>${pct(d)}</b> sobre el promedio de la zona${nuestro?.opiniones ? '' : ', y todavía sin opiniones'}. ${llenos / Math.max(zona.length, 1) >= 0.6 ? 'Como casi todos están llenos, puede que igual se alquile.' : 'Puede costar que te elijan a vos.'}`);
+        else if (d < -0.1) consejos.push(`💡 En Booking estás <b>${pct(d)}</b> debajo del promedio: hay margen para subir.`);
+      }
+      if (prom && web2 < prom) consejos.push(`✅ En la web cobrás ${A.pesos(web2)} por noche: <b>${Math.round((1 - web2 / prom) * 100)}% menos</b> que lo que cobra la zona en Booking. Contalo en redes: "reservando directo pagás menos".`);
+      const filas = (fs, web) => fs.slice().sort((a, b) => (b.booking_id === nuestro?.booking_id) - (a.booking_id === nuestro?.booking_id) || (a.disponible === b.disponible ? Number(a.precio_noche || 0) - Number(b.precio_noche || 0) : a.disponible ? -1 : 1))
+        .map(f => `<tr class="${f.booking_id === nuestro?.booking_id ? 'nos' : ''}"><th>${esc(nombre(f.booking_id).replace(' (nosotros)', ''))}${f.booking_id === nuestro?.booking_id ? ' <small>(Booking)</small>' : ''}</th>
+          <td>${f.disponible ? A.pesos(f.precio_noche) : '<span class="lleno">Sin lugar</span>'}</td></tr>`).join('') +
+        `<tr class="nos web"><th>Nosotros <small>(web, sin comisión)</small></th><td>${A.pesos(web)}</td></tr>`;
+      return `<div class="caja periodo-comp"><div class="per-cab"><h2>${esc(g.periodo)}</h2><span>${A.lindo(g.entrada)} → ${A.lindo(g.salida)}</span></div>
+        <div class="ocup"><i style="width:${zona.length ? Math.round(llenos / zona.length * 100) : 0}%"></i></div>
+        <p class="vacio" style="margin:.2rem 0 .7rem">${llenos} de ${zona.length} competidores llenos${prom ? ` · promedio de los que tienen lugar: <b>${A.pesos(prom)}</b> la noche` : ''}</p>
+        ${consejos.map(c => `<p class="consejo">${c}</p>`).join('')}
+        <div class="tablas-comp"><div><h3>2 personas · por noche</h3><table class="tabla-plat">${filas(fil2, web2)}</table></div>
+        ${fil4.length ? `<div><h3>4 personas (2 adultos y 2 chicos)</h3><table class="tabla-plat">${filas(fil4, web4)}</table></div>` : ''}</div></div>`;
+    };
+
+    $('vista').innerHTML = `<h1 class="titulo">Competidores</h1>
+      <p class="ayuda">Cómo estamos contra los complejos de la zona en Booking: precios, fechas llenas, opiniones y servicios. Es para comparar: <b>los precios los decide Rubén</b>.
+      ${dias != null ? `<br><small>Datos de Booking actualizados ${dias === 0 ? 'hoy' : dias === 1 ? 'ayer' : `hace ${dias} días`}. Se actualizan solos todas las semanas.</small>` : ''}</p>
+      <div class="caja"><h2>Puntaje de cada uno</h2>
+        <p class="vacio" style="margin-bottom:.8rem">Sobre 100: <b>40</b> por opiniones en Booking, <b>30</b> por precio contra la zona y <b>30</b> por servicios.</p>
+        ${ranking.map((r, i) => `<div class="rank ${r.c.es_nuestro ? 'nos' : ''}"><span class="pos">${i + 1}</span>
+          <div class="rank-txt"><b>${esc(r.c.nombre)}</b><small>${r.c.puntaje ? `⭐ ${dec(r.c.puntaje)} (${r.c.opiniones} opiniones)` : 'Sin opiniones en Booking'} · ${esc(r.c.distancia || '')}</small>
+          <div class="barra-prog"><i style="width:${r.p.total}%"></i></div>
+          <small>Opiniones ${r.p.op}/40 · Precio ${r.p.pr}/30 · Servicios ${r.p.sv}/30${indice[r.c.booking_id] != null ? ` · precio ${pct(indice[r.c.booking_id] - 1)} vs. la zona` : ''}</small></div>
+          <span class="pts">${r.p.total}</span></div>`).join('')}
+      </div>
+      ${yo ? `<div class="caja" style="border-left:4px solid var(--sol)"><h2>Cómo subir en el ranking</h2>
+        <p class="consejo">📍 Hoy estamos <b>${pos}° de ${ranking.length}</b>. ${!nuestro.opiniones ? 'Lo que más pesa es que <b>todavía no tenemos opiniones en Booking</b> (en Google tenemos 5,0 con 34). Con las primeras 5 opiniones subimos hasta 30 puntos: pedile a cada huésped que deje su opinión.' : ''}</p>
+        ${faltan.length ? `<p class="consejo">🧰 Servicios que ellos muestran y nosotros no: ${faltan.map(f => `<b>${esc(f.x)}</b> (${f.n} de ${otros.length})`).join(', ')}. Si ya los tenemos (por ejemplo ropa de cama y toallas), hay que marcarlos en Booking y Airbnb: suman puntos gratis.</p>` : ''}
+        <p class="consejo">💬 Lo que más elogian de ellos: ${otros.filter(o => o.destacan).map(o => `<b>${esc(o.nombre)}</b>: ${esc(o.destacan.toLowerCase())}`).join('; ')}.</p></div>` : ''}
+      <h2 class="grupo-mas" style="margin-top:1.4rem">Fechas importantes</h2>
+      ${vigentes.map(tarjetaPeriodo).join('') || '<p class="vacio">Todavía no hay precios cargados.</p>'}`;
+  };
+
   VISTAS.plataformas = async () => {
     $('vista').innerHTML = '<h1 class="titulo">Precios en Airbnb y Booking</h1><p class="vacio">Calculando…</p>';
     const dol = await dolarHoy(); if (S.vista !== 'plataformas') return;
@@ -1621,7 +1735,7 @@
     // agrupado por cuánto se usa: lo de todos los días arriba, la configuración al final
     const grupos = [
       ['Día a día', [['mensajes', '💬', 'Mensajes de WhatsApp'], ['huespedes', '👥', 'Huéspedes'], ['resenas', '⭐', 'Reseñas', pendRes ? `${pendRes} nuevas` : '']]],
-      ['Números', [['ganancias', '💰', 'Ganancias'], ['plataformas', '⚖️', 'Precios en Airbnb y Booking'], ['estadisticas', '📊', 'Visitas a la web']]],
+      ['Números', [['ganancias', '💰', 'Ganancias'], ['plataformas', '⚖️', 'Precios en Airbnb y Booking'], ['competidores', '🏁', 'Competidores'], ['estadisticas', '📊', 'Visitas a la web']]],
       ['Lo que se ve en la web', [['fotos', '📷', 'Fotos'], ['textos', '✏️', 'Textos'], ['lugares', '📍', 'Lugares y descuentos'], ['preguntas', '❓', 'Preguntas frecuentes'], ['cabanas', '🏡', 'Cabañas']]],
       ['Configuración', [['pendientes', '✅', 'Lo que falta completar', pendientesFaltan() ? `faltan ${pendientesFaltan()}` : ''], ['ajustes', '⚙️', 'Cobro y horarios'], ['sync', '🔄', 'Booking y Airbnb']]]
     ];
