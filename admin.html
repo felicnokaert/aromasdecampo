@@ -1649,7 +1649,7 @@
       </div>
       ${yo ? `<div class="caja" style="border-left:4px solid var(--sol)"><h2>Cómo subir en el ranking</h2>
         <p class="consejo">📍 Hoy estamos <b>${pos}° de ${ranking.length}</b>. ${!nuestro.opiniones ? 'Lo que más pesa es que <b>todavía no tenemos opiniones en Booking</b> (en Google tenemos 5,0 con 34). Con las primeras 5 opiniones subimos hasta 30 puntos: pedile a cada huésped que deje su opinión.' : ''}</p>
-        ${faltan.length ? `<p class="consejo">🧰 Servicios que ellos muestran y nosotros no: ${faltan.map(f => `<b>${esc(f.x)}</b> (${f.n} de ${otros.length})`).join(', ')}. Si ya los tenemos (por ejemplo ropa de cama y toallas), hay que marcarlos en Booking y Airbnb: suman puntos gratis.</p>` : ''}
+        ${faltan.length ? `<p class="consejo">🧰 Servicios que ellos muestran y nosotros no: ${faltan.map(f => `<b>${esc(f.x)}</b> (${f.n} de ${otros.length})`).join(', ')}. Lo que ya tengamos hay que marcarlo en Booking y Airbnb (suma puntos gratis). Lo demás, como dar ropa de cama, es decisión de Rubén.</p>` : ''}
         <p class="consejo">💬 Lo que más elogian de ellos: ${otros.filter(o => o.destacan).map(o => `<b>${esc(o.nombre)}</b>: ${esc(o.destacan.toLowerCase())}`).join('; ')}.</p></div>` : ''}
       <h2 class="grupo-mas" style="margin-top:1.4rem">Fechas importantes</h2>
       ${vigentes.map(tarjetaPeriodo).join('') || '<p class="vacio">Todavía no hay precios cargados.</p>'}`;
