@@ -328,6 +328,41 @@
     .actualizado { text-align: center; color: var(--texto2); font-size: .8rem; margin: 1.2rem 0 .4rem; }
 
     .guia-sync summary { cursor: pointer; } .guia-sync h3 { margin: .8rem 0 .3rem; font-size: 1rem; } .guia-sync ol { margin: 0 0 .4rem 1.2rem; padding: 0; } .guia-sync li { margin: .25rem 0; }
+    /* ===== Mejoras visuales nov-2026 ===== */
+    header > div:first-child, header .izq { gap: .9rem; }
+    .tiles-mas { display: grid; grid-template-columns: repeat(2, 1fr); gap: .65rem; }
+    @media (min-width: 700px) { .tiles-mas { grid-template-columns: repeat(3, 1fr); } }
+    .tiles-mas button { position: relative; display: grid; align-content: start; gap: .25rem; text-align: left; background: var(--blanco); border: 1px solid var(--borde); border-radius: 16px; padding: .95rem .9rem 1rem; min-height: 118px; font: inherit; color: var(--texto); cursor: pointer; }
+    .tiles-mas button:active { background: var(--beige); }
+    .tiles-mas .ico-t { width: 42px; height: 42px; border-radius: 12px; display: grid; place-items: center; font-size: 1.35rem; background: var(--crema); margin-bottom: .25rem; }
+    .tiles-mas b { font-size: 1rem; line-height: 1.2; }
+    .tiles-mas small { color: var(--texto2); font-size: .8rem; line-height: 1.3; }
+    .tiles-mas .chip { position: absolute; top: .7rem; right: .7rem; font-size: .72rem; }
+    .tiles-mas button.destacado { grid-column: 1 / -1; min-height: 0; grid-template-columns: auto 1fr auto; align-items: center; gap: .8rem; background: linear-gradient(135deg, #FFF4E6, #FFFCF6); border-color: #F2CB91; }
+    .tiles-mas button.destacado .ico-t { background: #fff; margin: 0; }
+    .tiles-mas button.destacado .chip { position: static; }
+    .resumen-hoy { display: grid; grid-template-columns: repeat(3, 1fr); gap: .55rem; margin: 0 0 1rem; }
+    .resumen-hoy button { background: var(--blanco); border: 1px solid var(--borde); border-radius: 14px; padding: .75rem .6rem; text-align: left; font: inherit; color: var(--texto); cursor: pointer; display: grid; gap: .1rem; }
+    .resumen-hoy b { font-family: 'Gloock', Georgia, serif; font-weight: 400; font-size: 1.9rem; line-height: 1; }
+    .resumen-hoy span { font-size: .78rem; color: var(--texto2); line-height: 1.25; }
+    .resumen-hoy button.atento { border-color: #F2CB91; background: #FFF8EC; } .resumen-hoy button.atento b { color: var(--sol); }
+    .publicar { border-left: 4px solid var(--azul) !important; }
+    .pub-fila { display: grid; grid-template-columns: auto 1fr auto; gap: .7rem; align-items: center; padding: .65rem 0; border-bottom: 1px solid var(--beige); }
+    .pub-fila:last-child { border-bottom: 0; }
+    .pub-fecha { background: var(--azul-claro); color: var(--azul); border-radius: 10px; padding: .3rem .5rem; text-align: center; font-weight: 700; font-size: .78rem; line-height: 1.15; min-width: 3.2rem; }
+    .pub-fecha big { display: block; font-size: 1.15rem; }
+    .pub-fila p { font-size: .92rem; line-height: 1.35; }
+    .nums.compactos { grid-template-columns: repeat(2, 1fr); }
+    .nums.compactos .num { padding: .75rem .85rem; box-shadow: none; border: 1px solid var(--borde); }
+    .nums.compactos .num b { font-size: 1.45rem; }
+    details.grupo { background: var(--blanco); border: 1px solid var(--borde); border-radius: 12px; margin-bottom: .8rem; padding: 0 1.1rem; }
+    details.grupo > summary { list-style: none; cursor: pointer; padding: 1rem 0; display: flex; justify-content: space-between; align-items: center; gap: .6rem; font-weight: 700; font-size: 1.05rem; }
+    details.grupo > summary::-webkit-details-marker { display: none; }
+    details.grupo > summary::after { content: '›'; font-size: 1.5rem; color: var(--texto2); transition: transform .2s; }
+    details.grupo[open] > summary::after { transform: rotate(90deg); }
+    details.grupo > summary .chip { margin-left: auto; }
+    details.grupo > div { padding-bottom: .8rem; }
+
 </style>
 </head>
 <body>
@@ -351,7 +386,7 @@
   <header>
     <h1 class="marca-adm"><img src="logo/aromas-blanco.png" alt="">Aromas de Campo</h1>
     <div style="display:flex;gap:.4rem">
-      <a href="index.html" target="_blank" style="color:#E5E5DC;font-size:.85rem;align-self:center;margin-right:.3rem">Ver la web</a>
+      <a href="index.html" target="_blank" style="color:#E5E5DC;font-size:.85rem;align-self:center;margin:0 .3rem 0 .8rem;white-space:nowrap">🌐 Web</a>
       <button id="salir">Salir</button>
     </div>
   </header>
@@ -768,18 +803,25 @@
       opinar.map(r => `<div class="tarea"><div>⭐ <b>${esc(r.nombre)}</b> se fue el ${A.lindo(r.salida)}<br><small class="vacio">Pedile que deje su opinión</small></div>
         <div class="botones" style="margin:0"><a class="btn wa chico" target="_blank" rel="noopener" href="https://wa.me/${telWa(r.telefono)}?text=${encodeURIComponent(msgResena(r))}">WhatsApp</a>
         <button class="btn sec chico" data-hecho="${r.id}" data-campo="resena_pedida">✓ Ya lo mandé</button></div></div>`).join('');
-    const alertas = (S.alertas || []).map(a => { const nueva = /^nueva:/.test(a.clave || '');
+    const esPub = a => /^publicar:/.test(a.clave || '');
+    const pubs = (S.alertas || []).filter(esPub).sort((a, b) => a.clave.localeCompare(b.clave));
+    const publicar = pubs.length ? `<div class="caja publicar"><h2>📣 Para publicar en redes</h2>${pubs.map(a => { const f = a.clave.slice(9), d = A.fecha(f);
+      return `<div class="pub-fila"><div class="pub-fecha">${A.DIAS[d.getDay()]}<big>${d.getDate()}</big></div><p>${esc(a.mensaje.replace(/^.*?\d{1,2}:\d{2}:\s*/, ''))}</p><button class="btn sec chico" data-visto="${a.id}">✓ Hecho</button></div>`; }).join('')}</div>` : '';
+    const alertas = (S.alertas || []).filter(a => !esPub(a)).map(a => { const nueva = /^nueva:/.test(a.clave || '');
       return `<div class="alerta ${a.tipo === 'doble' || a.tipo === 'sync' ? '' : nueva ? 'nueva-res' : 'aviso'}"><p>${esc(a.mensaje)}</p>
         <div class="botones" style="margin:0">${nueva ? `<button class="btn chico" data-ir="reservas">Ver reservas</button>` : ''}${a.tipo === 'sync' ? `<button class="btn chico" data-ir="sync">Revisar conexión</button>` : ''}
         <button class="btn ${a.tipo === 'doble' ? 'rojo' : 'sec'} chico" data-visto="${a.id}">Entendido</button></div></div>`; }).join('');
     const fechaHoy = new Date().toLocaleDateString('es-AR', { weekday: 'long', day: 'numeric', month: 'long' });
-    $('vista').innerHTML = `<h1 class="titulo">${saludo}</h1><p class="fecha-hoy">${fechaHoy}</p>${conexiones()}${estadoCabanas()}${alertas}
-      ${tareas ? `<div class="caja"><h2>Para hacer hoy</h2>${tareas}</div>` : ''}
-      ${pendientesFaltan() ? `<button class="caja pend-ini" data-ir="pendientes"><span>✅</span><span><b>Centro de mejoras: faltan ${pendientesFaltan()} cosas</b><br><small class="vacio">${consejoSemana()[0]} · tocá para ver el consejo de la semana</small></span><span class="flecha-mas">›</span></button>` : ''}
-      <div class="caja"><h2>Para confirmar (${pend.length})</h2>
+    const resumen = `<div class="resumen-hoy">
+      <button class="${pend.length ? 'atento' : ''}" data-scroll="caja-confirmar"><b>${pend.length}</b><span>para confirmar</span></button>
+      <button data-scroll="caja-llegan"><b>${llegan.length}</b><span>llegan en 14 días</span></button>
+      <button class="${pendientesFaltan() ? 'atento' : ''}" data-ir="pendientes"><b>${pendientesFaltan()}</b><span>mejoras pendientes</span></button></div>`;
+    $('vista').innerHTML = `<h1 class="titulo">${saludo}</h1><p class="fecha-hoy">${fechaHoy}</p>${resumen}${alertas}
+      ${tareas ? `<div class="caja"><h2>Para hacer hoy</h2>${tareas}</div>` : ''}${conexiones()}${estadoCabanas()}${publicar}
+      <div class="caja" id="caja-confirmar"><h2>Para confirmar (${pend.length})</h2>
         ${pend.length ? '<p class="vacio" style="margin-bottom:.6rem">Gente que pidió fechas en la web. Cuando te llegue la seña, tocá "Llegó la seña".</p>' + pend.map(r => tarjeta(r, true)).join('') : '<p class="vacio">No hay reservas esperando seña. 👍</p>'}</div>
       <div class="caja"><h2>Ahora en las cabañas</h2>${adentro.length ? adentro.map(r => tarjeta(r)).join('') : '<p class="vacio">Ninguna cabaña ocupada hoy.</p>'}</div>
-      <div class="caja"><h2>Llegan en los próximos 14 días</h2>${llegan.length ? llegan.map(r => tarjeta(r)).join('') : '<p class="vacio">No hay llegadas confirmadas.</p>'}</div>
+      <div class="caja" id="caja-llegan"><h2>Llegan en los próximos 14 días</h2>${llegan.length ? llegan.map(r => tarjeta(r)).join('') : '<p class="vacio">No hay llegadas confirmadas.</p>'}</div>
       <div class="botones" style="margin-bottom:1rem"><button class="btn grande" id="nueva">＋ Cargar una reserva</button></div>
       <div class="caja"><h2>Últimos 30 días</h2><div class="nums" id="nums">${skNums(4)}</div>
         <button class="btn sec" style="margin-top:.8rem" id="ver-est">Ver más estadísticas</button></div>`;
@@ -787,6 +829,7 @@
     $('nueva').onclick = () => formReserva(null);
     $('ver-est').onclick = () => ir('estadisticas');
     $('vista').querySelectorAll('[data-ir]').forEach(b => b.onclick = () => ir(b.dataset.ir));
+    $('vista').querySelectorAll('[data-scroll]').forEach(b => b.onclick = () => $(b.dataset.scroll)?.scrollIntoView({ behavior: 'smooth', block: 'start' }));
     $('vista').querySelectorAll('[data-cabcal]').forEach(b => b.onclick = () => { S.cal.cab = Number(b.dataset.cabcal); S.cal.mes = null; ir('calendario'); });
     $('vista').querySelectorAll('[data-hecho]').forEach(b => b.onclick = () => marcar(S.reservas.find(x => x.id === Number(b.dataset.hecho)), b.dataset.campo));
     $('vista').querySelectorAll('[data-visto]').forEach(b => b.onclick = async () => {
@@ -1720,7 +1763,7 @@
   // ======================= LO QUE FALTA COMPLETAR (guía para Rubén) =======================
   const AIRBNB_ED = 'https://www.airbnb.com.ar/hosting/listings/editor/1827242410610257428';
   const PENDIENTES = [
-    ['Booking (hoy 92%, la competencia que más tiene: 97%)', [
+    ['Booking', [
       ['bk-kyp', 'Completar el formulario "Conocé a tu socio" antes del 10/12', 'Lo pide Booking para seguir mostrando las cabañas. Son datos personales y de cobro: lo hacés vos desde el aviso amarillo "Completar la información".', 'https://admin.booking.com'],
       ['bk-fotos', 'Sacar fotos nuevas de adentro de cada cabaña', 'Es lo único que falta para el 100%. De día, con luz, celular horizontal: dormitorio, living con la cucheta, cocina y baño. Subilas a la carpeta "1 – Rubén sube acá" del Drive y Felipe las carga.', 'https://drive.google.com/drive/folders/16PHFIRwxY8QC56mu5fSf_C-PMvDo1Gx5'],
       ['bk-wifi', 'Cargar el WiFi y el horario de llegada', 'En Propiedad → Información para el huésped. Booking se lo muestra solo a quien ya reservó.', 'https://admin.booking.com'],
@@ -1757,13 +1800,13 @@
     $('vista').innerHTML = `<h1 class="titulo">Centro de mejoras</h1>
       <p class="ayuda">Lo que podemos mejorar para alquilar más. Tocá "Ir" para ir directo y marcá ✓ cuando esté. <b>Nunca</b> pases la clave del WiFi por mensaje: va solo dentro de Airbnb y Booking.</p>
       <div class="caja" style="border-left:4px solid var(--sol)"><h2>Consejo de la semana</h2><p class="consejo"><b>${ct}.</b> ${cd}</p></div>
-      <div class="caja"><h2>Así estamos</h2><div class="nums">${RESUMEN.map(([n, t, d]) => `<div class="num"><b>${n}</b><span>${t}<br><small class="vacio">${d}</small></span></div>`).join('')}</div></div>
+      <div class="caja"><h2>Así estamos</h2><div class="nums compactos">${RESUMEN.map(([n, t, d]) => `<div class="num"><b>${n}</b><span>${t}<br><small class="vacio">${d}</small></span></div>`).join('')}</div></div>
       <div class="caja"><b>${listos} de ${total} mejoras hechas</b><div class="barra-prog"><i style="width:${Math.round(listos / total * 100)}%"></i></div></div>
-      ${PENDIENTES.map(([g, l]) => `<div class="caja"><h2>${g}</h2>${l.map(([id, t, d, url]) => `<div class="tarea pend ${hechos.has(id) ? 'hecho' : ''}">
+      ${PENDIENTES.map(([g, l], gi) => { const f = l.filter(x => !hechos.has(x[0])).length; return `<details class="grupo" ${gi === 0 ? 'open' : ''}><summary>${g}${f ? `<span class="chip pendiente">faltan ${f}</span>` : '<span class="chip">✓ listo</span>'}</summary><div>${l.map(([id, t, d, url]) => `<div class="tarea pend ${hechos.has(id) ? 'hecho' : ''}">
         <div style="flex:1;min-width:200px"><b>${hechos.has(id) ? '✅ ' : ''}${t}</b><br><small class="vacio">${d}</small></div>
         <div class="botones" style="margin:0">${hechos.has(id) ? '' : `<a class="btn sec chico" href="${url}" target="_blank" rel="noopener">Ir ›</a>`}
-          <button class="btn ${hechos.has(id) ? 'sec' : ''} chico" data-pend="${id}">${hechos.has(id) ? 'Deshacer' : '✓ Listo'}</button></div></div>`).join('')}</div>`).join('')}
-      <div class="caja"><h2>Más consejos</h2>${CONSEJOS.map(([t, d]) => `<p class="consejo"><b>${t}.</b> ${d}</p>`).join('')}</div>`;
+          <button class="btn ${hechos.has(id) ? 'sec' : ''} chico" data-pend="${id}">${hechos.has(id) ? 'Deshacer' : '✓ Listo'}</button></div></div>`).join('')}</div></details>`; }).join('')}
+      <details class="grupo"><summary>💡 Todos los consejos</summary><div>${CONSEJOS.map(([t, d]) => `<p class="consejo"><b>${t}.</b> ${d}</p>`).join('')}</div></details>`;
     $('vista').querySelectorAll('[data-pend]').forEach(b => b.onclick = async () => {
       const id = b.dataset.pend; hechos.has(id) ? hechos.delete(id) : hechos.add(id);
       const v = [...hechos]; const { error: err } = await db.from('ajustes').update({ pendientes_hechos: v }).eq('id', S.ajustes.id);
@@ -1796,18 +1839,19 @@
   const pendientesFaltan = () => { const h = new Set(S.ajustes.pendientes_hechos || []); return PENDIENTES.reduce((n, [, l]) => n + l.filter(x => !h.has(x[0])).length, 0); };
 
   VISTAS.mas = () => {
-    const pendRes = (S.resenas || []).filter(r => !r.aprobada).length;
+    const pendRes = (S.resenas || []).filter(r => !r.aprobada).length, falt = pendientesFaltan();
     // agrupado por cuánto se usa: lo de todos los días arriba, la configuración al final
     const grupos = [
-      ['Día a día', [['pendientes', '🚀', 'Centro de mejoras y consejos', pendientesFaltan() ? `faltan ${pendientesFaltan()}` : ''], ['mapa', '🗺️', 'Mapa de las cabañas'], ['mensajes', '💬', 'Mensajes de WhatsApp'], ['huespedes', '👥', 'Huéspedes'], ['resenas', '⭐', 'Reseñas', pendRes ? `${pendRes} nuevas` : '']]],
-      ['Números', [['ganancias', '💰', 'Ganancias'], ['plataformas', '⚖️', 'Precios en Airbnb y Booking'], ['competidores', '🏁', 'Competidores'], ['estadisticas', '📊', 'Visitas a la web']]],
-      ['Lo que se ve en la web', [['fotos', '📷', 'Fotos'], ['textos', '✏️', 'Textos'], ['lugares', '📍', 'Lugares y descuentos'], ['preguntas', '❓', 'Preguntas frecuentes'], ['cabanas', '🏡', 'Cabañas']]],
-      ['Configuración', [['ajustes', '⚙️', 'Cobro y horarios'], ['sync', '🔄', 'Booking y Airbnb']]]
+      ['Día a día', [['mensajes', '💬', 'Mensajes', 'Respuestas listas para WhatsApp'], ['huespedes', '👥', 'Huéspedes', 'Quién vino y sus datos'], ['resenas', '⭐', 'Reseñas', 'Opiniones de los huéspedes', pendRes ? `${pendRes} nuevas` : ''], ['mapa', '🗺️', 'Mapa', 'Las cabañas en Colón']]],
+      ['Números', [['ganancias', '💰', 'Ganancias', 'Cuánto entró y gastos'], ['plataformas', '⚖️', 'Airbnb y Booking', 'Comparar precios y comisiones'], ['competidores', '🏁', 'Competidores', 'Qué hacen los demás'], ['estadisticas', '📊', 'Visitas a la web', 'Cuánta gente entra']]],
+      ['Lo que se ve en la web', [['fotos', '📷', 'Fotos', 'Cambiar y ordenar fotos'], ['textos', '✏️', 'Textos', 'Lo que dice la web'], ['lugares', '📍', 'Lugares', 'Paseos y descuentos'], ['preguntas', '❓', 'Preguntas', 'Preguntas frecuentes'], ['cabanas', '🏡', 'Cabañas', 'Datos de cada cabaña']]],
+      ['Configuración', [['ajustes', '⚙️', 'Cobro y horarios', 'Seña, alias, entrada y salida'], ['sync', '🔄', 'Conexión', 'Calendarios de Booking y Airbnb']]]
     ];
-    $('vista').innerHTML = `<h1 class="titulo">Más</h1>` + grupos.map(([g, items]) => `
-      <h2 class="grupo-mas">${g}</h2>
-      <div class="lista-mas">${items.map(([v, i, t, extra]) => `<button data-v="${v}"><span class="ico-mas" aria-hidden="true">${i}</span><span class="txt-mas">${t}</span>
-        ${extra ? `<span class="chip pendiente">${extra}</span>` : ''}<span class="flecha-mas" aria-hidden="true">›</span></button>`).join('')}</div>`).join('');
+    $('vista').innerHTML = `<h1 class="titulo">Más</h1>
+      <div class="tiles-mas"><button class="destacado" data-v="pendientes"><span class="ico-t">🚀</span><span><b>Centro de mejoras y consejos</b><br><small>Qué falta para alquilar más · ${esc(consejoSemana()[0])}</small></span>${falt ? `<span class="chip pendiente">faltan ${falt}</span>` : '<span class="flecha-mas">›</span>'}</button></div>` +
+      grupos.map(([g, items]) => `<h2 class="grupo-mas">${g}</h2>
+      <div class="tiles-mas">${items.map(([v, i, t, d, extra]) => `<button data-v="${v}"><span class="ico-t" aria-hidden="true">${i}</span><b>${t}</b><small>${d}</small>
+        ${extra ? `<span class="chip pendiente">${extra}</span>` : ''}</button>`).join('')}</div>`).join('');
     $('vista').querySelectorAll('[data-v]').forEach(b => b.onclick = () => ir(b.dataset.v));
   };
 
