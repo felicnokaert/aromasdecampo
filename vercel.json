@@ -19,6 +19,18 @@
     {
       "source": "/llegada",
       "destination": "/llegada.html"
+    },
+    {
+      "source": "/cabanas-en-colon-con-pileta",
+      "destination": "/cabanas-en-colon-con-pileta.html"
+    },
+    {
+      "source": "/cabanas-cerca-de-las-termas-de-colon",
+      "destination": "/cabanas-cerca-de-las-termas-de-colon.html"
+    },
+    {
+      "source": "/escapada-a-colon-en-familia",
+      "destination": "/escapada-a-colon-en-familia.html"
     }
   ],
   "headers": [
