@@ -532,7 +532,7 @@
   function ir(v) {
     if (!VISTAS[v]) v = 'inicio';
     S.vista = v; location.hash = v;
-    document.querySelectorAll('nav.abajo button').forEach(b => b.classList.toggle('act', b.dataset.v === v || (['preguntas','cabanas','ajustes','estadisticas','sync','resenas','fotos','textos','lugares','mensajes','ganancias','huespedes','plataformas','pendientes','competidores'].includes(v) && b.dataset.v === 'mas')));
+    document.querySelectorAll('nav.abajo button').forEach(b => b.classList.toggle('act', b.dataset.v === v || (['preguntas','cabanas','ajustes','estadisticas','sync','resenas','fotos','textos','lugares','mensajes','ganancias','huespedes','plataformas','pendientes','competidores','mapa'].includes(v) && b.dataset.v === 'mas')));
     window.scrollTo({ top: 0, behavior: 'smooth' });
     const vi = $('vista'); vi.classList.remove('vista-anim'); void vi.offsetWidth; vi.classList.add('vista-anim');
     VISTAS[v]();
@@ -775,7 +775,7 @@
     const fechaHoy = new Date().toLocaleDateString('es-AR', { weekday: 'long', day: 'numeric', month: 'long' });
     $('vista').innerHTML = `<h1 class="titulo">${saludo}</h1><p class="fecha-hoy">${fechaHoy}</p>${conexiones()}${estadoCabanas()}${alertas}
       ${tareas ? `<div class="caja"><h2>Para hacer hoy</h2>${tareas}</div>` : ''}
-      ${pendientesFaltan() ? `<button class="caja pend-ini" data-ir="pendientes"><span>✅</span><span><b>Faltan ${pendientesFaltan()} cosas para dejar Airbnb y Booking al 100%</b><br><small class="vacio">Tocá para ver la lista con los pasos</small></span><span class="flecha-mas">›</span></button>` : ''}
+      ${pendientesFaltan() ? `<button class="caja pend-ini" data-ir="pendientes"><span>✅</span><span><b>Centro de mejoras: faltan ${pendientesFaltan()} cosas</b><br><small class="vacio">${consejoSemana()[0]} · tocá para ver el consejo de la semana</small></span><span class="flecha-mas">›</span></button>` : ''}
       <div class="caja"><h2>Para confirmar (${pend.length})</h2>
         ${pend.length ? '<p class="vacio" style="margin-bottom:.6rem">Gente que pidió fechas en la web. Cuando te llegue la seña, tocá "Llegó la seña".</p>' + pend.map(r => tarjeta(r, true)).join('') : '<p class="vacio">No hay reservas esperando seña. 👍</p>'}</div>
       <div class="caja"><h2>Ahora en las cabañas</h2>${adentro.length ? adentro.map(r => tarjeta(r)).join('') : '<p class="vacio">Ninguna cabaña ocupada hoy.</p>'}</div>
@@ -1720,39 +1720,78 @@
   // ======================= LO QUE FALTA COMPLETAR (guía para Rubén) =======================
   const AIRBNB_ED = 'https://www.airbnb.com.ar/hosting/listings/editor/1827242410610257428';
   const PENDIENTES = [
-    ['Airbnb', [
-      ['ab-ident', 'Verificar tu identidad y aceptar las condiciones', 'Sin esto el anuncio no se publica. Entrá, tocá el anuncio de Olivia y seguí lo que dice "Acción necesaria". Lo hacés vos con tu DNI.', 'https://www.airbnb.com.ar/hosting/listings'],
-      ['ab-wifi', 'Cargar el WiFi (nombre y clave)', 'Va en "Guía de llegada" → "Datos del wifi". Airbnb solo se lo muestra al huésped que ya reservó.', AIRBNB_ED],
-      ['ab-llegada', 'Revisar las instrucciones de llegada', 'Cómo encontrar las cabañas y quién los recibe. Ya cargamos un texto base: leelo y corregí lo que no sea así.', AIRBNB_ED],
-      ['ab-camara', 'Confirmar si hay cámara en el exterior', 'El anuncio dice que hay cámara de seguridad afuera. Si no es así, sacalo en "Seguridad del huésped".', AIRBNB_ED],
-      ['ab-sofia', 'Duplicar el anuncio para Sofía', 'Cuando Olivia esté publicada: en el anuncio tocá los tres puntitos → "Duplicar anuncio". Después avisale a Felipe para conectar el calendario.', 'https://www.airbnb.com.ar/hosting/listings'],
-      ['ab-app', 'Instalar la app de Airbnb y activar avisos', 'Así respondés rápido (en menos de 1 hora sube el anuncio en los resultados).', 'https://www.airbnb.com.ar/host/homes']]],
-    ['Booking', [
-      ['bk-kyp', 'Completar el formulario "Conocé a tu socio" antes del 10/12', 'Lo pide Booking para seguir mostrando las casas. Datos personales y de cobro: lo hacés vos.', 'https://admin.booking.com'],
-      ['bk-wifi', 'Cargar el WiFi y el horario de llegada', 'En Propiedad → Políticas / Información para el huésped.', 'https://admin.booking.com'],
-      ['bk-datos', 'Completar medidas de las casas y meses de la pileta', 'Suben el puntaje de la página (hoy 71%).', 'https://admin.booking.com'],
-      ['bk-fotos', 'Cambiar 7 fotos de baja calidad', 'Booking las marca como borrosas u oscuras. Mejor de día, con luz y el celular horizontal.', 'https://admin.booking.com'],
+    ['Booking (hoy 92%, la competencia que más tiene: 97%)', [
+      ['bk-kyp', 'Completar el formulario "Conocé a tu socio" antes del 10/12', 'Lo pide Booking para seguir mostrando las cabañas. Son datos personales y de cobro: lo hacés vos desde el aviso amarillo "Completar la información".', 'https://admin.booking.com'],
+      ['bk-fotos', 'Sacar fotos nuevas de adentro de cada cabaña', 'Es lo único que falta para el 100%. De día, con luz, celular horizontal: dormitorio, living con la cucheta, cocina y baño. Subilas a la carpeta "1 – Rubén sube acá" del Drive y Felipe las carga.', 'https://drive.google.com/drive/folders/16PHFIRwxY8QC56mu5fSf_C-PMvDo1Gx5'],
+      ['bk-wifi', 'Cargar el WiFi y el horario de llegada', 'En Propiedad → Información para el huésped. Booking se lo muestra solo a quien ya reservó.', 'https://admin.booking.com'],
       ['bk-app', 'Instalar la app Pulse de Booking', 'Para ver reservas y contestar mensajes desde el celular.', 'https://www.booking.com/pulse']]],
-    ['Google y redes', [
-      ['gg-web', 'Poner aromasdecampo.ar como sitio web en Google', 'En el Perfil de Empresa de Google (las 34 opiniones de 5 estrellas): Editar perfil → Sitio web.', 'https://business.google.com'],
-      ['fb-web', 'Cambiar el link de la página de Facebook', 'Hoy dice "whatsapp.com". Poné https://aromasdecampo.ar y que los idiomas sean Español.', 'https://www.facebook.com/aromasdecampo022/'],
-      ['ig-bio', 'Poner el link de la web en la biografía de Instagram', 'aromasdecampo.ar, igual en todos lados.', 'https://www.instagram.com/']]]
+    ['Airbnb', [
+      ['ab-fotos-sofia', 'Cambiar las fotos de adentro del anuncio de Sofía', 'Sofía se creó copiando a Olivia, así que tiene las fotos de Olivia. Cambiá las de adentro por fotos de Sofía.', 'https://www.airbnb.com.ar/hosting/listings'],
+      ['ab-wifi', 'Cargar el WiFi (nombre y clave)', 'Va en "Guía de llegada" → "Datos del wifi". Airbnb solo se lo muestra al huésped que ya reservó.', AIRBNB_ED],
+      ['ab-camara', 'Confirmar si hay cámara en el exterior', 'Si no hay, sacalo en "Seguridad del huésped".', AIRBNB_ED],
+      ['ab-app', 'Instalar la app de Airbnb y activar avisos', 'Contestar en menos de 1 hora sube el anuncio en los resultados.', 'https://www.airbnb.com.ar/host/homes']]],
+    ['Google', [
+      ['gg-fotos', 'Subir fotos de adentro al Perfil de Google', 'Los perfiles con muchas fotos aparecen más arriba en Google Maps. Las de afuera ya están.', 'https://business.google.com'],
+      ['gg-resenas', 'Pedir reseña a cada huésped que se va', 'Es lo que más sube en Google Maps. En WhatsApp escribí /resena y se arma el mensaje solo. Meta: de 34 a 60 en el verano.', 'https://search.google.com/local/writereview?placeid=ChIJn7-yVu8trpURfWGnk6a6PHQ'],
+      ['gg-responder', 'Responder todas las reseñas de Google', 'Aunque sea "¡Gracias, los esperamos!". Google premia a los que contestan.', 'https://business.google.com']]],
+    ['Para más adelante', [
+      ['ta-alta', 'Darse de alta en Tripadvisor', 'Muchos complejos de Colón están y nosotros no. Hay que crear una cuenta de propietario; Felipe te ayuda.', 'https://www.tripadvisor.com.ar/Owners']]]
   ];
+  // Consejo de la semana: va rotando solo, uno distinto cada semana
+  const CONSEJOS = [
+    ['⭐ Reseñas', 'Pedí la reseña el mismo día que se van, mientras están contentos. Más reseñas = más arriba en Google Maps, Booking y Airbnb.'],
+    ['⚡ Contestar rápido', 'Responder en menos de 1 hora en Airbnb, Booking e Instagram hace que te muestren más. La IA de WhatsApp ya contesta lo básico.'],
+    ['📸 Fotos', 'La primera foto es la que decide si tocan tu anuncio. Mejor la pileta con sol o la cabaña con el parque verde, de día.'],
+    ['💬 Reservar directo', 'A cada huésped que viene por Booking o Airbnb, al irse, pasale la web: la próxima vez reserva directo y no pagás comisión.'],
+    ['🧹 Detalles que se notan', 'Lo que más elogian los huéspedes en la zona: limpieza, atención y tranquilidad. Un mensaje de bienvenida y la cabaña perfumada suman reseñas de 5.'],
+    ['📅 Fines de semana largos', 'Cargá con tiempo los precios de los findes largos. Se reservan con semanas de anticipación.'],
+    ['🎥 Videos', 'Un video corto por día en Instagram y Facebook hace crecer la cuenta. Grabá lo cotidiano: el mate en el deck, el atardecer, la parrilla.'],
+    ['🏆 La competencia', 'Mirá en "Competidores" qué ofrecen los demás. Lo que nosotros ya tenemos y ellos destacan, hay que contarlo en redes.']
+  ];
+  const consejoSemana = () => { const d = new Date(), n = Math.floor((d - new Date(d.getFullYear(), 0, 1)) / 6048e5); return CONSEJOS[n % CONSEJOS.length]; };
+  const RESUMEN = [['92%', 'Página de Booking', 'objetivo 100%'], ['5,0 ★', 'Google', '34 opiniones'], ['2', 'Cabañas publicadas', 'web, Booking y Airbnb'], ['✓', 'Calendarios', 'sincronizados solos']];
   VISTAS.pendientes = () => {
     const hechos = new Set(S.ajustes.pendientes_hechos || []);
     const total = PENDIENTES.reduce((n, [, l]) => n + l.length, 0), listos = PENDIENTES.reduce((n, [, l]) => n + l.filter(x => hechos.has(x[0])).length, 0);
-    $('vista').innerHTML = `<h1 class="titulo">Lo que falta completar</h1>
-      <p class="ayuda">Cosas que tiene que hacer el dueño de las cuentas (por seguridad nadie más puede). Tocá el botón para ir directo, y marcá ✓ cuando esté. <b>Nunca</b> le pases la clave del WiFi a nadie por mensaje: va solo dentro de Airbnb y Booking.</p>
-      <div class="caja"><b>${listos} de ${total} listas</b><div class="barra-prog"><i style="width:${Math.round(listos / total * 100)}%"></i></div></div>
+    const [ct, cd] = consejoSemana();
+    $('vista').innerHTML = `<h1 class="titulo">Centro de mejoras</h1>
+      <p class="ayuda">Lo que podemos mejorar para alquilar más. Tocá "Ir" para ir directo y marcá ✓ cuando esté. <b>Nunca</b> pases la clave del WiFi por mensaje: va solo dentro de Airbnb y Booking.</p>
+      <div class="caja" style="border-left:4px solid var(--sol)"><h2>Consejo de la semana</h2><p class="consejo"><b>${ct}.</b> ${cd}</p></div>
+      <div class="caja"><h2>Así estamos</h2><div class="nums">${RESUMEN.map(([n, t, d]) => `<div class="num"><b>${n}</b><span>${t}<br><small class="vacio">${d}</small></span></div>`).join('')}</div></div>
+      <div class="caja"><b>${listos} de ${total} mejoras hechas</b><div class="barra-prog"><i style="width:${Math.round(listos / total * 100)}%"></i></div></div>
       ${PENDIENTES.map(([g, l]) => `<div class="caja"><h2>${g}</h2>${l.map(([id, t, d, url]) => `<div class="tarea pend ${hechos.has(id) ? 'hecho' : ''}">
         <div style="flex:1;min-width:200px"><b>${hechos.has(id) ? '✅ ' : ''}${t}</b><br><small class="vacio">${d}</small></div>
         <div class="botones" style="margin:0">${hechos.has(id) ? '' : `<a class="btn sec chico" href="${url}" target="_blank" rel="noopener">Ir ›</a>`}
-          <button class="btn ${hechos.has(id) ? 'sec' : ''} chico" data-pend="${id}">${hechos.has(id) ? 'Deshacer' : '✓ Listo'}</button></div></div>`).join('')}</div>`).join('')}`;
+          <button class="btn ${hechos.has(id) ? 'sec' : ''} chico" data-pend="${id}">${hechos.has(id) ? 'Deshacer' : '✓ Listo'}</button></div></div>`).join('')}</div>`).join('')}
+      <div class="caja"><h2>Más consejos</h2>${CONSEJOS.map(([t, d]) => `<p class="consejo"><b>${t}.</b> ${d}</p>`).join('')}</div>`;
     $('vista').querySelectorAll('[data-pend]').forEach(b => b.onclick = async () => {
       const id = b.dataset.pend; hechos.has(id) ? hechos.delete(id) : hechos.add(id);
       const v = [...hechos]; const { error: err } = await db.from('ajustes').update({ pendientes_hechos: v }).eq('id', S.ajustes.id);
       if (err) return error(err); S.ajustes.pendientes_hechos = v; if (hechos.has(id)) aviso('¡Bien! Uno menos ✓'); VISTAS.pendientes();
     });
+  };
+  // ---------- Mapa de Colón con las cabañas ----------
+  const PREDIO = [-32.23957, -58.18945]; // plus code QR66+56 Colón
+  const cargarLeaflet = () => window.L ? Promise.resolve() : new Promise((ok, mal) => {
+    const c = document.createElement('link'); c.rel = 'stylesheet'; c.href = 'https://unpkg.com/leaflet@1.9.4/dist/leaflet.css'; document.head.appendChild(c);
+    const j = document.createElement('script'); j.src = 'https://unpkg.com/leaflet@1.9.4/dist/leaflet.js'; j.onload = ok; j.onerror = mal; document.head.appendChild(j); });
+  VISTAS.mapa = async () => {
+    $('vista').innerHTML = `<h1 class="titulo">Mapa</h1><p class="ayuda">Dónde están las cabañas en Colón. Tocá un pin para ver la cabaña y abrir cómo llegar.</p>
+      <div class="caja" style="padding:0;overflow:hidden"><div id="mapa" style="height:62vh;min-height:320px"></div></div>
+      <div class="botones"><a class="btn" target="_blank" rel="noopener" href="https://www.google.com/maps/search/?api=1&query=${PREDIO.join(',')}">Abrir en Google Maps</a></div>`;
+    try { await cargarLeaflet(); } catch (e) { $('mapa').innerHTML = '<p class="vacio" style="padding:1rem">No se pudo cargar el mapa. Revisá la conexión.</p>'; return; }
+    const m = L.map('mapa').setView([-32.228, -58.165], 13);
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 19, attribution: '© OpenStreetMap' }).addTo(m);
+    const activas = (S.cabanas || []).filter(c => c.activa).sort((a, b) => (a.orden || 0) - (b.orden || 0));
+    const hoy = A.hoy();
+    activas.forEach((c, i) => {
+      const ocupada = S.reservas.some(r => r.cabana_id === c.id && ['confirmada', 'bloqueo'].includes(r.estado) && r.entrada <= hoy && r.salida > hoy);
+      const pos = [PREDIO[0], PREDIO[1] + (i - (activas.length - 1) / 2) * 0.00025];
+      const ic = L.divIcon({ className: '', html: `<div style="background:${ocupada ? '#A9491A' : '#24301F'};color:#fff;padding:4px 10px;border-radius:999px;font:600 13px Figtree,system-ui;white-space:nowrap;box-shadow:0 2px 6px rgba(0,0,0,.35)">🏡 ${esc(c.nombre)}</div>`, iconSize: null });
+      L.marker(pos, { icon: ic }).addTo(m).bindPopup(`<b>Cabaña ${esc(c.nombre)}</b><br>${ocupada ? 'Ocupada hoy' : 'Libre hoy'}<br><a target="_blank" rel="noopener" href="https://www.google.com/maps/dir/?api=1&destination=${PREDIO.join(',')}">Cómo llegar</a>`);
+    });
+    L.marker([-32.2232, -58.1435]).addTo(m).bindPopup('Centro de Colón');
+    setTimeout(() => m.invalidateSize(), 200);
   };
   const pendientesFaltan = () => { const h = new Set(S.ajustes.pendientes_hechos || []); return PENDIENTES.reduce((n, [, l]) => n + l.filter(x => !h.has(x[0])).length, 0); };
 
@@ -1760,10 +1799,10 @@
     const pendRes = (S.resenas || []).filter(r => !r.aprobada).length;
     // agrupado por cuánto se usa: lo de todos los días arriba, la configuración al final
     const grupos = [
-      ['Día a día', [['mensajes', '💬', 'Mensajes de WhatsApp'], ['huespedes', '👥', 'Huéspedes'], ['resenas', '⭐', 'Reseñas', pendRes ? `${pendRes} nuevas` : '']]],
+      ['Día a día', [['pendientes', '🚀', 'Centro de mejoras y consejos', pendientesFaltan() ? `faltan ${pendientesFaltan()}` : ''], ['mapa', '🗺️', 'Mapa de las cabañas'], ['mensajes', '💬', 'Mensajes de WhatsApp'], ['huespedes', '👥', 'Huéspedes'], ['resenas', '⭐', 'Reseñas', pendRes ? `${pendRes} nuevas` : '']]],
       ['Números', [['ganancias', '💰', 'Ganancias'], ['plataformas', '⚖️', 'Precios en Airbnb y Booking'], ['competidores', '🏁', 'Competidores'], ['estadisticas', '📊', 'Visitas a la web']]],
       ['Lo que se ve en la web', [['fotos', '📷', 'Fotos'], ['textos', '✏️', 'Textos'], ['lugares', '📍', 'Lugares y descuentos'], ['preguntas', '❓', 'Preguntas frecuentes'], ['cabanas', '🏡', 'Cabañas']]],
-      ['Configuración', [['pendientes', '✅', 'Lo que falta completar', pendientesFaltan() ? `faltan ${pendientesFaltan()}` : ''], ['ajustes', '⚙️', 'Cobro y horarios'], ['sync', '🔄', 'Booking y Airbnb']]]
+      ['Configuración', [['ajustes', '⚙️', 'Cobro y horarios'], ['sync', '🔄', 'Booking y Airbnb']]]
     ];
     $('vista').innerHTML = `<h1 class="titulo">Más</h1>` + grupos.map(([g, items]) => `
       <h2 class="grupo-mas">${g}</h2>
