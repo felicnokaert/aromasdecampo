@@ -1,13 +1,51 @@
 {
   "rewrites": [
-    { "source": "/cal/:para/:archivo", "destination": "/api/ical?para=:para&archivo=:archivo" },
-    { "source": "/panel", "destination": "/admin.html" },
-    { "source": "/reservar", "destination": "/reservas.html" },
-    { "source": "/colon", "destination": "/guia.html" },
-    { "source": "/llegada", "destination": "/llegada.html" }
+    {
+      "source": "/cal/:para/:archivo",
+      "destination": "/api/ical?para=:para&archivo=:archivo"
+    },
+    {
+      "source": "/panel",
+      "destination": "/admin.html"
+    },
+    {
+      "source": "/reservar",
+      "destination": "/reservas.html"
+    },
+    {
+      "source": "/colon",
+      "destination": "/guia.html"
+    },
+    {
+      "source": "/llegada",
+      "destination": "/llegada.html"
+    }
   ],
   "headers": [
-    { "source": "/admin.html", "headers": [{ "key": "X-Robots-Tag", "value": "noindex" }] },
-    { "source": "/panel", "headers": [{ "key": "X-Robots-Tag", "value": "noindex" }] }
+    {
+      "source": "/admin.html",
+      "headers": [
+        {
+          "key": "X-Robots-Tag",
+          "value": "noindex"
+        }
+      ]
+    },
+    {
+      "source": "/panel",
+      "headers": [
+        {
+          "key": "X-Robots-Tag",
+          "value": "noindex"
+        }
+      ]
+    }
+  ],
+  "redirects": [
+    {
+      "source": "/opina",
+      "destination": "https://search.google.com/local/writereview?placeid=ChIJn7-yVu8trpURfWGnk6a6PHQ",
+      "permanent": false
+    }
   ]
 }
